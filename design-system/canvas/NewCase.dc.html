@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+  <style>
+:root{--primary:#2563EB;--primary-hover:#1D4ED8;--primary-soft:#DBEAFE;--surface-blue:#EFF6FF;--bg:#F8FAFC;--surface-2:#F1F5F9;--card:#FFFFFF;--text:#0F172A;--text-2:#475569;--muted:#64748B;--border:#E2E8F0;--border-strong:#CBD5E1;--success:#16A34A;--success-soft:#DCFCE7;--success-text:#166534;--warning:#D97706;--warning-soft:#FEF3C7;--warning-text:#92400E;--error:#DC2626;--error-soft:#FEE2E2;--error-text:#991B1B;--info-text:#1E40AF;--r-sm:6px;--r:8px;--r-lg:12px;--shadow-1:0 1px 2px rgba(15,23,42,.06);--shadow-2:0 8px 24px rgba(15,23,42,.12);--font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/20px var(--font);font-feature-settings:"cv11","ss01"}
+a{color:var(--primary);text-decoration:none}a:hover{color:var(--primary-hover)}
+svg{flex:none}
+.app{width:1440px;display:grid;grid-template-columns:240px minmax(0,1fr);background:var(--bg)}
+.app.collapsed{grid-template-columns:64px minmax(0,1fr)}
+/* sidebar */
+.sidebar{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px 12px;gap:2px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;padding:4px 8px 18px;color:var(--text)}
+.brand .mark{width:24px;height:24px;border-radius:6px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff}
+.nav{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:var(--r-sm);color:var(--text-2);font-weight:500}
+.nav.active{background:var(--primary-soft);color:var(--info-text)}
+.sidefoot{margin-top:auto;border-top:1px solid var(--border);padding-top:12px;display:flex;gap:10px;align-items:center}
+.collapsed .sidebar{padding:16px 12px;align-items:center}.collapsed .brand{padding:4px 0 18px}.collapsed .nav{width:40px;justify-content:center;padding:0}.collapsed .nav span,.collapsed .brand span,.collapsed .sidefoot div{display:none}
+.avatar{width:28px;height:28px;border-radius:999px;background:var(--primary-soft);color:var(--info-text);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:none}
+/* topbar */
+.topbar{height:56px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px}
+.crumb{color:var(--muted);display:flex;gap:6px;align-items:center;white-space:nowrap}.crumb b{color:var(--text);font-weight:500}
+.search{width:360px;height:36px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);display:flex;align-items:center;padding:0 12px;color:var(--muted);gap:8px}
+.search kbd{margin-left:auto;font:11px var(--mono);border:1px solid var(--border);border-radius:4px;padding:1px 5px;background:var(--card);color:var(--muted)}
+.icbtn{width:36px;height:36px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--text-2)}
+.icbtn.sm{width:28px;height:28px}
+.spacer{flex:1}
+/* content */
+.content{padding:24px 32px 40px;display:flex;flex-direction:column;gap:24px;min-width:0}
+.pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.h1{font-size:20px;line-height:28px;font-weight:600;letter-spacing:-.01em;margin:0}
+.h1.display{font-size:24px;line-height:32px;letter-spacing:-.02em}
+.sub{color:var(--text-2);margin-top:2px}
+.h2{font-size:16px;line-height:24px;font-weight:600;margin:0}
+.overline{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.label{font-size:12px;font-weight:500;color:var(--muted)}
+.value{font-weight:600;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}.t2{color:var(--text-2)}
+.mono{font-family:var(--mono);font-size:12.5px}
+.row{display:flex;align-items:center;gap:8px}
+.stack{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 20px}
+.card.compact{padding:12px 16px;border-radius:var(--r)}
+.stripe{border-left:3px solid var(--border-strong)}.stripe.ok{border-left-color:var(--success)}.stripe.warn{border-left-color:var(--warning)}.stripe.err{border-left-color:var(--error)}.stripe.info{border-left-color:var(--primary)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:var(--r);font:500 14px/1 var(--font);border:1px solid transparent;white-space:nowrap}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.secondary{background:var(--card);color:var(--text);border-color:var(--border-strong)}
+.btn.ghost{background:transparent;color:var(--text-2)}
+.btn.external{background:var(--card);color:var(--text);border:1px dashed var(--border-strong)}
+.btn.sm{height:32px;padding:0 10px;font-size:13px}.btn.lg{height:40px;padding:0 18px}
+.btn.disabled{opacity:.5}
+/* pills, chips */
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;border:1px solid transparent}
+.pill.ok{background:var(--success-soft);color:var(--success-text)}.pill.warn{background:var(--warning-soft);color:var(--warning-text)}.pill.err{background:var(--error-soft);color:var(--error-text)}.pill.info{background:var(--primary-soft);color:var(--info-text)}.pill.neutral{background:var(--surface-2);color:var(--text-2);border-color:var(--border)}
+.chip{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border-radius:4px;font-size:11.5px;color:var(--muted);border:1px solid var(--border);background:var(--card);white-space:nowrap}
+.chip.confirmed{color:var(--success-text);border-color:var(--success)}.chip.edited{color:var(--info-text);border-color:var(--primary)}
+/* metric */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-1)}
+.metric .num{font-size:28px;line-height:32px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:4px}
+/* table */
+.tbl{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+table{border-collapse:collapse;width:100%}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--surface-2);text-align:left;padding:0 12px;height:40px;border-bottom:1px solid var(--border)}
+td{padding:0 12px;height:44px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.filterbar{display:flex;align-items:center;gap:8px;padding:12px;border-bottom:1px solid var(--border)}
+.select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--card);font-size:13px;color:var(--text)}
+.input{height:36px;border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--card);display:flex;align-items:center;padding:0 10px;color:var(--text);font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;gap:2px}.seg i{width:14px;height:8px;border-radius:2px;background:var(--border-strong)}.seg i.on{background:var(--primary)}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:var(--muted);font-size:13px;border-top:1px solid var(--border)}
+/* stepper */
+.stepper{display:flex;align-items:center;gap:8px}
+.step{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 10px 0 4px;border-radius:999px;border:1px solid var(--border);font-size:13px;color:var(--text-2);background:var(--card)}
+.step .n{width:20px;height:20px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;background:var(--surface-2);color:var(--muted)}
+.step.done{border-color:transparent;background:var(--success-soft);color:var(--success-text)}.step.done .n{background:var(--success);color:#fff}
+.step.current{border-color:var(--primary);color:var(--info-text);background:var(--surface-blue)}.step.current .n{background:var(--primary);color:#fff}
+.sep{width:16px;height:1px;background:var(--border-strong)}
+/* upload */
+.dropzone{border:2px dashed var(--primary);background:var(--surface-blue);border-radius:var(--r-lg);padding:36px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.thumb{width:40px;height:52px;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:3px;flex:none;display:flex;flex-direction:column;gap:3px;padding:6px 5px}
+.thumb i{display:block;height:2px;background:var(--border-strong);border-radius:1px}
+.thumb.wide{width:52px;height:40px}
+.bar{height:4px;background:var(--surface-2);border-radius:2px}.bar i{display:block;height:4px;background:var(--primary);border-radius:2px}
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border)}
+.tab{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;color:var(--text-2);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .count{font-size:11px;background:var(--surface-2);border-radius:999px;padding:1px 7px;color:var(--muted)}
+/* viewer */
+.viewerbar{display:flex;justify-content:space-between;align-items:center;height:44px;padding:0 12px;border:1px solid var(--border);border-bottom:0;border-radius:var(--r) var(--r) 0 0;background:var(--card);font-size:13px}
+.viewer{background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:flex-start;justify-content:center;padding:24px;overflow:hidden}
+.page{width:520px;background:var(--card);border:1px solid var(--border-strong);box-shadow:var(--shadow-2);padding:36px 40px;font-size:12px;line-height:20px;color:var(--text-2);font-family:Georgia,"Times New Roman",serif}
+.page .hl{background:var(--primary-soft);outline:1px solid var(--primary);border-radius:2px;color:var(--info-text);padding:0 2px}
+.pagestrip{display:flex;gap:8px;padding:10px 12px;border:1px solid var(--border);border-top:0;border-radius:0 0 var(--r) var(--r);background:var(--card);align-items:center}
+/* fields */
+.field{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.field .head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.field .meta{display:flex;gap:8px;align-items:center;margin-top:6px;font-size:12px;color:var(--muted)}
+.field .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.field.collapsed{padding:8px 14px;display:flex;align-items:center;gap:10px}
+.note{border:1px solid var(--primary);background:var(--surface-blue);border-radius:var(--r);padding:10px 12px;margin-top:8px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
+.pair .box{background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px}
+/* assistant */
+.msg{max-width:600px;border-radius:var(--r);padding:12px 14px;font-size:15px;line-height:22px}
+.msg.user{background:var(--surface-blue);border:1px solid var(--primary-soft);align-self:flex-end}
+.msg.ai{background:var(--card);border:1px solid var(--border)}
+.src{border:1px solid var(--border);background:var(--surface-2);border-radius:var(--r-sm);padding:8px 10px;font-size:13px;margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.approval{border:1px solid var(--warning);background:var(--card);border-radius:var(--r);padding:12px 14px;max-width:600px}
+.draft{border:1px solid var(--border);border-radius:var(--r-sm);background:var(--bg);padding:8px 10px;font-style:italic;color:var(--text-2);margin:8px 0}
+.composer{display:flex;gap:8px;align-items:center;border:1px solid var(--border-strong);border-radius:var(--r);background:var(--card);padding:6px 6px 6px 14px;color:var(--muted)}
+.verdict{position:sticky;top:24px}
+</style>
+</helmet>
+<div class="app" style="min-height:900px">
+<aside class="sidebar"><div class="brand"><div class="mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><span>Doc Checker</span></div><div class="nav"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Cases</span></div><div class="nav active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg><span>New intake</span></div><div class="nav"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span>Review queue</span></div><div class="nav"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg><span>Assistant</span></div><div class="nav"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span>System</span></div><div class="nav"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3h-4.4l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9a7 7 0 0 0 2 1.2l.4 2.6h4.4l.4-2.6a7 7 0 0 0 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg><span>Settings</span></div><div class="sidefoot"><div class="avatar">PK</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">Ploy K.</div><div class="muted" style="font-size:12px">Reviewer</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div></aside>
+<div style="display:flex;flex-direction:column;min-width:0">
+<header class="topbar"><div class="crumb"><span>Cases</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg><b>New case</b></div><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search cases<kbd>⌘K</kbd></div><div class="spacer"></div><span class="btn secondary">Save draft</span><span class="btn primary disabled">Continue to classify</span><div class="icbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg></div><div class="avatar">PK</div></header>
+<main class="content">
+
+<div class="pagehead"><div><h1 class="h1">New student case</h1><div class="sub">Upload everything you have. Documents can arrive in any order.</div></div><div class="stepper"><span class="step current"><span class="n">1</span>Upload</span><span class="sep"></span><span class="step"><span class="n">2</span>Classify</span><span class="sep"></span><span class="step"><span class="n">3</span>Review</span><span class="sep"></span><span class="step"><span class="n">4</span>Validate</span></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+  <div class="card compact"><div class="label">Intake</div><div class="row" style="justify-content:space-between;margin-top:4px"><span class="value">Jul 2028</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div></div>
+  <div class="card compact"><div class="label">Submission target</div><div class="value" style="margin-top:4px">30 Jun 2028</div></div>
+  <div class="card compact"><div class="label">Course end date</div><div class="muted" style="margin-top:4px">Set when the course is chosen</div></div>
+</div>
+<div class="dropzone"><div style="font-size:16px;font-weight:600">Drop student documents here</div><div class="t2" style="max-width:52ch">Upload passports, transcripts, degree certificates, English test results and supporting documents.</div><span class="btn primary" style="margin-top:10px">Choose files</span><div class="muted" style="font-size:12px;margin-top:6px">PDF · JPG · PNG · HEIC · up to 20 MB each</div></div>
+<div class="stack">
+  <div class="overline">Uploaded · 3 files · 4 pages</div>
+  <div class="card compact"><div class="row" style="gap:14px"><div class="thumb wide"><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i></div><div style="flex:1;min-width:0"><div class="value">passport-01.jpg</div><div class="muted" style="font-size:12px">1.2 MB · 1 page</div></div><span class="pill ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Processed</span><span style="width:140px">Passport</span><span class="pill ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/></svg>High confidence</span><span class="icbtn sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span></div></div>
+  <div class="card compact"><div class="row" style="gap:14px"><div class="thumb"><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i></div><div style="flex:1;min-width:0"><div class="value">transcript.pdf</div><div class="muted" style="font-size:12px">640 KB · 2 pages</div></div><span class="pill ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Processed</span><span style="width:140px">Transcript</span><span class="pill ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/></svg>High confidence</span><span class="icbtn sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span></div></div>
+  <div class="card compact stripe warn"><div class="row" style="gap:14px"><div class="thumb wide"><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i></div><div style="flex:1;min-width:0"><div class="value">IMG_2291.heic</div><div class="muted" style="font-size:12px">3.4 MB · 1 page</div></div><span class="pill ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Processed</span><span style="width:140px">Needs classification</span><span class="pill warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/></svg>Low confidence</span><span class="icbtn sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span></div><div class="row" style="margin-top:8px;color:var(--warning-text);font-size:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/></svg>Confirm this document's type in the next step.</div></div>
+  <div class="card compact"><div class="row" style="gap:14px"><div style="opacity:.5"><div class="thumb"><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i></div></div><div style="flex:1;min-width:0"><div class="value">degree-cert.pdf</div><div class="muted" style="font-size:12px">Uploading · 62%</div><div class="bar" style="margin-top:6px;width:320px"><i style="width:62%"></i></div></div><span class="icbtn sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></span></div></div>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,38 +1,36 @@
-// File-backed document store, one JSON record plus image bytes per document.
-//
-// Postgres is in docker-compose but nothing writes to it yet; this keeps the
-// review flow real end to end without adding a driver. Swapping it for a
-// table is a change to this file only. Two properties matter more than the
-// backing store and are enforced here regardless of it:
+// Postgres-backed document store. Records are rows; page images are objects
+// in S3 (see blobs.ts) and only their keys are stored here. Two properties
+// matter more than the backing store and are enforced regardless of it:
 //
 //   1. `extracted_json` is written once and frozen on read. An update that
-//      changes it is refused.
+//      changes it is refused here (JSON comparison) and again by a database
+//      trigger (SQLSTATE VDC01).
 //   2. `confirmed_json` is the only thing downstream is allowed to read.
 //
 // Two record kinds: an upload (a group of pages the sorter put together)
 // and a document (one extraction of some pages). A document that came
 // through the sorter points at its upload for its pages; a document from
-// the manual single-type route keeps its own image.
+// the manual single-type route keeps its own image key.
 
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import type { PoolClient } from "pg";
 
 import type {
   Classification,
   ClassifiedType,
+  ConfirmedExtraction,
   DocType,
+  DocumentRequest,
   Extraction,
+  FieldValue,
   ReviewDocument,
   UploadPage,
   UploadRecord,
 } from "../types";
-
-const DATA_DIR = process.env.DATA_DIR ?? path.join(process.cwd(), ".data");
-const DOCS_DIR = path.join(DATA_DIR, "documents");
-const UPLOADS_DIR = path.join(DATA_DIR, "uploads");
+import { deleteObjects, getObject, imageKey, pageKey, putObject } from "./blobs";
+import { IMMUTABLE_SQLSTATE, pgCode, pool, withTx } from "./db";
 
 export class StoreError extends Error {}
 
@@ -55,95 +53,112 @@ function safeId(id: string): string {
   return id;
 }
 
-const recordPath = (id: string) => path.join(DOCS_DIR, `${safeId(id)}.json`);
-const legacyImagePath = (id: string) => path.join(DOCS_DIR, `${safeId(id)}.image`);
-const uploadPath = (id: string) => path.join(UPLOADS_DIR, `${safeId(id)}.json`);
-const pagePath = (id: string, n: number) => path.join(UPLOADS_DIR, `${safeId(id)}.p${n}.image`);
-
-async function writeAtomic(p: string, data: string | Uint8Array): Promise<void> {
-  await fs.mkdir(path.dirname(p), { recursive: true });
-  const tmp = `${p}.tmp`;
-  await fs.writeFile(tmp, data);
-  await fs.rename(tmp, p);
-}
-
-async function readJsonDir<T>(dir: string, parse: (text: string) => T): Promise<T[]> {
-  let names: string[];
-  try {
-    names = await fs.readdir(dir);
-  } catch {
-    return [];
-  }
-  return Promise.all(
-    names.filter((n) => n.endsWith(".json")).map(async (n) => parse(await fs.readFile(path.join(dir, n), "utf8"))),
-  );
-}
+const iso = (d: Date | string): string => (d instanceof Date ? d.toISOString() : new Date(d).toISOString());
+const json = (v: unknown): string => JSON.stringify(v);
 
 // ---------------------------------------------------------------------------
 // Documents
 // ---------------------------------------------------------------------------
 
-function parseRecord(text: string): ReviewDocument {
-  const raw = JSON.parse(text) as Partial<ReviewDocument> & Pick<ReviewDocument, "id" | "extracted_json">;
-  // Records written before the sorter existed lack the newer fields.
-  const doc: ReviewDocument = {
-    ...(raw as ReviewDocument),
-    upload_id: raw.upload_id ?? null,
-    page_count: raw.page_count ?? 1,
-    classification: raw.classification ?? null,
-    superseded_by: raw.superseded_by ?? null,
+const DOC_COLS =
+  "id, case_id, doc_type, filename, content_type, created_at, upload_id, page_count, classification, superseded_by, extracted_json, confirmations, requests, confirmed_json";
+
+interface DocRow {
+  id: string;
+  case_id: string;
+  doc_type: DocType;
+  filename: string;
+  content_type: string;
+  created_at: Date;
+  upload_id: string | null;
+  page_count: number;
+  classification: Classification | null;
+  superseded_by: string | null;
+  extracted_json: Extraction;
+  confirmations: Record<string, FieldValue>;
+  requests: DocumentRequest[];
+  confirmed_json: ConfirmedExtraction | null;
+}
+
+function rowToDoc(r: DocRow): ReviewDocument {
+  return {
+    id: r.id,
+    case_id: r.case_id,
+    doc_type: r.doc_type,
+    filename: r.filename,
+    content_type: r.content_type,
+    created_at: iso(r.created_at),
+    upload_id: r.upload_id,
+    page_count: r.page_count,
+    classification: r.classification,
+    superseded_by: r.superseded_by,
+    extracted_json: deepFreeze(r.extracted_json),
+    confirmations: r.confirmations ?? {},
+    requests: r.requests ?? [],
+    confirmed_json: r.confirmed_json,
   };
-  deepFreeze(doc.extracted_json);
-  return doc;
 }
 
 export async function listDocuments(opts: { includeSuperseded?: boolean } = {}): Promise<ReviewDocument[]> {
-  const docs = await readJsonDir(DOCS_DIR, parseRecord);
-  return docs
-    .filter((d) => opts.includeSuperseded || d.superseded_by === null)
-    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  const { rows } = await pool().query<DocRow>(
+    `SELECT ${DOC_COLS} FROM documents WHERE $1::boolean OR superseded_by IS NULL ORDER BY created_at DESC`,
+    [opts.includeSuperseded ?? false],
+  );
+  return rows.map(rowToDoc);
 }
 
 export async function getDocument(id: string): Promise<ReviewDocument | null> {
-  try {
-    return parseRecord(await fs.readFile(recordPath(id), "utf8"));
-  } catch (e) {
-    if (e instanceof StoreError) throw e;
-    return null;
-  }
+  const { rows } = await pool().query<DocRow>(`SELECT ${DOC_COLS} FROM documents WHERE id = $1`, [safeId(id)]);
+  return rows[0] ? rowToDoc(rows[0]) : null;
+}
+
+interface PageRow {
+  filename: string;
+  content_type: string;
+  object_key: string;
+}
+
+async function pageRows(uploadId: string, page?: number): Promise<PageRow[]> {
+  const { rows } = await pool().query<PageRow>(
+    `SELECT filename, content_type, object_key FROM upload_pages WHERE upload_id = $1 AND ($2::int IS NULL OR page_no = $2) ORDER BY page_no`,
+    [safeId(uploadId), page ?? null],
+  );
+  return rows;
+}
+
+async function imageRow(docId: string): Promise<PageRow> {
+  const { rows } = await pool().query<{ filename: string; content_type: string; image_key: string | null }>(
+    "SELECT filename, content_type, image_key FROM documents WHERE id = $1",
+    [safeId(docId)],
+  );
+  const r = rows[0];
+  if (!r?.image_key) throw new StoreError("The document has no stored image");
+  return { filename: r.filename, content_type: r.content_type, object_key: r.image_key };
+}
+
+async function fetchPages(rows: PageRow[]): Promise<PageBytes[]> {
+  return Promise.all(rows.map(async (r) => ({ filename: r.filename, content_type: r.content_type, bytes: await getObject(r.object_key) })));
 }
 
 /** The pages a document was extracted from, in order. */
 export async function pagesOf(doc: ReviewDocument): Promise<PageBytes[]> {
   if (doc.upload_id) {
-    const up = await getUpload(doc.upload_id);
-    if (!up) throw new StoreError("The document's source upload was not found");
-    return Promise.all(
-      up.pages.map(async (p, n) => ({
-        filename: p.filename,
-        content_type: p.content_type,
-        bytes: new Uint8Array(await fs.readFile(pagePath(up.id, n))),
-      })),
-    );
+    const rows = await pageRows(doc.upload_id);
+    if (rows.length === 0) throw new StoreError("The document's source upload was not found");
+    return fetchPages(rows);
   }
-  return [
-    {
-      filename: doc.filename,
-      content_type: doc.content_type,
-      bytes: new Uint8Array(await fs.readFile(legacyImagePath(doc.id))),
-    },
-  ];
+  return fetchPages([await imageRow(doc.id)]);
 }
 
-export async function getImage(
-  id: string,
-  page = 0,
-): Promise<{ bytes: Uint8Array; content_type: string } | null> {
+/** One page's bytes. Fetches exactly one object, never the whole document. */
+export async function getImage(id: string, page = 0): Promise<{ bytes: Uint8Array; content_type: string } | null> {
   const doc = await getDocument(id);
   if (!doc) return null;
-  const pages = await pagesOf(doc);
-  const p = pages[page];
-  return p ? { bytes: p.bytes, content_type: p.content_type } : null;
+  let row: PageRow | undefined;
+  if (doc.upload_id) row = (await pageRows(doc.upload_id, page))[0];
+  else if (page === 0) row = await imageRow(doc.id);
+  if (!row) return null;
+  return { bytes: await getObject(row.object_key), content_type: row.content_type };
 }
 
 export interface NewDocument {
@@ -178,28 +193,79 @@ export async function createDocument(input: NewDocument): Promise<ReviewDocument
     requests: [],
     confirmed_json: null,
   };
-  if (input.bytes) await writeAtomic(legacyImagePath(doc.id), input.bytes);
-  await writeAtomic(recordPath(doc.id), JSON.stringify(doc, null, 2));
+  const key = input.bytes ? imageKey(doc.case_id, doc.id) : null;
+  if (input.bytes && key) await putObject(key, input.bytes, doc.content_type);
+  try {
+    await pool().query(
+      `INSERT INTO documents (${DOC_COLS}, image_key)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11::jsonb, $12::jsonb, $13::jsonb, $14::jsonb, $15)`,
+      [
+        doc.id,
+        doc.case_id,
+        doc.doc_type,
+        doc.filename,
+        doc.content_type,
+        doc.created_at,
+        doc.upload_id,
+        doc.page_count,
+        doc.classification === null ? null : json(doc.classification),
+        doc.superseded_by,
+        json(doc.extracted_json),
+        json(doc.confirmations),
+        json(doc.requests),
+        null,
+        key,
+      ],
+    );
+  } catch (e) {
+    if (key) await deleteObjects([key]).catch(() => undefined);
+    throw e;
+  }
   return doc;
 }
 
 /**
- * Read-modify-write. The mutator gets a record whose `extracted_json` is
- * frozen, and the result is refused if that part differs from what was read:
- * belt and braces around the one invariant this store exists to keep.
+ * Read-modify-write inside a transaction with a row lock. The mutator gets a
+ * record whose `extracted_json` is frozen; the result is refused if that part
+ * differs from what was read, and `extracted_json` is never in the SET list.
+ * The trigger in db/schema.sql is the third line of defence.
  */
-export async function updateDocument(
-  id: string,
-  mutate: (doc: ReviewDocument) => ReviewDocument,
-): Promise<ReviewDocument | null> {
-  const doc = await getDocument(id);
-  if (!doc) return null;
-  const next = mutate(doc);
-  if (JSON.stringify(next.extracted_json) !== JSON.stringify(doc.extracted_json)) {
-    throw new StoreError("extracted_json is immutable; confirmations are written to confirmed_json only");
+export async function updateDocument(id: string, mutate: (doc: ReviewDocument) => ReviewDocument): Promise<ReviewDocument | null> {
+  safeId(id);
+  try {
+    return await withTx(async (c) => {
+      const { rows } = await c.query<DocRow>(`SELECT ${DOC_COLS} FROM documents WHERE id = $1 FOR UPDATE`, [id]);
+      if (!rows[0]) return null;
+      const doc = rowToDoc(rows[0]);
+      const next = mutate(doc);
+      if (JSON.stringify(next.extracted_json) !== JSON.stringify(doc.extracted_json)) {
+        throw new StoreError("extracted_json is immutable; confirmations are written to confirmed_json only");
+      }
+      await c.query(
+        `UPDATE documents SET case_id = $2, doc_type = $3, filename = $4, content_type = $5, upload_id = $6, page_count = $7,
+           classification = $8::jsonb, superseded_by = $9, confirmations = $10::jsonb, requests = $11::jsonb, confirmed_json = $12::jsonb
+         WHERE id = $1`,
+        [
+          id,
+          next.case_id,
+          next.doc_type,
+          next.filename,
+          next.content_type,
+          next.upload_id,
+          next.page_count,
+          next.classification === null ? null : json(next.classification),
+          next.superseded_by,
+          json(next.confirmations),
+          json(next.requests),
+          next.confirmed_json === null ? null : json(next.confirmed_json),
+        ],
+      );
+      return next;
+    });
+  } catch (e) {
+    if (pgCode(e) === IMMUTABLE_SQLSTATE) throw new StoreError("extracted_json is immutable; confirmations are written to confirmed_json only");
+    throw e;
   }
-  await writeAtomic(recordPath(id), JSON.stringify(next, null, 2));
-  return next;
 }
 
 // ---------------------------------------------------------------------------
@@ -214,57 +280,100 @@ export interface NewUpload {
   held_reason: string | null;
 }
 
+interface UploadRow {
+  id: string;
+  case_id: string;
+  created_at: Date;
+  suggested_type: ClassifiedType;
+  status: UploadRecord["status"];
+  held_reason: string | null;
+  document_id: string | null;
+  pages: UploadPage[];
+}
+
+const UPLOAD_SELECT = `
+  SELECT u.id, u.case_id, u.created_at, u.suggested_type, u.status, u.held_reason, u.document_id,
+         COALESCE(jsonb_agg(jsonb_build_object('filename', p.filename, 'content_type', p.content_type, 'classification', p.classification)
+                            ORDER BY p.page_no) FILTER (WHERE p.upload_id IS NOT NULL), '[]'::jsonb) AS pages
+  FROM uploads u LEFT JOIN upload_pages p ON p.upload_id = u.id`;
+
+function rowToUpload(r: UploadRow): UploadRecord {
+  return {
+    id: r.id,
+    case_id: r.case_id,
+    created_at: iso(r.created_at),
+    pages: r.pages,
+    suggested_type: r.suggested_type,
+    status: r.status,
+    held_reason: r.held_reason,
+    document_id: r.document_id,
+  };
+}
+
 export async function createUpload(input: NewUpload): Promise<UploadRecord> {
   const up: UploadRecord = {
     id: randomUUID(),
     case_id: input.case_id,
     created_at: new Date().toISOString(),
-    pages: input.pages.map(
-      (p): UploadPage => ({ filename: p.filename, content_type: p.content_type, classification: p.classification }),
-    ),
+    pages: input.pages.map((p): UploadPage => ({ filename: p.filename, content_type: p.content_type, classification: p.classification })),
     suggested_type: input.suggested_type,
     status: input.status,
     held_reason: input.held_reason,
     document_id: null,
   };
-  await Promise.all(input.pages.map((p, n) => writeAtomic(pagePath(up.id, n), p.bytes)));
-  await writeAtomic(uploadPath(up.id), JSON.stringify(up, null, 2));
+  const keys = input.pages.map((_, n) => pageKey(up.case_id, up.id, n));
+  await Promise.all(input.pages.map((p, n) => putObject(keys[n], p.bytes, p.content_type)));
+  try {
+    await withTx(async (c) => {
+      await c.query(
+        "INSERT INTO uploads (id, case_id, created_at, suggested_type, status, held_reason, document_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        [up.id, up.case_id, up.created_at, up.suggested_type, up.status, up.held_reason, up.document_id],
+      );
+      for (const [n, p] of input.pages.entries()) {
+        await c.query(
+          "INSERT INTO upload_pages (upload_id, page_no, filename, content_type, classification, object_key, size_bytes) VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7)",
+          [up.id, n, p.filename, p.content_type, json(p.classification), keys[n], p.bytes.byteLength],
+        );
+      }
+    });
+  } catch (e) {
+    await deleteObjects(keys).catch(() => undefined);
+    throw e;
+  }
   return up;
 }
 
 export async function getUpload(id: string): Promise<UploadRecord | null> {
-  try {
-    return JSON.parse(await fs.readFile(uploadPath(id), "utf8")) as UploadRecord;
-  } catch (e) {
-    if (e instanceof StoreError) throw e;
-    return null;
-  }
+  const { rows } = await pool().query<UploadRow>(`${UPLOAD_SELECT} WHERE u.id = $1 GROUP BY u.id`, [safeId(id)]);
+  return rows[0] ? rowToUpload(rows[0]) : null;
 }
 
 export async function listUploads(caseId?: string): Promise<UploadRecord[]> {
-  const ups = await readJsonDir(UPLOADS_DIR, (t) => JSON.parse(t) as UploadRecord);
-  return ups
-    .filter((u) => !caseId || u.case_id === caseId)
-    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const { rows } = await pool().query<UploadRow>(
+    `${UPLOAD_SELECT} WHERE $1::text IS NULL OR u.case_id = $1 GROUP BY u.id ORDER BY u.created_at ASC`,
+    [caseId ?? null],
+  );
+  return rows.map(rowToUpload);
 }
 
-export async function updateUpload(
-  id: string,
-  mutate: (up: UploadRecord) => UploadRecord,
-): Promise<UploadRecord | null> {
-  const up = await getUpload(id);
-  if (!up) return null;
-  const next = mutate(up);
-  await writeAtomic(uploadPath(id), JSON.stringify(next, null, 2));
-  return next;
+export async function updateUpload(id: string, mutate: (up: UploadRecord) => UploadRecord): Promise<UploadRecord | null> {
+  safeId(id);
+  return withTx(async (c: PoolClient) => {
+    await c.query("SELECT id FROM uploads WHERE id = $1 FOR UPDATE", [id]);
+    const { rows } = await c.query<UploadRow>(`${UPLOAD_SELECT} WHERE u.id = $1 GROUP BY u.id`, [id]);
+    if (!rows[0]) return null;
+    const next = mutate(rowToUpload(rows[0]));
+    await c.query("UPDATE uploads SET suggested_type = $2, status = $3, held_reason = $4, document_id = $5 WHERE id = $1", [
+      id,
+      next.suggested_type,
+      next.status,
+      next.held_reason,
+      next.document_id,
+    ]);
+    return next;
+  });
 }
 
 export async function uploadPages(up: UploadRecord): Promise<PageBytes[]> {
-  return Promise.all(
-    up.pages.map(async (p, n) => ({
-      filename: p.filename,
-      content_type: p.content_type,
-      bytes: new Uint8Array(await fs.readFile(pagePath(up.id, n))),
-    })),
-  );
+  return fetchPages(await pageRows(up.id));
 }

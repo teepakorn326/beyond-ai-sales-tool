@@ -207,6 +207,27 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, fixture);
   }
 
+  if (req.method === "POST" && url.pathname === "/embed") {
+    // Deterministic pseudo-embedding: a seeded PRNG per text, L2-normalised.
+    // Similar strings do NOT get similar vectors; this only proves the
+    // plumbing (shape, storage, query), never the ranking.
+    const { texts = [], input_type = "document" } = JSON.parse((await readBody(req)).toString("utf8") || "{}");
+    const DIMS = Number(process.env.EMBEDDING_DIMS ?? 1024);
+    const embeddings = texts.map((t) => {
+      let seed = 2166136261;
+      for (const ch of `${t}`) seed = Math.imul(seed ^ ch.charCodeAt(0), 16777619) >>> 0;
+      const v = [];
+      for (let i = 0; i < DIMS; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        v.push(seed / 4294967296 - 0.5);
+      }
+      const norm = Math.hypot(...v) || 1;
+      return v.map((x) => x / norm);
+    });
+    console.log(`embed ${texts.length} text(s) as ${input_type} -> fake`);
+    return send(res, 200, { embeddings, model: "fake-embed", dims: DIMS });
+  }
+
   if (req.method === "POST" && url.pathname === "/check") {
     const body = await readBody(req);
     try {

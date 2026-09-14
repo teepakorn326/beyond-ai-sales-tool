@@ -32,6 +32,38 @@ If in-region inference is required end to end, note that Bedrock's *Global*
 cross-region inference profile routes compute across many regions. Use an
 in-region or APAC profile instead, and accept the lower quota.
 
+## Data and AI on AWS (the demo)
+
+The application services run anywhere (Docker Compose locally, or Fly as
+below); the data and the models live in `ap-southeast-2`:
+
+| piece | service | why |
+|---|---|---|
+| records + vector index | RDS PostgreSQL 16 with `pgvector` | one database for rows and embeddings; `db/schema.sql` is idempotent |
+| document images | private S3 bucket, Block Public Access, SSE, TLS-only policy | opaque keys, no presigned URLs: the app streams pages itself |
+| Claude | Bedrock, APAC inference profiles | same SDK (`AnthropicBedrock`), IAM instead of API keys, in-region |
+| embeddings | Bedrock `cohere.embed-multilingual-v3` | Thai questions from sales staff; 1024 dimensions |
+
+```bash
+VDC_DB_PASSWORD='...' infra/aws/bootstrap.sh   # bucket, security group, RDS, schema, Bedrock access check
+# paste its output into .env, then:
+./run.sh demo                                   # migrate, compose up, seed policies, import web/.data
+infra/aws/teardown.sh                           # delete everything (no snapshot)
+```
+
+Bedrock model access is a console step the script cannot perform: enable
+Claude Sonnet, Claude Haiku and Cohere Embed Multilingual v3 in the region
+before running the demo. Use the APAC inference profile ids the script
+prints, not the Global profile (see "Why Sydney"). The IAM user for the
+containers gets `infra/aws/iam-policy.json` only: the bucket, the three
+models, nothing else; RDS uses password auth over TLS (`sslmode=require`,
+set `PG_CA_CERT_PATH` to the RDS CA bundle to verify the certificate).
+
+Standing cost while the demo exists is the `db.t4g.micro` instance and the
+bucket; Bedrock and S3 requests are per use. `teardown.sh` removes the
+standing cost. The extractor's daily token budget also counts embedding
+tokens.
+
 ## First-time setup
 
 ```bash

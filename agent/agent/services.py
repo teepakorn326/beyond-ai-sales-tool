@@ -14,6 +14,8 @@ from typing import Any, Protocol
 
 import httpx
 
+from .ranking import Candidate, keyword_score, rank
+
 DATA_DIR = Path(__file__).parent / "data"
 
 # ---------------------------------------------------------------------------
@@ -245,6 +247,10 @@ class Policy:
         return self.effective_to is None or d < date.fromisoformat(self.effective_to)
 
 
+class PolicyIndex(Protocol):
+    def search(self, query: str, country: str, effective_date: str, limit: int = 3) -> list[Policy]: ...
+
+
 class PolicyStore:
     def __init__(self, policies: list[Policy]):
         self.policies = policies
@@ -263,14 +269,12 @@ class PolicyStore:
         in_force = [
             p for p in self.policies if p.country == country and p.in_force_on(effective_date)
         ]
-        q = query.lower()
-        scored = [(sum(1 for k in p.keywords if k.lower() in q), p) for p in in_force]
-        best = max((s for s, _ in scored), default=0)
-        if best == 0:
-            return []
-        # Only the best-matching topic. "IELTS expired" shares the word
+        # Keyword-only here (no embeddings in the file store): only the
+        # best-matching topic is returned. "IELTS expired" shares the word
         # "expired" with the passport policy; citing both would be noise.
-        return [p for score, p in scored if score == best][:limit]
+        by_id = {p.id: p for p in in_force}
+        cands = [Candidate(p.id, keyword_score(query, p.keywords), None) for p in in_force]
+        return [by_id[r.id] for r in rank(cands, limit=limit)]
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +294,10 @@ class Program:
     english_overall_min: float
     english_band_min: float
     synthetic: bool = True
+
+
+class ProgramIndex(Protocol):
+    def search(self, filters: dict[str, Any]) -> list[dict[str, Any]]: ...
 
 
 class ProgramCatalogue:
@@ -361,7 +369,7 @@ class Ledger:
 class Services:
     cases: CaseStore
     rules: RulesClient
-    policies: PolicyStore
-    programs: ProgramCatalogue
+    policies: PolicyIndex
+    programs: ProgramIndex
     ledger: Ledger
     audit: AuditLog

@@ -15,5 +15,7 @@ ENV NODE_ENV=production
 COPY --from=build /app/.next ./.next
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./
+# migrate.mjs / import-data.mjs run with `node scripts/...` inside the container too.
+COPY --from=build /app/scripts ./scripts
 EXPOSE 3000
 CMD ["npm", "start"]

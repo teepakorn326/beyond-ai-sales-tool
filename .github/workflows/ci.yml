@@ -69,3 +69,6 @@ jobs:
       # drift on either side is meant to fail here, in review.
       - run: npm run typecheck
         working-directory: web
+      # Pure-function tests: the PII-free profile builder and the identity hash.
+      - run: npm test
+        working-directory: web

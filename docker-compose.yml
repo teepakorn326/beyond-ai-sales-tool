@@ -1,31 +1,112 @@
+# Local demo. Data and AI live on AWS (RDS + S3 + Bedrock) via .env; the four
+# application services run here. `--profile local` adds a pgvector Postgres
+# and a MinIO bucket for offline work with the fake extractor (./run.sh dev).
 services:
+  rules:
+    build: ./rules
+    ports: ["8081:8081"]
+    # Distroless image: no shell, so no healthcheck; dependants use service_started.
+
+  extractor:
+    build: ./extractor
+    env_file: .env # AWS credentials, AI_PROVIDER, model ids, EMBEDDING_*
+    environment:
+      RULES_SERVICE_URL: http://rules:8081
+      STATE_DIR: /data
+    volumes: ["extractor_state:/data"] # daily budget counter survives restarts
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      retries: 20
+    depends_on:
+      rules: { condition: service_started }
+    ports: ["8000:8000"]
+
+  agent:
+    build: ./agent
+    environment: # explicit, not env_file: the agent never sees S3 or OpenAI keys
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-2}
+      AI_PROVIDER: ${AI_PROVIDER:-bedrock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AGENT_MODEL: ${AGENT_MODEL:-}
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
+      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:-}
+      RULES_SERVICE_URL: http://rules:8081
+      EXTRACTOR_URL: http://extractor:8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/healthz')"]
+      interval: 5s
+      retries: 20
+    depends_on:
+      rules: { condition: service_started }
+      extractor: { condition: service_healthy }
+    ports: ["8090:8090"]
+
+  web:
+    build: ./web
+    environment: # no model credentials reach the web container
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
+      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:-}
+      EXTRACTOR_URL: http://extractor:8000
+      RULES_SERVICE_URL: http://rules:8081
+      AGENT_URL: http://agent:8090
+      S3_BUCKET: ${S3_BUCKET:?set S3_BUCKET in .env}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-false}
+      S3_KMS_KEY_ID: ${S3_KMS_KEY_ID:-}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      IDENTITY_HASH_SALT: ${IDENTITY_HASH_SALT:-}
+      SIMILAR_MIN_SIMILARITY: ${SIMILAR_MIN_SIMILARITY:-0.80}
+    depends_on:
+      extractor: { condition: service_healthy }
+      agent: { condition: service_healthy }
+    ports: ["3000:3000"]
+
+  # ---- offline profile: Postgres + object store on this machine ----------
   db:
-    image: postgres:16-alpine
+    profiles: ["local"]
+    image: pgvector/pgvector:pg16
     environment:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
       POSTGRES_DB: app
-    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app"]
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
       interval: 5s
-      retries: 5
+      retries: 10
+    ports: ["5432:5432"]
 
-  rules:
-    build: ./rules
-    ports: ["8081:8081"]
-
-  extractor:
-    build: ./extractor
-    env_file: .env
-    depends_on:
-      db: { condition: service_healthy }
-      rules: { condition: service_started }
-    ports: ["8000:8000"]
-
-  web:
-    build: ./web
+  minio:
+    profiles: ["local"]
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
     environment:
-      EXTRACTOR_URL: http://extractor:8000
-    depends_on: [extractor]
-    ports: ["3000:3000"]
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio-local-secret
+    volumes: ["miniodata:/data"]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      retries: 20
+    ports: ["9000:9000", "9001:9001"]
+
+  minio-init:
+    profiles: ["local"]
+    image: quay.io/minio/mc:latest
+    depends_on:
+      minio: { condition: service_healthy }
+    entrypoint: >
+      /bin/sh -c "mc alias set local http://minio:9000 minio minio-local-secret &&
+      (mc mb --ignore-existing local/vdc-documents) && mc anonymous set none local/vdc-documents"
+
+volumes:
+  extractor_state: {}
+  pgdata: {}
+  miniodata: {}

@@ -256,7 +256,8 @@ export interface UploadRecord {
   created_at: string;
   pages: UploadPage[];
   suggested_type: ClassifiedType;
-  status: "held" | "extracted";
+  /** dismissed: a person decided the pages are not one of the required documents. */
+  status: "held" | "extracted" | "dismissed";
   held_reason: string | null;
   document_id: string | null;
 }

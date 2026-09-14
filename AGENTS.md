@@ -77,6 +77,16 @@ silently.
 **The passport is authoritative.** When a name disagrees across documents, the
 fix is reissuing the other document, never editing the stored value to match.
 
+**Never embed or store PII beyond the document store.** Text that goes to an
+embedding model is built by `web/app/lib/profile.ts` from an allowlist
+(destination, intake, programme id, institution, qualification, field, test
+type and a half-band score bucket). Names, dates of birth, passport or report
+numbers never enter an embedding, a log, or the `case_profiles` table.
+Duplicate-student detection compares a salted SHA-256 `identity_hash`
+(`IDENTITY_HASH_SALT`), never the values. `web/app/lib/profile.test.ts`
+asserts the fixture's name and date of birth are absent from the profile;
+keep that test when adding a field.
+
 ---
 
 ## Product guardrails
@@ -150,8 +160,17 @@ suite can show what each one costs.
 
 ## Dependencies
 
-Currently and deliberately absent: LangChain, any vector database, any
-fine-tuning, Kubernetes.
+Currently and deliberately absent: LangChain, any fine-tuning, Kubernetes.
+
+Vector search lives in pgvector inside the one Postgres the stack already
+had (decision September 2026): no separate vector-database service and no
+embedding framework. Only `extractor/app/embeddings.py` calls an embedding
+model, and only `extractor/app/client.py` and `agent/agent/llm.py` call
+Claude; both go through Bedrock in `ap-southeast-2` by default
+(`AI_PROVIDER`, `EMBEDDING_PROVIDER`) and can be switched to the direct
+APIs by env. Document images live in a private S3 bucket
+(`web/app/lib/blobs.ts`), never in Postgres; the browser never gets a bucket
+URL.
 
 The extraction task is "structured input in, typed JSON out", which the SDK
 does in about fifteen lines. A framework here would add debugging surface
@@ -167,7 +186,10 @@ the intended choice and may be used without LangChain.
 make synth        # generate the synthetic corpus
 make rules-test   # Go suite, no API key needed
 make eval         # extraction accuracy vs thresholds
-make up           # full stack locally
+make web-test     # profile builder + identity hash, pure functions
+make demo         # AWS demo: migrate RDS, compose up, seed the policy index
+make db-migrate   # apply db/schema.sql to DATABASE_URL (idempotent)
+./run.sh dev      # offline: local pgvector + MinIO in Docker, fake extractor
 ```
 
 `make rules-test` and the scoring tests run offline. Run them before proposing
@@ -179,8 +201,11 @@ without being asked.
 ## Where things are
 
 ```
+db/schema.sql               Postgres schema: tables, pgvector indexes, the extracted_json trigger
+infra/aws/bootstrap.sh      creates the bucket, RDS instance and checks Bedrock access
 extractor/app/schemas.py    Pydantic models — the contract with the model
 extractor/app/prompts.py    the extraction prompt
+extractor/app/embeddings.py the only embedding-model caller (POST /embed)
 extractor/app/guards.py     daily token budget, demo-mode upload restriction
 extractor/synth/generate.py synthetic corpus + ground truth
 extractor/evals/            scoring, thresholds, tests

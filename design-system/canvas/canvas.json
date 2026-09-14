@@ -1,0 +1,95 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "1 \u00b7 Cases",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "NewCase.dc.html",
+      "title": "2 \u00b7 New case \u00b7 Upload",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "Classify.dc.html",
+      "title": "3 \u00b7 Classification review",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "DocumentReview.dc.html",
+      "title": "4 \u00b7 Document review",
+      "x": 4680,
+      "y": 0,
+      "w": 1440,
+      "h": 1120
+    },
+    {
+      "file": "CaseOverview.dc.html",
+      "title": "5 \u00b7 Case overview (Direction A \u00b7 Ledger)",
+      "x": 0,
+      "y": 1320,
+      "w": 1440,
+      "h": 1320
+    },
+    {
+      "file": "Assistant.dc.html",
+      "title": "6 \u00b7 Case assistant",
+      "x": 1560,
+      "y": 1320,
+      "w": 1440,
+      "h": 1120
+    },
+    {
+      "file": "ReviewQueue.dc.html",
+      "title": "7 \u00b7 Review queue",
+      "x": 3120,
+      "y": 1320,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "DirectionB.dc.html",
+      "title": "Alt \u00b7 Case overview in Direction B \u00b7 Registry",
+      "x": 0,
+      "y": 2840,
+      "w": 1440,
+      "h": 1320
+    },
+    {
+      "file": "DirectionC.dc.html",
+      "title": "Alt \u00b7 Case overview in Direction C \u00b7 Clinic",
+      "x": 1560,
+      "y": 2840,
+      "w": 1440,
+      "h": 1380
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-directions",
+      "x": 0,
+      "y": 2770,
+      "w": 520,
+      "text": "Alternates for comparison only. Same Case overview screen restyled.\nB \u00b7 Registry: dark navy sidebar, 4px radius, monospace verdicts, denser rows.\nC \u00b7 Clinic: light-blue ground, borderless 12px cards, tinted status fills, 15px body.\nDirection A (recommended) is every screen in the rows above."
+    },
+    {
+      "id": "note-review",
+      "x": 4680,
+      "y": -130,
+      "w": 480,
+      "text": "Document review: sidebar collapses to 64px on this route. Left 58% viewer, right 42% fields. The only batch action is the high-confidence group; medium and low fields confirm one by one."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

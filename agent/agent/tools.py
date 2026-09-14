@@ -152,7 +152,8 @@ def build_tools(svc: Services) -> list[Tool]:
         ),
         Tool(
             "search_programs",
-            "Search the programme catalogue. Filters: country, level, field, max_english_overall.",
+            "Search the programme catalogue. Filters: country, level, field, max_english_overall; "
+            "optional query for a free-text description of what the student wants to study.",
             _obj(
                 {
                     "filters": {
@@ -162,6 +163,7 @@ def build_tools(svc: Services) -> list[Tool]:
                             "level": {"type": "string"},
                             "field": {"type": "string"},
                             "max_english_overall": {"type": "number"},
+                            "query": {"type": "string"},
                         },
                         "additionalProperties": False,
                     }

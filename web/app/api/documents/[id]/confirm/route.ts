@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 import { applyConfirmations, ReviewError, type FieldConfirmation } from "../../../../lib/review";
+import { refreshCaseProfile } from "../../../../lib/similar";
 import { StoreError, updateDocument } from "../../../../lib/store";
 import type { FieldValue } from "../../../../types";
 
@@ -42,6 +43,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const doc = await updateDocument(id, (d) => applyConfirmations(d, fields, now));
     if (!doc) return NextResponse.json({ error: "Document not found" }, { status: 404 });
+    // The PII-free case profile is rebuilt after the response is sent; a
+    // slow or failing embedding call never blocks a confirm.
+    if (doc.confirmed_json) after(() => refreshCaseProfile(doc.case_id));
     return NextResponse.json(doc);
   } catch (e) {
     if (e instanceof ReviewError || e instanceof StoreError) {

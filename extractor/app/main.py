@@ -1,9 +1,18 @@
 import httpx
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
-from .client import classify, extract
+from .client import billable, classify, extract
 from .config import settings
+from .embeddings import (
+    MAX_CHARS,
+    MAX_TEXTS,
+    EmbeddingUnavailable,
+    InputType,
+    credentials_present,
+    embed,
+)
 from .guards import BudgetExceeded, DemoModeViolation, assert_demo_safe, budget
 from .images import UnsupportedFile, to_pages
 from .logging import emit, timed
@@ -23,6 +32,20 @@ async def guard_handler(_, exc: Exception):
 async def unsupported_handler(_, exc: Exception):
     emit("unsupported_file")
     return JSONResponse({"error": str(exc)}, status_code=415)
+
+
+@app.exception_handler(EmbeddingUnavailable)
+async def embedding_unavailable_handler(_, exc: Exception):
+    emit("embedding_unavailable")
+    return JSONResponse({"error": str(exc)}, status_code=503)
+
+
+def _model_credentials_present() -> bool:
+    if settings.ai_provider == "bedrock":
+        import boto3
+
+        return boto3.Session(region_name=settings.aws_region).get_credentials() is not None
+    return bool(settings.api_key)
 
 
 async def read_pages(files: list[UploadFile]) -> list[list[tuple[str, str]]]:
@@ -55,7 +78,14 @@ async def readyz() -> dict:
 
     return {
         "status": "ready",
+        "provider": settings.ai_provider,
+        "region": settings.aws_region if settings.ai_provider == "bedrock" else None,
         "model": settings.model,
+        "model_credentials": _model_credentials_present(),
+        "embedding_provider": settings.embedding_provider,
+        "embedding_model": settings.embedding_model,
+        "embedding_dims": settings.embedding_dims,
+        "embedding_credentials": credentials_present(),
         "prompt_version": settings.prompt_version,
         "tokens_remaining_today": budget.remaining(),
     }
@@ -75,12 +105,14 @@ async def extract_endpoint(doc_type: str, files: list[UploadFile]):
         result, usage = extract(doc_type, images)
         log["input_tokens"] = usage.input_tokens
         log["output_tokens"] = usage.output_tokens
+        log["cache_creation_input_tokens"] = getattr(usage, "cache_creation_input_tokens", 0) or 0
+        log["cache_read_input_tokens"] = getattr(usage, "cache_read_input_tokens", 0) or 0
         log["unreadable_fields"] = len(result.fields_unreadable)
         log["low_confidence_fields"] = sum(
             1 for v in result.field_confidence.values() if v == "low"
         )
 
-    budget.record(usage.input_tokens + usage.output_tokens)
+    budget.record(billable(usage))
     return result.model_dump(mode="json")
 
 
@@ -102,7 +134,7 @@ async def classify_endpoint(files: list[UploadFile]):
             page_results = []
             for page in pages:
                 c, usage = classify(page)
-                spent += usage.input_tokens + usage.output_tokens
+                spent += billable(usage)
                 page_results.append(c.model_dump(mode="json"))
             results.append({"index": index, "filename": f.filename, "pages": page_results})
         log["tokens"] = spent
@@ -110,6 +142,39 @@ async def classify_endpoint(files: list[UploadFile]):
 
     budget.record(spent)
     return {"files": results}
+
+
+class EmbedRequest(BaseModel):
+    texts: list[str] = Field(min_length=1, max_length=MAX_TEXTS)
+    # Cohere embeds stored rows and live queries differently; the caller says
+    # which side of the search it is on.
+    input_type: InputType = "document"
+
+
+class EmbedResponse(BaseModel):
+    embeddings: list[list[float]]
+    model: str
+    dims: int
+
+
+@app.post("/embed", response_model=EmbedResponse)
+def embed_endpoint(req: EmbedRequest) -> EmbedResponse:
+    """Embeddings for the web tier and the agent.
+
+    Contract with callers: the texts are PII-free (policy text, programme
+    descriptions, case profiles built from an allowlist). This endpoint logs
+    counts only and charges the tokens to the same daily budget as extraction.
+    """
+    budget.check()
+    if any(len(t) > MAX_CHARS for t in req.texts):
+        raise HTTPException(413, f"a text is longer than {MAX_CHARS} characters")
+
+    with timed("embed", texts=len(req.texts), chars=sum(len(t) for t in req.texts), input_type=req.input_type) as log:
+        r = embed(req.texts, req.input_type)
+        log["input_tokens"] = r.prompt_tokens
+
+    budget.record(r.prompt_tokens)
+    return EmbedResponse(embeddings=r.vectors, model=r.model, dims=r.dims)
 
 
 @app.post("/check")

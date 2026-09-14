@@ -47,7 +47,12 @@ class AnthropicModel:
         import anthropic
 
         self.model = model
-        self.client = client or anthropic.Anthropic()
+        if client is not None:
+            self.client = client
+        elif settings.ai_provider == "bedrock":
+            self.client = anthropic.AnthropicBedrock(aws_region=settings.aws_region)
+        else:
+            self.client = anthropic.Anthropic()
 
     def turn(
         self, *, system: str, messages: list[dict[str, Any]], tools: list[dict[str, Any]] | None

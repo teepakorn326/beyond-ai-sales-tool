@@ -1,11 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { getDocument, StoreError } from "../../lib/store";
-import ReviewScreen from "./review-screen";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReviewPage({ params }: { params: Promise<{ id: string }> }) {
+/** Old review URL. Documents now live under their case. */
+export default async function LegacyReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let doc;
   try {
@@ -15,5 +15,5 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
     throw e;
   }
   if (!doc) notFound();
-  return <ReviewScreen initial={doc} />;
+  redirect(`/cases/${encodeURIComponent(doc.case_id)}/review/${doc.id}`);
 }

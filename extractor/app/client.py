@@ -7,7 +7,37 @@ from .config import settings
 from .prompts import build_classify_system, build_system
 from .schemas import SCHEMA_FOR, Classification, ExtractionMeta
 
-_client = anthropic.Anthropic(api_key=settings.api_key) if settings.api_key else None
+
+def _make_client():
+    """Bedrock keeps inference inside AWS_REGION under IAM; the direct API
+    needs a key. Same SDK, same Messages API either way."""
+    if settings.ai_provider == "bedrock":
+        return anthropic.AnthropicBedrock(aws_region=settings.aws_region)
+    return anthropic.Anthropic(api_key=settings.api_key) if settings.api_key else None
+
+
+_client = _make_client()
+
+NO_CLIENT = (
+    "no model client: set AI_PROVIDER=bedrock with AWS credentials, "
+    "or AI_PROVIDER=anthropic with ANTHROPIC_API_KEY"
+)
+
+
+def _system(text: str) -> list[dict[str, Any]]:
+    """The system prompt (instructions + JSON schema) is identical for every
+    document of a type, so it is marked cacheable. Below the model's minimum
+    cacheable size the marker is ignored, which is harmless."""
+    return [{"type": "text", "text": text, "cache_control": {"type": "ephemeral"}}]
+
+
+def billable(usage: Any) -> int:
+    """Tokens to charge against the daily budget: everything the call read or
+    wrote, cache creation and cache reads included."""
+    return sum(
+        int(getattr(usage, k, 0) or 0)
+        for k in ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")
+    )
 
 
 def _blocks(images_b64: list[tuple[str, str]]) -> list[dict[str, Any]]:
@@ -24,7 +54,7 @@ def _blocks(images_b64: list[tuple[str, str]]) -> list[dict[str, Any]]:
 
 def extract(doc_type: str, images_b64: list[tuple[str, str]]) -> tuple[ExtractionMeta, Any]:
     if _client is None:
-        raise RuntimeError("ANTHROPIC_API_KEY is not set")
+        raise RuntimeError(NO_CLIENT)
 
     model_cls = SCHEMA_FOR[doc_type]
     schema_json = json.dumps(model_cls.model_json_schema(), ensure_ascii=False, indent=2)
@@ -32,7 +62,7 @@ def extract(doc_type: str, images_b64: list[tuple[str, str]]) -> tuple[Extractio
     msg = _client.messages.create(
         model=settings.model,
         max_tokens=2048,
-        system=build_system(doc_type, schema_json),
+        system=_system(build_system(doc_type, schema_json)),
         messages=[
             {
                 "role": "user",
@@ -58,13 +88,13 @@ def classify(image_b64: tuple[str, str]) -> tuple[Classification, Any]:
     """One page in, one Classification out. Runs on the small model: the
     question is "what is this", not "what does it say"."""
     if _client is None:
-        raise RuntimeError("ANTHROPIC_API_KEY is not set")
+        raise RuntimeError(NO_CLIENT)
 
     schema_json = json.dumps(Classification.model_json_schema(), ensure_ascii=False, indent=2)
     msg = _client.messages.create(
         model=settings.classify_model,
         max_tokens=256,
-        system=build_classify_system(schema_json),
+        system=_system(build_classify_system(schema_json)),
         messages=[
             {
                 "role": "user",

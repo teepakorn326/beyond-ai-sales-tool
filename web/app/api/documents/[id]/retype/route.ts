@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 
 import { extractDocument, ExtractorError } from "../../../../lib/extractor";
 import { isDocType } from "../../../../lib/intake";
+import { refreshCaseProfile } from "../../../../lib/similar";
 import {
   createDocument,
   getDocument,
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
     await updateDocument(old.id, (d) => ({ ...d, superseded_by: doc.id }));
     if (old.upload_id) await updateUpload(old.upload_id, (u) => ({ ...u, document_id: doc.id }));
+    if (old.confirmed_json) after(() => refreshCaseProfile(old.case_id));
     return NextResponse.json(doc, { status: 201 });
   } catch (e) {
     if (e instanceof ExtractorError) return NextResponse.json({ error: e.message }, { status: e.status });

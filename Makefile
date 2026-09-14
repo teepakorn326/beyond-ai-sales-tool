@@ -1,4 +1,4 @@
-.PHONY: help synth eval rules-test agent-test agent-eval web-typecheck up fmt
+.PHONY: help synth eval rules-test agent-test agent-eval web-typecheck web-test up demo db-migrate db-shell seed fmt
 
 help:
 	@grep -E '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "};{printf "  %-14s %s\n",$$1,$$2}'
@@ -21,8 +21,23 @@ agent-eval:   ## agent eval report (trajectory 3 numbers + guardrail 30/30), no 
 web-typecheck: ## review UI: strict TypeScript against the hand-mirrored types
 	cd web && npm install --no-audit --no-fund && npm run typecheck
 
-up:           ## run the whole stack locally
+web-test:     ## review UI: pure-function tests (profile builder, identity hash)
+	cd web && npm test
+
+up:           ## run the app services against the AWS data/AI in .env
 	docker compose up --build
+
+demo:         ## full demo: migrate, compose up, seed policies, import web/.data
+	./run.sh demo
+
+db-migrate:   ## apply db/schema.sql to DATABASE_URL (idempotent)
+	cd web && node scripts/migrate.mjs
+
+db-shell:     ## psql against DATABASE_URL (via docker, no local psql needed)
+	docker run --rm -it postgres:16-alpine psql "$$DATABASE_URL"
+
+seed:         ## embed and upsert the policy and programme index
+	docker compose exec -T agent python -m agent.seed
 
 fmt:
 	cd extractor && ruff format . && ruff check --fix .

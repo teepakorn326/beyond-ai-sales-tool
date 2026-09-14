@@ -45,6 +45,28 @@ default `../web/.data`) and case metadata (country, course end, submission
 target) from `<WEB_DATA_DIR>/cases.json`. It needs the Go rules service on
 `RULES_SERVICE_URL`.
 
+## Serving and storage
+
+```bash
+DATABASE_URL=... EXTRACTOR_URL=... python -m agent.seed     # embed + upsert policies.json / programs.json
+uvicorn agent.api:app --port 8090                           # /ask, /resume, /healthz
+```
+
+With `DATABASE_URL` set, `wiring.build_services` selects the Postgres stores
+in `pg.py`: cases and documents come from the tables the web tier writes
+(only `confirmed_json`, the suspicious-content flag and requests leave the
+documents table), and `search_policy` becomes hybrid. Ranking is in
+`ranking.py`, shared by both stores: the date-window filter still runs
+first, keyword score decides the group exactly as before, cosine similarity
+(Cohere Embed Multilingual v3 via the extractor's `/embed`) breaks ties and
+takes over only when no keyword matches. Without `DATABASE_URL` the file
+store and the JSON policies are used, which is what the tests run against.
+Claude goes through Bedrock when `AI_PROVIDER=bedrock` (the default).
+
+`/resume` needs the same process that answered `/ask`: the interrupt lives in
+an in-memory checkpointer. After a restart it answers 404 and the UI says to
+ask again.
+
 ## Evals
 
 Two suites under `evals/`, both run by `pytest` and by `python -m evals.run`.

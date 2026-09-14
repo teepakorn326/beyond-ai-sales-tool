@@ -18,16 +18,8 @@ import sys
 from .config import settings
 from .graph import Agent, Deps
 from .llm import AnthropicModel, ScriptedModel
-from .services import (
-    AuditLog,
-    FileCaseStore,
-    HttpRulesClient,
-    Ledger,
-    PolicyStore,
-    ProgramCatalogue,
-    Services,
-)
 from .tools import build_registry
+from .wiring import build_services
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -39,14 +31,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--data", default=settings.web_data_dir, help="web tier .data directory")
     args = ap.parse_args(argv)
 
-    svc = Services(
-        cases=FileCaseStore(args.data),
-        rules=HttpRulesClient(settings.rules_url),
-        policies=PolicyStore.load_default(),
-        programs=ProgramCatalogue.load_default(),
-        ledger=Ledger(),
-        audit=AuditLog(emit=args.audit),
-    )
+    svc = build_services(audit_emit=args.audit, data_dir=args.data)
     model = ScriptedModel([]) if args.no_model else AnthropicModel()
     agent = Agent(Deps(model=model, registry=build_registry(svc), services=svc))
 

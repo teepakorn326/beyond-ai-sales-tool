@@ -219,8 +219,13 @@ grouped by risk and the grouping is enforced by code: read-only tools run
 freely, reversible internal writes run freely but are always audit-logged,
 and anything that reaches the student refuses to run without an approval
 bound to that exact call, which only a human `interrupt()` can produce. The
-guardrail node runs first and is deterministic. Details in
-[agent/README.md](agent/README.md).
+guardrail node runs first and is deterministic. Under Docker Compose the
+agent runs as an HTTP service (`agent/agent/api.py`, `/ask` and `/resume`)
+that the web tier calls; pending approvals are LangGraph interrupts held in
+memory, so they belong to one agent process. Policy and programme search
+read from Postgres with hybrid ranking: keyword match first, cosine
+similarity from Cohere embeddings as a tie-break and as the fallback for
+paraphrased questions. Details in [agent/README.md](agent/README.md).
 
 ### Batch intake
 
@@ -269,9 +274,30 @@ that is uploaded but not fully reviewed contributes nothing and the rule that
 needed it reports pending.
 
 To exercise the UI without an API key, `node web/dev/fake-extractor.mjs`
-stands in for the extractor with fixtures covering every review path, and
-forwards `/check` to the Go service. Records live under `web/.data/` until the
-Postgres wiring lands.
+stands in for the extractor with fixtures covering every review path (and a
+deterministic `/embed`), and forwards `/check` to the Go service.
+
+Records are rows in Postgres (`db/schema.sql`): documents, uploads, case
+metadata, and a `case_profiles` table with pgvector embeddings. Page images
+are objects in a private S3 bucket under opaque keys; the database stores the
+key only and the browser only ever sees `/api/documents/[id]/image`. A
+database trigger refuses any update to `extracted_json`, on top of the check
+in `web/app/lib/store.ts`. `./run.sh dev` starts a local pgvector Postgres and
+MinIO in Docker so none of this needs an AWS account offline.
+
+### Similar cases and duplicate students
+
+When a document becomes fully confirmed, the web tier rebuilds a PII-free
+"case profile" for the case (`web/app/lib/profile.ts`): destination, intake,
+programme, institution, qualification, field of study, and the English test
+type with a half-band score bucket. That string is embedded through the
+extractor and stored in `case_profiles`; the case overview lists the nearest
+other cases by cosine similarity, showing the profile text as the
+explanation. Names, dates of birth, scores and dates are never in it.
+
+Duplicate students are found exactly, not semantically: a salted SHA-256 of
+the confirmed passport surname, given name and date of birth. Two cases with
+the same hash show an alert naming only the case ids.
 
 ## Deployed
 
@@ -303,9 +329,12 @@ processed.
 Python 3.12 · FastAPI · Pydantic · Anthropic SDK — extraction, evals, synthesis
 Go 1.23 — rules engine, table-driven tests, no model dependency
 TypeScript · Next.js 15 — review interface
+PostgreSQL 16 + pgvector — records, policy index, case profiles (RDS in production)
+Amazon S3 — document images (private bucket, opaque keys)
+Amazon Bedrock — Claude for extraction and the agent, Cohere Embed Multilingual v3 for embeddings
 Postgres · Docker Compose · GitHub Actions
 
-Deliberately not used: no agent framework, no vector database, no fine-tuning.
+Deliberately not used: no agent framework, no separate vector-database service (pgvector in the one Postgres), no fine-tuning.
 The task is "structured input in, typed JSON out", which the SDK does directly.
 An abstraction layer here would add debugging surface without adding capability.
 # beyond-ai-sales-tool
