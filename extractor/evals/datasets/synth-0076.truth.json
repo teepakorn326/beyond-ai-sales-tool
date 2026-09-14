@@ -1,37 +1,47 @@
 {
   "id": "synth-0076",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-04-23",
+    "course_end_date": "2028-08-09"
   },
   "passport": {
-    "given_name_latin": "BOONMEE",
-    "surname_latin": "SRISAWAT",
-    "date_of_birth": "2003-11-24",
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2006-11-30",
     "nationality": "THA",
-    "passport_expiry": "2028-12-14",
+    "passport_expiry": "2033-09-04",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "BOONMEE SRISAWAT",
-    "date_of_birth": "2003-11-24",
+    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
+    "date_of_birth": "2006-11-30",
     "institution_name": "Chulalongkorn University",
     "qualification": "Mathayom 6",
-    "gpa": 2.23,
+    "gpa": 3.83,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-12-27",
+    "date_graduated": "2024-07-19",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "BOONMEE SRISAWAT",
-    "date_of_birth": "2003-11-24",
-    "test_date": "2024-03-07",
-    "overall": 6.0,
+    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
+    "date_of_birth": "2006-11-30",
+    "test_date": "2026-05-30",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 6.5,
+    "listening": 7.0,
+    "reading": 7.5,
     "writing": 5.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

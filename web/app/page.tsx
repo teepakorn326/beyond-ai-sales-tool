@@ -1,79 +1,88 @@
-import type { CheckResult } from "./types";
+import Link from "next/link";
 
-const TONE: Record<string, string> = {
-  pass: "#2F6B4F",
-  warn: "#9C6410",
-  block: "#933731",
-};
+import HeldUpload from "./held-upload";
+import { DOC_TYPE_LABELS, requiredFields } from "./lib/review";
+import { listDocuments, listUploads } from "./lib/store";
+import UploadForm from "./upload-form";
+import type { ReviewDocument, UploadRecord } from "./types";
 
-async function runCheck(): Promise<CheckResult | null> {
-  const base = process.env.EXTRACTOR_URL ?? "http://localhost:8000";
-  try {
-    const res = await fetch(`${base}/check`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(DEMO_CASE),
-      cache: "no-store",
-    });
-    return res.ok ? await res.json() : null;
-  } catch {
-    return null;
-  }
+export const dynamic = "force-dynamic";
+
+const TONE = { pass: "#2F6B4F", warn: "#9C6410", muted: "#7C8D95", line: "#D8DEDC" };
+
+function progress(doc: ReviewDocument): { done: number; total: number } {
+  const required = requiredFields(doc.extracted_json);
+  const done = Object.keys(doc.confirmations).filter((k) => required.includes(k)).length;
+  return { done, total: required.length };
 }
 
-const DEMO_CASE = {
-  case_id: "STU-2026-0413",
-  passport_name: "SUWANNA JAROENSUK",
-  passport_dob: "2004-03-14",
-  passport_expiry: "2029-11-02",
-  transcript_name: "SUVANNA JAROENSUK",
-  transcript_dob: "2004-03-14",
-  english_test_date: "2024-04-20",
-  course_end_date: "2029-06-30",
-  submission_target: "2026-10-31",
-};
-
 export default async function Page() {
-  const result = await runCheck();
+  const [docs, uploads] = await Promise.all([listDocuments(), listUploads()]);
+  const held = uploads.filter((u) => u.status === "held");
+
+  const byCase = new Map<string, { docs: ReviewDocument[]; held: UploadRecord[] }>();
+  const bucket = (id: string) => {
+    const b = byCase.get(id) ?? { docs: [], held: [] };
+    byCase.set(id, b);
+    return b;
+  };
+  for (const d of docs) bucket(d.case_id).docs.push(d);
+  for (const u of held) bucket(u.case_id).held.push(u);
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24, fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 20 }}>ตรวจเอกสารก่อนยื่น</h1>
+    <main style={{ maxWidth: 860, margin: "0 auto", padding: 24, fontFamily: "system-ui" }}>
+      <h1 style={{ fontSize: 20, marginBottom: 4 }}>Pre-submission document check</h1>
+      <p style={{ color: TONE.muted, fontSize: 14, marginTop: 0 }}>
+        Upload every document for a case at once. The system sorts and reads them; a reviewer confirms each field before the case is checked for consistency.
+      </p>
 
-      {!result && (
-        <p style={{ color: "#933731" }}>
-          rules service ไม่ตอบ — รัน <code>docker compose up</code> ก่อน
-        </p>
-      )}
+      <UploadForm />
 
-      {result && (
-        <>
-          <p style={{ color: result.can_proceed ? TONE.pass : TONE.block }}>
-            {result.can_proceed ? "ตรวจผ่านครบทุกข้อ" : "ยังยื่นไม่ได้"}
-            <span style={{ color: "#7C8D95", marginLeft: 8, fontSize: 13 }}>
-              {result.ruleset_version}
-            </span>
-          </p>
+      {byCase.size === 0 && <p style={{ color: TONE.muted, fontSize: 14 }}>No documents yet</p>}
 
-          {result.checks.map((c) => (
-            <div
-              key={c.rule_id}
-              style={{
-                borderLeft: `3px solid ${TONE[c.verdict]}`,
-                padding: "10px 14px",
-                marginBottom: 8,
-                background: "#fff",
-              }}
-            >
-              <div style={{ fontSize: 12, color: "#7C8D95" }}>
-                {c.rule_id} · {c.status}
-              </div>
-              <div style={{ fontWeight: 600 }}>{c.label}</div>
-              <div style={{ fontSize: 14, color: "#4A5D66" }}>{c.detail}</div>
-            </div>
-          ))}
-        </>
-      )}
+      {[...byCase.entries()].map(([caseId, { docs: caseDocs, held: caseHeld }]) => (
+        <section
+          key={caseId}
+          style={{ background: "#fff", border: `1px solid ${TONE.line}`, borderRadius: 6, padding: 16, marginTop: 16 }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <h2 style={{ fontSize: 16, margin: 0 }}>Case {caseId}</h2>
+            <Link href={`/case?case_id=${encodeURIComponent(caseId)}`} style={{ fontSize: 14 }}>
+              Check the whole case →
+            </Link>
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: "12px 0 0" }}>
+            {caseHeld.map((u) => (
+              <HeldUpload key={u.id} upload={u} />
+            ))}
+            {caseDocs.map((d) => {
+              const { done, total } = progress(d);
+              const confirmed = d.confirmed_json !== null;
+              return (
+                <li
+                  key={d.id}
+                  style={{ display: "flex", gap: 12, alignItems: "center", padding: "8px 0", borderTop: `1px solid ${TONE.line}`, fontSize: 14 }}
+                >
+                  <span style={{ width: 150, fontWeight: 600 }}>{DOC_TYPE_LABELS[d.doc_type]}</span>
+                  <span style={{ flex: 1, color: TONE.muted }}>
+                    {d.filename}
+                    {d.page_count > 1 ? ` (${d.page_count} pages)` : ""}
+                    {d.classification && (
+                      <span style={{ fontSize: 12 }}>
+                        {" "}· type assigned by the system, {d.classification.confidence} confidence
+                      </span>
+                    )}
+                  </span>
+                  <span style={{ color: confirmed ? TONE.pass : TONE.warn }}>
+                    {confirmed ? "Fully confirmed" : `${done}/${total} confirmed`}
+                  </span>
+                  <Link href={`/review/${d.id}`}>Review →</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
     </main>
   );
 }

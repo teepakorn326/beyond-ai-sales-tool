@@ -1,37 +1,47 @@
 {
   "id": "synth-0010",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": false,
     "no_grad_day": true,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-11-22",
+    "course_end_date": "2029-02-16"
   },
   "passport": {
-    "given_name_latin": "PHANIT",
+    "given_name_latin": "BOONMEE",
     "surname_latin": "SOMBAT",
-    "date_of_birth": "2004-07-22",
+    "date_of_birth": "2007-02-22",
     "nationality": "THA",
-    "passport_expiry": "2033-03-26",
+    "passport_expiry": "2030-04-18",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "PANIT SOMBAT",
-    "date_of_birth": "2004-07-22",
-    "institution_name": "Kasetsart University",
+    "name_latin_as_printed": "BOONMEE SOMBAT",
+    "date_of_birth": "2007-02-22",
+    "institution_name": "Bangkok Christian College",
     "qualification": "Mathayom 6",
-    "gpa": 2.36,
+    "gpa": 2.59,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-05-12",
+    "date_graduated": "2024-09-25",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "PHANIT SOMBAT",
-    "date_of_birth": "2004-07-22",
-    "test_date": "2025-05-07",
-    "overall": 6.0,
-    "writing": 5.0,
+    "name_latin_as_printed": "BOONMEE SOMBAT",
+    "date_of_birth": "2007-02-22",
+    "test_date": "2025-11-09",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.5,
+    "listening": 7.0,
+    "reading": 7.0,
+    "writing": 5.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

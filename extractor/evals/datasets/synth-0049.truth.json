@@ -2,36 +2,46 @@
   "id": "synth-0049",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
-    "no_grad_day": true,
-    "faint_gpa": false
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-01-18",
+    "course_end_date": "2028-05-24"
   },
   "passport": {
     "given_name_latin": "BOONMEE",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2007-03-26",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2007-05-09",
     "nationality": "THA",
-    "passport_expiry": "2032-02-06",
+    "passport_expiry": "2032-02-22",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "BOONMEE WICHAIKUL",
-    "date_of_birth": "2007-03-26",
-    "institution_name": "Satri Witthaya School",
+    "name_latin_as_printed": "BOONMEE JAROENSUK",
+    "date_of_birth": "2007-05-09",
+    "institution_name": "Chulalongkorn University",
     "qualification": "Mathayom 6",
-    "gpa": 3.22,
+    "gpa": 3.38,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-01-02",
-    "date_source_calendar": "BE"
+    "date_graduated": "2024-12-05",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "BOONMEE WICHAIKUL",
-    "date_of_birth": "2007-03-26",
-    "test_date": "2024-03-03",
-    "overall": 5.5,
-    "writing": 5.0,
+    "name_latin_as_printed": "BOONMEE JAROENSUK",
+    "date_of_birth": "2007-05-09",
+    "test_date": "2025-08-28",
+    "test_centre": "British Council Bangkok",
+    "overall": 7.0,
+    "listening": 7.5,
+    "reading": 6.5,
+    "writing": 6.0,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

@@ -1,37 +1,47 @@
 {
   "id": "synth-0068",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2026-11-13",
+    "course_end_date": "2029-03-01"
   },
   "passport": {
-    "given_name_latin": "PHANIT",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2000-11-30",
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "SOMBAT",
+    "date_of_birth": "2002-07-12",
     "nationality": "THA",
-    "passport_expiry": "2028-07-22",
+    "passport_expiry": "2027-07-09",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "PANIT PONGSAKORN",
-    "date_of_birth": "2000-11-30",
-    "institution_name": "Kasetsart University",
-    "qualification": "Bachelor of Science",
-    "gpa": 3.17,
+    "name_latin_as_printed": "NATTAPONG SOMBAT",
+    "date_of_birth": "2002-07-12",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Mathayom 6",
+    "gpa": 2.1,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-01-18",
+    "date_graduated": "2024-11-03",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "PHANIT PONGSAKORN",
-    "date_of_birth": "2000-11-30",
-    "test_date": "2024-08-17",
-    "overall": 5.5,
-    "writing": 5.0,
+    "name_latin_as_printed": "NATTAPONG SOMBAT",
+    "date_of_birth": "2002-07-12",
+    "test_date": "2024-05-27",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 6.5,
+    "listening": 7.5,
+    "reading": 5.0,
+    "writing": 6.5,
+    "speaking": 6.0,
     "report_number_present": true
   }
 }

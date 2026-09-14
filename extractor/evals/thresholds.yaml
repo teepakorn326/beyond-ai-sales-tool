@@ -21,6 +21,17 @@ english_test:
   overall: 0.98
   writing: 0.98
 
+# Page classification, scored per true type so a classifier that calls every
+# page "transcript" cannot hide behind the majority class. A misclassified
+# page is extracted with the wrong schema and comes back confidently wrong,
+# which is why the floors are high, and "other" matters as much as the rest:
+# a fee receipt must not become a transcript.
+classification:
+  passport: 0.98
+  transcript: 0.98
+  english_test: 0.98
+  other: 0.95
+
 # Buddhist-era conversion is tracked separately because it fails silently:
 # a wrong year still parses as a valid date.
 special:

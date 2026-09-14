@@ -2,36 +2,46 @@
   "id": "synth-0047",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": true
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-10-03",
+    "course_end_date": "2028-01-24"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2004-04-09",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2006-12-26",
     "nationality": "THA",
-    "passport_expiry": "2033-04-18",
+    "passport_expiry": "2033-01-08",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2004-04-09",
-    "institution_name": "Chulalongkorn University",
-    "qualification": "Mathayom 6",
-    "gpa": 3.23,
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2006-12-26",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.36,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-04-22",
-    "date_source_calendar": "BE"
+    "date_graduated": "2025-04-13",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2004-04-09",
-    "test_date": "2025-10-15",
-    "overall": 7.0,
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2006-12-26",
+    "test_date": "2025-07-21",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.0,
+    "listening": 5.0,
+    "reading": 7.0,
     "writing": 6.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

@@ -2,36 +2,46 @@
   "id": "synth-0029",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-11-14",
+    "course_end_date": "2028-07-21"
   },
   "passport": {
-    "given_name_latin": "KANYARAT",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2002-05-18",
+    "given_name_latin": "SIREE",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2004-03-15",
     "nationality": "THA",
-    "passport_expiry": "2033-03-26",
+    "passport_expiry": "2028-09-08",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT PONGSAKORN",
-    "date_of_birth": "2002-05-18",
-    "institution_name": "Satri Witthaya School",
-    "qualification": "Mathayom 6",
-    "gpa": 2.16,
+    "name_latin_as_printed": "SIREE RATTANAKUL",
+    "date_of_birth": "2004-03-15",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.21,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-12-29",
-    "date_source_calendar": "BE"
+    "date_graduated": "2025-03-17",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT PONGSAKORN",
-    "date_of_birth": "2002-05-18",
-    "test_date": "2026-03-27",
-    "overall": 7.0,
-    "writing": 6.5,
+    "name_latin_as_printed": "SIREE RATTANAKUL",
+    "date_of_birth": "2004-03-15",
+    "test_date": "2024-12-15",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 6.0,
+    "listening": 5.5,
+    "reading": 6.5,
+    "writing": 7.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

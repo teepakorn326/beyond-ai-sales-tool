@@ -1,37 +1,47 @@
 {
   "id": "synth-0046",
   "flags": {
-    "name_differs": true,
-    "buddhist_era": false,
+    "name_differs": false,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-03-17",
+    "course_end_date": "2028-06-07"
   },
   "passport": {
-    "given_name_latin": "BOONMEE",
+    "given_name_latin": "CHAIYA",
     "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2005-08-17",
+    "date_of_birth": "2004-03-11",
     "nationality": "THA",
-    "passport_expiry": "2028-07-30",
+    "passport_expiry": "2031-10-01",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "BOONMI WICHAIKUL",
-    "date_of_birth": "2005-08-17",
-    "institution_name": "Bangkok Christian College",
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2004-03-11",
+    "institution_name": "Kasetsart University",
     "qualification": "Bachelor of Science",
-    "gpa": 3.84,
+    "gpa": 3.17,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-10-06",
-    "date_source_calendar": "AD"
+    "date_graduated": "2024-08-29",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "BOONMEE WICHAIKUL",
-    "date_of_birth": "2005-08-17",
-    "test_date": "2026-04-30",
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2004-03-11",
+    "test_date": "2027-02-06",
+    "test_centre": "British Council Bangkok",
     "overall": 6.5,
-    "writing": 5.0,
+    "listening": 6.0,
+    "reading": 6.5,
+    "writing": 7.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

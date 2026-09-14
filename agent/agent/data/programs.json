@@ -1,0 +1,57 @@
+[
+  {
+    "id": "PRG-AU-001",
+    "institution": "Harbour Institute of Technology (fictional)",
+    "country": "AU",
+    "level": "bachelor",
+    "field": "Information Technology",
+    "intakes": ["February", "July"],
+    "duration_months": 36,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5
+  },
+  {
+    "id": "PRG-AU-002",
+    "institution": "Southern Cross Business College (fictional)",
+    "country": "AU",
+    "level": "diploma",
+    "field": "Business",
+    "intakes": ["January", "April", "July", "October"],
+    "duration_months": 18,
+    "english_overall_min": 5.5,
+    "english_band_min": 5.0
+  },
+  {
+    "id": "PRG-AU-003",
+    "institution": "Harbour Institute of Technology (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Data Science",
+    "intakes": ["February", "July"],
+    "duration_months": 24,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0
+  },
+  {
+    "id": "PRG-NZ-001",
+    "institution": "Aotearoa Polytechnic (fictional)",
+    "country": "NZ",
+    "level": "bachelor",
+    "field": "Nursing",
+    "intakes": ["February"],
+    "duration_months": 36,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.5
+  },
+  {
+    "id": "PRG-NZ-002",
+    "institution": "Aotearoa Polytechnic (fictional)",
+    "country": "NZ",
+    "level": "diploma",
+    "field": "Hospitality",
+    "intakes": ["February", "July"],
+    "duration_months": 12,
+    "english_overall_min": 5.5,
+    "english_band_min": 5.0
+  }
+]

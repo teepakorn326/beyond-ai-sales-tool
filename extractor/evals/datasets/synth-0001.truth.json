@@ -2,36 +2,46 @@
   "id": "synth-0001",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-09-23",
+    "course_end_date": "2029-01-05"
   },
   "passport": {
-    "given_name_latin": "KANYARAT",
-    "surname_latin": "SOMBAT",
-    "date_of_birth": "2003-10-10",
+    "given_name_latin": "BOONMEE",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2002-12-19",
     "nationality": "THA",
-    "passport_expiry": "2027-06-27",
+    "passport_expiry": "2033-10-13",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2003-10-10",
-    "institution_name": "Kasetsart University",
-    "qualification": "Mathayom 6",
-    "gpa": 3.85,
+    "name_latin_as_printed": "BOONMEE WICHAIKUL",
+    "date_of_birth": "2002-12-19",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.87,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-04-14",
-    "date_source_calendar": "BE"
+    "date_graduated": "2026-04-06",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2003-10-10",
-    "test_date": "2024-04-04",
-    "overall": 7.0,
+    "name_latin_as_printed": "BOONMEE WICHAIKUL",
+    "date_of_birth": "2002-12-19",
+    "test_date": "2025-02-09",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.0,
+    "listening": 5.5,
+    "reading": 7.5,
     "writing": 5.0,
+    "speaking": 5.0,
     "report_number_present": true
   }
 }

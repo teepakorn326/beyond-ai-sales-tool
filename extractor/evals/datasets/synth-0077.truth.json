@@ -1,37 +1,47 @@
 {
   "id": "synth-0077",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-04-25",
+    "course_end_date": "2030-04-19"
   },
   "passport": {
     "given_name_latin": "KANYARAT",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2000-12-19",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2006-03-03",
     "nationality": "THA",
-    "passport_expiry": "2031-08-05",
+    "passport_expiry": "2033-01-10",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT WICHAIKUL",
-    "date_of_birth": "2000-12-19",
-    "institution_name": "Chiang Mai University",
+    "name_latin_as_printed": "KANYARAT SRISAWAT",
+    "date_of_birth": "2006-03-03",
+    "institution_name": "Kasetsart University",
     "qualification": "Mathayom 6",
-    "gpa": 2.24,
+    "gpa": 2.85,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-03-08",
+    "date_graduated": "2024-01-28",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT WICHAIKUL",
-    "date_of_birth": "2000-12-19",
-    "test_date": "2024-11-12",
-    "overall": 6.5,
-    "writing": 5.0,
+    "name_latin_as_printed": "KANYARAT SRISAWAT",
+    "date_of_birth": "2006-03-03",
+    "test_date": "2026-08-10",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 7.0,
+    "listening": 7.5,
+    "reading": 5.5,
+    "writing": 7.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

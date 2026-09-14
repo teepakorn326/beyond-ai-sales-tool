@@ -2,36 +2,46 @@
   "id": "synth-0014",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": true,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2026-10-08",
+    "course_end_date": "2029-01-16"
   },
   "passport": {
-    "given_name_latin": "SIREE",
+    "given_name_latin": "SUWANNA",
     "surname_latin": "SOMBAT",
-    "date_of_birth": "2004-12-14",
+    "date_of_birth": "2005-04-30",
     "nationality": "THA",
-    "passport_expiry": "2028-09-02",
+    "passport_expiry": "2029-10-30",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE SOMBAT",
-    "date_of_birth": "2004-12-14",
+    "name_latin_as_printed": "SUWANNA SOMBAT",
+    "date_of_birth": "2005-04-30",
     "institution_name": "Chiang Mai University",
-    "qualification": "Mathayom 6",
-    "gpa": 3.59,
+    "qualification": "Bachelor of Science",
+    "gpa": 2.1,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-07-18",
-    "date_source_calendar": "BE"
+    "date_graduated": "2025-09-17",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE SOMBAT",
-    "date_of_birth": "2004-12-14",
-    "test_date": "2025-12-23",
-    "overall": 6.0,
-    "writing": 6.5,
+    "name_latin_as_printed": "SUWANNA SOMBAT",
+    "date_of_birth": "2005-04-30",
+    "test_date": "2023-09-19",
+    "test_centre": "IDP Bangkok",
+    "overall": 5.5,
+    "listening": 5.0,
+    "reading": 6.5,
+    "writing": 5.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

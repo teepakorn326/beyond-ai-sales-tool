@@ -40,3 +40,32 @@ jobs:
 
       - run: ruff check .
         working-directory: extractor
+
+  agent:
+    name: agent layer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e ".[dev]"
+        working-directory: agent
+      # Scripted model: the suite never calls the API.
+      - run: pytest -v
+        working-directory: agent
+      - run: ruff check .
+        working-directory: agent
+
+  web:
+    name: review ui typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm install
+        working-directory: web
+      # types.ts mirrors the Go structs and the Pydantic schemas by hand; a
+      # drift on either side is meant to fail here, in review.
+      - run: npm run typecheck
+        working-directory: web

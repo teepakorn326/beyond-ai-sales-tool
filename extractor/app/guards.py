@@ -49,8 +49,8 @@ class Budget:
     def check(self) -> None:
         if self.remaining() <= 0:
             raise BudgetExceeded(
-                "งบ token ของวันนี้หมดแล้ว เดโมสาธารณะจำกัดค่าใช้จ่ายต่อวันไว้ "
-                "ลองใหม่พรุ่งนี้ หรือรันในเครื่องด้วย API key ของคุณเอง"
+                "Today's token budget is used up. The public demo caps daily spend; "
+                "try again tomorrow or run it locally with your own API key."
             )
 
     def record(self, tokens: int) -> None:
@@ -73,11 +73,11 @@ def assert_demo_safe(filename: str, size_bytes: int) -> None:
 
     if not filename.startswith("synth-"):
         raise DemoModeViolation(
-            "เดโมสาธารณะรับเฉพาะเอกสารสังเคราะห์ที่ขึ้นต้นด้วย synth- "
-            "ระบบนี้ออกแบบสำหรับข้อมูลจริงของผู้เยาว์ จึงไม่รับอัปโหลดเอกสารจริงบน URL สาธารณะ"
+            "The public demo accepts only synthetic documents whose filename starts with synth-. "
+            "This system handles minors' real records, so real documents are not accepted on a public URL."
         )
     if size_bytes > 5 * 1024 * 1024:
-        raise DemoModeViolation("ไฟล์ใหญ่เกิน 5MB")
+        raise DemoModeViolation("File is larger than 5MB")
 
 
 budget = Budget(limit=int(os.getenv("DAILY_TOKEN_BUDGET", "400000")))

@@ -1,37 +1,47 @@
 {
   "id": "synth-0026",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-01-01",
+    "course_end_date": "2029-12-27"
   },
   "passport": {
-    "given_name_latin": "PHANIT",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2007-11-05",
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2006-10-29",
     "nationality": "THA",
-    "passport_expiry": "2028-11-01",
+    "passport_expiry": "2035-09-16",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "PHANIT PONGSAKORN",
-    "date_of_birth": "2007-11-05",
-    "institution_name": "Chulalongkorn University",
+    "name_latin_as_printed": "SUVANNA SRISAWAT",
+    "date_of_birth": "2006-10-29",
+    "institution_name": "Kasetsart University",
     "qualification": "Mathayom 6",
-    "gpa": 3.1,
+    "gpa": 2.73,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-09-19",
+    "date_graduated": "2026-03-29",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "PHANIT PONGSAKORN",
-    "date_of_birth": "2007-11-05",
-    "test_date": "2026-02-24",
+    "name_latin_as_printed": "SUWANNA SRISAWAT",
+    "date_of_birth": "2006-10-29",
+    "test_date": "2026-03-28",
+    "test_centre": "IDP Bangkok",
     "overall": 6.5,
+    "listening": 6.5,
+    "reading": 6.5,
     "writing": 6.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

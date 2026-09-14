@@ -1,37 +1,47 @@
 {
   "id": "synth-0036",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-06-10",
+    "course_end_date": "2029-01-15"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2000-06-13",
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2007-04-20",
     "nationality": "THA",
-    "passport_expiry": "2030-11-26",
+    "passport_expiry": "2033-12-11",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIRI WICHAIKUL",
-    "date_of_birth": "2000-06-13",
-    "institution_name": "Kasetsart University",
+    "name_latin_as_printed": "THANAWAT SRISAWAT",
+    "date_of_birth": "2007-04-20",
+    "institution_name": "Bangkok Christian College",
     "qualification": "Bachelor of Science",
-    "gpa": 2.61,
+    "gpa": 2.13,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-02-20",
+    "date_graduated": "2026-06-17",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2000-06-13",
-    "test_date": "2026-02-13",
-    "overall": 5.5,
-    "writing": 5.5,
+    "name_latin_as_printed": "THANAWAT SRISAWAT",
+    "date_of_birth": "2007-04-20",
+    "test_date": "2026-03-30",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.5,
+    "listening": 6.0,
+    "reading": 7.5,
+    "writing": 6.0,
+    "speaking": 6.0,
     "report_number_present": true
   }
 }

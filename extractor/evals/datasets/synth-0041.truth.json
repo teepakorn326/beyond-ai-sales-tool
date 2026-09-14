@@ -1,37 +1,47 @@
 {
   "id": "synth-0041",
   "flags": {
-    "name_differs": false,
-    "buddhist_era": false,
+    "name_differs": true,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-01-10",
+    "course_end_date": "2028-07-30"
   },
   "passport": {
-    "given_name_latin": "THANAWAT",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2001-02-12",
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "SOMBAT",
+    "date_of_birth": "2001-02-25",
     "nationality": "THA",
-    "passport_expiry": "2028-09-24",
+    "passport_expiry": "2033-07-27",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "THANAWAT PONGSAKORN",
-    "date_of_birth": "2001-02-12",
-    "institution_name": "Satri Witthaya School",
+    "name_latin_as_printed": "KANYARAT SOMBAT",
+    "date_of_birth": "2001-02-25",
+    "institution_name": "Chulalongkorn University",
     "qualification": "Bachelor of Science",
-    "gpa": 3.48,
+    "gpa": 3.12,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-06-22",
-    "date_source_calendar": "AD"
+    "date_graduated": "2024-05-29",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "THANAWAT PONGSAKORN",
-    "date_of_birth": "2001-02-12",
-    "test_date": "2026-07-21",
-    "overall": 6.5,
-    "writing": 6.0,
+    "name_latin_as_printed": "KANYARAT SOMBAT",
+    "date_of_birth": "2001-02-25",
+    "test_date": "2026-08-09",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 6.0,
+    "listening": 6.5,
+    "reading": 5.0,
+    "writing": 6.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

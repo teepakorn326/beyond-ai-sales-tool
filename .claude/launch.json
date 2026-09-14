@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "web", "run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "fake-extractor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["web/dev/fake-extractor.mjs"],
+      "port": 8000
+    },
+    {
+      "name": "rules",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd rules && go run ."],
+      "port": 8081
+    }
+  ]
+}

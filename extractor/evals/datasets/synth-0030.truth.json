@@ -1,37 +1,47 @@
 {
   "id": "synth-0030",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-03-16",
+    "course_end_date": "2029-07-22"
   },
   "passport": {
-    "given_name_latin": "PHANIT",
+    "given_name_latin": "SIREE",
     "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2007-10-04",
+    "date_of_birth": "2003-05-22",
     "nationality": "THA",
-    "passport_expiry": "2033-03-04",
+    "passport_expiry": "2035-10-10",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "PHANIT PONGSAKORN",
-    "date_of_birth": "2007-10-04",
-    "institution_name": "Chulalongkorn University",
+    "name_latin_as_printed": "SIRI PONGSAKORN",
+    "date_of_birth": "2003-05-22",
+    "institution_name": "Bangkok Christian College",
     "qualification": "Bachelor of Science",
-    "gpa": 3.34,
+    "gpa": 3.29,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-09-06",
+    "date_graduated": "2024-07-22",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "PHANIT PONGSAKORN",
-    "date_of_birth": "2007-10-04",
-    "test_date": "2024-11-09",
-    "overall": 6.5,
+    "name_latin_as_printed": "SIREE PONGSAKORN",
+    "date_of_birth": "2003-05-22",
+    "test_date": "2024-10-20",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.0,
+    "listening": 5.5,
+    "reading": 7.0,
     "writing": 6.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

@@ -49,6 +49,31 @@ def test_field_accuracy_meets_thresholds(doc_type):
     assert not failures, "\n".join(failures)
 
 
+def test_page_classification_meets_thresholds_per_true_type():
+    """Scored per true type, not overall: a classifier that answers
+    "transcript" to everything would score 25% here and 75% on a corpus that
+    happens to be mostly transcripts."""
+    preds = json.loads(PREDS.read_text()).get("classification", {})
+    if not preds:
+        pytest.skip("no classification predictions — run `python -m evals.run --classify`")
+    thresholds = yaml.safe_load((HERE / "thresholds.yaml").read_text())["classification"]
+
+    per_type: dict[str, list[bool]] = {}
+    for key, p in preds.items():
+        true_type = key.rsplit(".", 1)[1]
+        per_type.setdefault(true_type, []).append(p.get("doc_type") == true_type)
+
+    print("\nclassification")
+    failures = []
+    for t, floor in thresholds.items():
+        hits = per_type.get(t, [])
+        acc = sum(hits) / len(hits) if hits else 0.0
+        print(f"  {t:26} {acc:.3f}  ({sum(hits)}/{len(hits)})")
+        if acc < floor:
+            failures.append(f"{t}: {acc:.3f} < {floor}")
+    assert not failures, "\n".join(failures)
+
+
 def test_buddhist_era_years_are_converted():
     """A BE year that survives extraction still parses as a valid date, so it
     never raises — it just quietly makes the student 543 years old."""

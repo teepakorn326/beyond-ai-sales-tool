@@ -3,35 +3,45 @@
   "flags": {
     "name_differs": true,
     "buddhist_era": false,
-    "no_grad_day": false,
-    "faint_gpa": false
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2026-10-05",
+    "course_end_date": "2028-09-22"
   },
   "passport": {
-    "given_name_latin": "THANAWAT",
-    "surname_latin": "JAROENSUK",
-    "date_of_birth": "2002-08-19",
+    "given_name_latin": "BOONMEE",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2000-03-07",
     "nationality": "THA",
-    "passport_expiry": "2032-06-27",
+    "passport_expiry": "2034-12-21",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "TANAWAT JAROENSUK",
-    "date_of_birth": "2002-08-19",
-    "institution_name": "Chiang Mai University",
+    "name_latin_as_printed": "BOONMI RATTANAKUL",
+    "date_of_birth": "2000-03-07",
+    "institution_name": "Satri Witthaya School",
     "qualification": "Bachelor of Science",
-    "gpa": 3.78,
+    "gpa": 2.07,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-06-27",
+    "date_graduated": "2024-12-31",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "THANAWAT JAROENSUK",
-    "date_of_birth": "2002-08-19",
-    "test_date": "2025-07-04",
+    "name_latin_as_printed": "BOONMEE RATTANAKUL",
+    "date_of_birth": "2000-03-07",
+    "test_date": "2023-10-14",
+    "test_centre": "IDP Bangkok",
     "overall": 6.5,
-    "writing": 5.0,
+    "listening": 6.5,
+    "reading": 7.5,
+    "writing": 5.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

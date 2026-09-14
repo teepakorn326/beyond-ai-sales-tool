@@ -6,3 +6,9 @@ node_modules/
 .next/
 extractor/evals/predictions.json
 extractor/evals/datasets/*.html
+web/.data/
+out/
+.ruff_cache/
+*.egg-info/
+web/next-env.d.ts
+web/tsconfig.tsbuildinfo

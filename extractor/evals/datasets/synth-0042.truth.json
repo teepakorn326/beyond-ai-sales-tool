@@ -1,37 +1,47 @@
 {
   "id": "synth-0042",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": false,
-    "no_grad_day": false,
-    "faint_gpa": false
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-09-22",
+    "course_end_date": "2028-12-25"
   },
   "passport": {
-    "given_name_latin": "NATTAPONG",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2000-05-27",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "PONGSAKORN",
+    "date_of_birth": "2006-07-05",
     "nationality": "THA",
-    "passport_expiry": "2031-12-23",
+    "passport_expiry": "2034-10-11",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
-    "date_of_birth": "2000-05-27",
+    "name_latin_as_printed": "CHAIYA PONGSAKORN",
+    "date_of_birth": "2006-07-05",
     "institution_name": "Bangkok Christian College",
-    "qualification": "Bachelor of Science",
-    "gpa": 3.72,
+    "qualification": "Mathayom 6",
+    "gpa": 2.47,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-09-24",
+    "date_graduated": "2025-07-21",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
-    "date_of_birth": "2000-05-27",
-    "test_date": "2024-03-11",
-    "overall": 5.5,
-    "writing": 6.0,
+    "name_latin_as_printed": "CHAIYA PONGSAKORN",
+    "date_of_birth": "2006-07-05",
+    "test_date": "2026-06-09",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 6.5,
+    "listening": 6.0,
+    "reading": 7.5,
+    "writing": 5.0,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

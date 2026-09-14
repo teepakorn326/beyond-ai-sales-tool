@@ -2,36 +2,46 @@
   "id": "synth-0031",
   "flags": {
     "name_differs": false,
-    "buddhist_era": false,
-    "no_grad_day": false,
-    "faint_gpa": false
+    "buddhist_era": true,
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-03-07",
+    "course_end_date": "2029-08-31"
   },
   "passport": {
-    "given_name_latin": "KANYARAT",
+    "given_name_latin": "PHANIT",
     "surname_latin": "SOMBAT",
-    "date_of_birth": "2002-06-05",
+    "date_of_birth": "2006-01-18",
     "nationality": "THA",
-    "passport_expiry": "2028-02-16",
+    "passport_expiry": "2033-06-27",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2002-06-05",
+    "name_latin_as_printed": "PHANIT SOMBAT",
+    "date_of_birth": "2006-01-18",
     "institution_name": "Bangkok Christian College",
     "qualification": "Bachelor of Science",
-    "gpa": 2.43,
+    "gpa": 3.84,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-01-26",
-    "date_source_calendar": "AD"
+    "date_graduated": "2026-06-16",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2002-06-05",
-    "test_date": "2025-05-10",
-    "overall": 6.0,
-    "writing": 6.0,
+    "name_latin_as_printed": "PHANIT SOMBAT",
+    "date_of_birth": "2006-01-18",
+    "test_date": "2026-03-26",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 5.5,
+    "listening": 5.0,
+    "reading": 6.5,
+    "writing": 5.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

@@ -1,37 +1,47 @@
 {
   "id": "synth-0037",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": false,
-    "no_grad_day": false,
-    "faint_gpa": false
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-02-07",
+    "course_end_date": "2029-02-01"
   },
   "passport": {
-    "given_name_latin": "THANAWAT",
-    "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2002-10-30",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2000-07-29",
     "nationality": "THA",
-    "passport_expiry": "2033-01-31",
+    "passport_expiry": "2034-11-30",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "THANAWAT RATTANAKUL",
-    "date_of_birth": "2002-10-30",
-    "institution_name": "Kasetsart University",
-    "qualification": "Bachelor of Science",
-    "gpa": 2.1,
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2000-07-29",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Mathayom 6",
+    "gpa": 3.16,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-11-27",
+    "date_graduated": "2024-10-21",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "THANAWAT RATTANAKUL",
-    "date_of_birth": "2002-10-30",
-    "test_date": "2024-04-28",
-    "overall": 6.5,
-    "writing": 6.5,
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2000-07-29",
+    "test_date": "2025-07-13",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 7.5,
+    "listening": 7.0,
+    "reading": 7.0,
+    "writing": 7.5,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

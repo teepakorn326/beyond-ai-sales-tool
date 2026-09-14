@@ -1,37 +1,47 @@
 {
   "id": "synth-0092",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-04-22",
+    "course_end_date": "2028-04-29"
   },
   "passport": {
-    "given_name_latin": "NATTAPONG",
-    "surname_latin": "SRISAWAT",
-    "date_of_birth": "2002-11-19",
+    "given_name_latin": "SIREE",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2000-12-19",
     "nationality": "THA",
-    "passport_expiry": "2027-12-22",
+    "passport_expiry": "2035-11-02",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2002-11-19",
-    "institution_name": "Kasetsart University",
-    "qualification": "Mathayom 6",
-    "gpa": 2.35,
+    "name_latin_as_printed": "SIREE RATTANAKUL",
+    "date_of_birth": "2000-12-19",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.05,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-01-05",
+    "date_graduated": "2025-07-20",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2002-11-19",
-    "test_date": "2024-07-09",
-    "overall": 6.0,
-    "writing": 6.5,
+    "name_latin_as_printed": "SIREE RATTANAKUL",
+    "date_of_birth": "2000-12-19",
+    "test_date": "2026-10-04",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 6.5,
+    "listening": 7.5,
+    "reading": 7.0,
+    "writing": 5.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

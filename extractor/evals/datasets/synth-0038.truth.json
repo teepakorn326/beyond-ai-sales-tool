@@ -2,36 +2,46 @@
   "id": "synth-0038",
   "flags": {
     "name_differs": false,
-    "buddhist_era": false,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-03-12",
+    "course_end_date": "2029-05-14"
   },
   "passport": {
-    "given_name_latin": "NATTAPONG",
-    "surname_latin": "SRISAWAT",
-    "date_of_birth": "2005-06-08",
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2005-12-12",
     "nationality": "THA",
-    "passport_expiry": "2033-03-06",
+    "passport_expiry": "2030-10-13",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2005-06-08",
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2005-12-12",
     "institution_name": "Satri Witthaya School",
     "qualification": "Bachelor of Science",
-    "gpa": 2.18,
+    "gpa": 2.84,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-05-04",
-    "date_source_calendar": "AD"
+    "date_graduated": "2024-08-08",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2005-06-08",
-    "test_date": "2024-01-30",
-    "overall": 5.5,
-    "writing": 6.5,
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2005-12-12",
+    "test_date": "2026-10-04",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 6.5,
+    "listening": 5.5,
+    "reading": 7.0,
+    "writing": 5.0,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

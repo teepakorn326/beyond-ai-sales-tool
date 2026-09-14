@@ -1,37 +1,47 @@
 {
   "id": "synth-0052",
   "flags": {
-    "name_differs": true,
-    "buddhist_era": true,
+    "name_differs": false,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-02-01",
+    "course_end_date": "2028-07-11"
   },
   "passport": {
-    "given_name_latin": "NATTAPONG",
-    "surname_latin": "JAROENSUK",
-    "date_of_birth": "2000-11-26",
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2006-01-29",
     "nationality": "THA",
-    "passport_expiry": "2032-02-02",
+    "passport_expiry": "2032-05-04",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "NATTAPONG JAROENSUK",
-    "date_of_birth": "2000-11-26",
+    "name_latin_as_printed": "THANAWAT WICHAIKUL",
+    "date_of_birth": "2006-01-29",
     "institution_name": "Chiang Mai University",
     "qualification": "Bachelor of Science",
-    "gpa": 2.19,
+    "gpa": 2.89,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-11-25",
-    "date_source_calendar": "BE"
+    "date_graduated": "2024-10-24",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "NATTAPONG JAROENSUK",
-    "date_of_birth": "2000-11-26",
-    "test_date": "2025-09-14",
-    "overall": 5.5,
-    "writing": 5.5,
+    "name_latin_as_printed": "THANAWAT WICHAIKUL",
+    "date_of_birth": "2006-01-29",
+    "test_date": "2024-11-21",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.0,
+    "listening": 5.5,
+    "reading": 6.5,
+    "writing": 5.0,
+    "speaking": 6.0,
     "report_number_present": true
   }
 }

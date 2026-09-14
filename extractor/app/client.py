@@ -4,8 +4,8 @@ from typing import Any
 import anthropic
 
 from .config import settings
-from .prompts import build_system
-from .schemas import SCHEMA_FOR, ExtractionMeta
+from .prompts import build_classify_system, build_system
+from .schemas import SCHEMA_FOR, Classification, ExtractionMeta
 
 _client = anthropic.Anthropic(api_key=settings.api_key) if settings.api_key else None
 
@@ -52,3 +52,29 @@ def extract(doc_type: str, images_b64: list[tuple[str, str]]) -> tuple[Extractio
     # Usage is returned alongside so the caller can bill it against the
     # daily budget and log the real cost of the call.
     return model_cls.model_validate_json(text), msg.usage
+
+
+def classify(image_b64: tuple[str, str]) -> tuple[Classification, Any]:
+    """One page in, one Classification out. Runs on the small model: the
+    question is "what is this", not "what does it say"."""
+    if _client is None:
+        raise RuntimeError("ANTHROPIC_API_KEY is not set")
+
+    schema_json = json.dumps(Classification.model_json_schema(), ensure_ascii=False, indent=2)
+    msg = _client.messages.create(
+        model=settings.classify_model,
+        max_tokens=256,
+        system=build_classify_system(schema_json),
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    *_blocks([image_b64]),
+                    {"type": "text", "text": "<document>above</document>"},
+                ],
+            }
+        ],
+    )
+    text = "".join(b.text for b in msg.content if b.type == "text").strip()
+    text = text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    return Classification.model_validate_json(text), msg.usage

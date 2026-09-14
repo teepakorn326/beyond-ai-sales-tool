@@ -2,36 +2,46 @@
   "id": "synth-0063",
   "flags": {
     "name_differs": false,
-    "buddhist_era": false,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-01-12",
+    "course_end_date": "2029-11-11"
   },
   "passport": {
-    "given_name_latin": "BOONMEE",
-    "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2004-05-05",
+    "given_name_latin": "SIREE",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2006-06-04",
     "nationality": "THA",
-    "passport_expiry": "2027-09-27",
+    "passport_expiry": "2033-07-08",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "BOONMEE RATTANAKUL",
-    "date_of_birth": "2004-05-05",
-    "institution_name": "Chulalongkorn University",
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2006-06-04",
+    "institution_name": "Bangkok Christian College",
     "qualification": "Mathayom 6",
-    "gpa": 3.06,
+    "gpa": 3.82,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-02-22",
-    "date_source_calendar": "AD"
+    "date_graduated": "2024-01-12",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "BOONMEE RATTANAKUL",
-    "date_of_birth": "2004-05-05",
-    "test_date": "2026-03-04",
-    "overall": 7.0,
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2006-06-04",
+    "test_date": "2026-09-14",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 6.5,
+    "listening": 7.5,
+    "reading": 6.0,
     "writing": 6.0,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

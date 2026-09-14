@@ -2,36 +2,46 @@
   "id": "synth-0070",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-02-16",
+    "course_end_date": "2028-10-08"
   },
   "passport": {
-    "given_name_latin": "SUWANNA",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2005-04-09",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2001-09-16",
     "nationality": "THA",
-    "passport_expiry": "2027-10-04",
+    "passport_expiry": "2035-08-10",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SUWANNA PONGSAKORN",
-    "date_of_birth": "2005-04-09",
-    "institution_name": "Chulalongkorn University",
-    "qualification": "Mathayom 6",
-    "gpa": 3.39,
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2001-09-16",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.32,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-02-14",
-    "date_source_calendar": "BE"
+    "date_graduated": "2024-07-19",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SUWANNA PONGSAKORN",
-    "date_of_birth": "2005-04-09",
-    "test_date": "2025-10-12",
-    "overall": 5.5,
-    "writing": 6.0,
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2001-09-16",
+    "test_date": "2024-02-11",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 7.0,
+    "listening": 7.5,
+    "reading": 7.5,
+    "writing": 6.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

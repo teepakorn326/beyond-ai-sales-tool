@@ -2,36 +2,46 @@
   "id": "synth-0078",
   "flags": {
     "name_differs": false,
-    "buddhist_era": false,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-03-01",
+    "course_end_date": "2028-08-17"
   },
   "passport": {
-    "given_name_latin": "KANYARAT",
-    "surname_latin": "SOMBAT",
-    "date_of_birth": "2004-11-07",
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2002-10-13",
     "nationality": "THA",
-    "passport_expiry": "2028-10-25",
+    "passport_expiry": "2034-12-28",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2004-11-07",
-    "institution_name": "Chulalongkorn University",
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2002-10-13",
+    "institution_name": "Chiang Mai University",
     "qualification": "Mathayom 6",
-    "gpa": 2.66,
+    "gpa": 2.85,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-05-29",
-    "date_source_calendar": "AD"
+    "date_graduated": "2025-11-04",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT SOMBAT",
-    "date_of_birth": "2004-11-07",
-    "test_date": "2026-07-21",
-    "overall": 6.5,
-    "writing": 5.0,
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2002-10-13",
+    "test_date": "2026-11-13",
+    "test_centre": "IDP Khon Kaen",
+    "overall": 5.5,
+    "listening": 5.0,
+    "reading": 5.0,
+    "writing": 6.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "AU-ENG-2025.1",
+    "country": "AU",
+    "topic": "english_validity",
+    "title": "English language evidence for student visas (AU) — synthetic",
+    "version": "2025.1",
+    "effective_from": "2025-01-01",
+    "effective_to": "2026-07-01",
+    "keywords": ["english", "ielts", "pte", "toefl", "ภาษาอังกฤษ", "ผลสอบภาษา", "ผลสอบ", "R5", "หมดอายุ", "expired", "test date"],
+    "text": "The English test date must be no more than 2 years before the application date. A result that expires before the application date cannot be used; the test must be retaken. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "AU-ENG-2026.2",
+    "country": "AU",
+    "topic": "english_validity",
+    "title": "English language evidence for student visas (AU) — synthetic",
+    "version": "2026.2",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "keywords": ["english", "ielts", "pte", "toefl", "ภาษาอังกฤษ", "ผลสอบภาษา", "ผลสอบ", "R5", "หมดอายุ", "expired", "test date"],
+    "text": "The English test date must be no more than 2 years before the application date, and all four component scores must appear on the same report form. A result that expires before the application date cannot be used. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "AU-PASSPORT-2024.1",
+    "country": "AU",
+    "topic": "passport_validity",
+    "title": "Passport validity for student visas (AU) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["passport", "พาสปอร์ต", "หนังสือเดินทาง", "expiry", "หมดอายุ", "R4", "renew", "ต่ออายุ"],
+    "text": "The passport must remain valid until the course end date plus a 6-month buffer. If it does not, renew the passport before applying. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "AU-IDENTITY-2024.1",
+    "country": "AU",
+    "topic": "identity_consistency",
+    "title": "Name and date-of-birth consistency across documents (AU) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["name", "ชื่อ", "สะกด", "spelling", "date of birth", "วันเกิด", "R1", "R2", "romanis", "mismatch", "ไม่ตรง", "ตรงกัน"],
+    "text": "The Latin-script name and date of birth on every document must match the passport. Where a romanisation differs, have the document reissued to match the passport; never edit stored values to make them agree. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "AU-QUAL-2024.1",
+    "country": "AU",
+    "topic": "qualification_evidence",
+    "title": "Qualification evidence (AU) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["transcript", "ทรานสคริปต์", "certificate", "ใบปริญญา", "ใบจบ", "วุฒิ", "qualification", "graduat", "วันจบ", "R3"],
+    "text": "Both the transcript and the completion certificate or degree must be submitted. The graduation date on the transcript and the conferral date on the certificate may differ by at most 1 year. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "AU-GS-2024.1",
+    "country": "AU",
+    "topic": "genuine_student",
+    "title": "The five Genuine Student criteria (AU) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-03-23",
+    "effective_to": null,
+    "keywords": ["genuine student", "GS", "statement", "SOP", "เจตนา", "แถลง"],
+    "text": "The student's statement must cover five points: current circumstances, reasons for choosing the course and institution, benefit to their future, immigration history, and any other relevant matter. The system can check that a statement covers all five; it never writes or edits one. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "NZ-ENG-2025.1",
+    "country": "NZ",
+    "topic": "english_validity",
+    "title": "English language evidence for student visas (NZ) — synthetic",
+    "version": "2025.1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "keywords": ["english", "ielts", "pte", "toefl", "ภาษาอังกฤษ", "ผลสอบภาษา", "ผลสอบ", "R5", "หมดอายุ", "expired"],
+    "text": "The English test date must be no more than 2 years before the application date. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "NZ-PASSPORT-2024.1",
+    "country": "NZ",
+    "topic": "passport_validity",
+    "title": "Passport validity for student visas (NZ) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["passport", "พาสปอร์ต", "หนังสือเดินทาง", "expiry", "หมดอายุ", "R4"],
+    "text": "The passport must remain valid for at least 3 months beyond the intended end of stay. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "NZ-IDENTITY-2024.1",
+    "country": "NZ",
+    "topic": "identity_consistency",
+    "title": "Name and date-of-birth consistency across documents (NZ) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["name", "ชื่อ", "สะกด", "date of birth", "วันเกิด", "R1", "R2", "ไม่ตรง", "ตรงกัน"],
+    "text": "The name and date of birth on every document must match the passport. (Synthetic text for system testing.)"
+  },
+  {
+    "id": "NZ-QUAL-2024.1",
+    "country": "NZ",
+    "topic": "qualification_evidence",
+    "title": "Qualification evidence (NZ) — synthetic",
+    "version": "2024.1",
+    "effective_from": "2024-01-01",
+    "effective_to": null,
+    "keywords": ["transcript", "ทรานสคริปต์", "certificate", "ใบปริญญา", "วุฒิ", "qualification", "วันจบ", "R3"],
+    "text": "The transcript and a completion certificate must both be submitted. (Synthetic text for system testing.)"
+  }
+]

@@ -2,36 +2,46 @@
   "id": "synth-0017",
   "flags": {
     "name_differs": true,
-    "buddhist_era": false,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-11-09",
+    "course_end_date": "2029-02-23"
   },
   "passport": {
-    "given_name_latin": "THANAWAT",
-    "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2002-01-01",
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2007-03-17",
     "nationality": "THA",
-    "passport_expiry": "2029-11-09",
+    "passport_expiry": "2030-01-27",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "TANAWAT RATTANAKUL",
-    "date_of_birth": "2002-01-01",
+    "name_latin_as_printed": "SUVANNA JAROENSUK",
+    "date_of_birth": "2007-03-17",
     "institution_name": "Satri Witthaya School",
-    "qualification": "Bachelor of Science",
-    "gpa": 2.0,
+    "qualification": "Mathayom 6",
+    "gpa": 3.43,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-08-17",
-    "date_source_calendar": "AD"
+    "date_graduated": "2025-03-14",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "THANAWAT RATTANAKUL",
-    "date_of_birth": "2002-01-01",
-    "test_date": "2024-09-28",
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2007-03-17",
+    "test_date": "2025-05-06",
+    "test_centre": "IDP Bangkok",
     "overall": 6.0,
-    "writing": 6.0,
+    "listening": 5.0,
+    "reading": 6.0,
+    "writing": 5.5,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

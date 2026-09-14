@@ -1,37 +1,47 @@
 {
   "id": "synth-0045",
   "flags": {
-    "name_differs": true,
-    "buddhist_era": true,
+    "name_differs": false,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-03-15",
+    "course_end_date": "2029-08-10"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "SOMBAT",
-    "date_of_birth": "2006-10-22",
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "PONGSAKORN",
+    "date_of_birth": "2003-02-28",
     "nationality": "THA",
-    "passport_expiry": "2030-06-19",
+    "passport_expiry": "2029-01-29",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIRI SOMBAT",
-    "date_of_birth": "2006-10-22",
-    "institution_name": "Kasetsart University",
+    "name_latin_as_printed": "NATTAPONG PONGSAKORN",
+    "date_of_birth": "2003-02-28",
+    "institution_name": "Chiang Mai University",
     "qualification": "Mathayom 6",
-    "gpa": 3.1,
+    "gpa": 2.54,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-04-01",
-    "date_source_calendar": "BE"
+    "date_graduated": "2026-03-07",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE SOMBAT",
-    "date_of_birth": "2006-10-22",
-    "test_date": "2024-12-26",
-    "overall": 6.0,
+    "name_latin_as_printed": "NATTAPONG PONGSAKORN",
+    "date_of_birth": "2003-02-28",
+    "test_date": "2024-07-11",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.5,
+    "listening": 6.0,
+    "reading": 7.0,
     "writing": 5.0,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

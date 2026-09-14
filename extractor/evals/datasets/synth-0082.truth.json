@@ -4,34 +4,44 @@
     "name_differs": false,
     "buddhist_era": false,
     "no_grad_day": true,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-04-01",
+    "course_end_date": "2030-03-28"
   },
   "passport": {
-    "given_name_latin": "CHAIYA",
-    "surname_latin": "SOMBAT",
-    "date_of_birth": "2001-10-16",
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "PONGSAKORN",
+    "date_of_birth": "2007-09-05",
     "nationality": "THA",
-    "passport_expiry": "2032-10-09",
+    "passport_expiry": "2033-04-30",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "CHAIYA SOMBAT",
-    "date_of_birth": "2001-10-16",
-    "institution_name": "Kasetsart University",
+    "name_latin_as_printed": "NATTAPONG PONGSAKORN",
+    "date_of_birth": "2007-09-05",
+    "institution_name": "Chiang Mai University",
     "qualification": "Bachelor of Science",
-    "gpa": 3.67,
+    "gpa": 3.04,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-04-13",
+    "date_graduated": "2025-05-18",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "CHAIYA SOMBAT",
-    "date_of_birth": "2001-10-16",
-    "test_date": "2024-12-01",
-    "overall": 7.0,
-    "writing": 5.0,
+    "name_latin_as_printed": "NATTAPONG PONGSAKORN",
+    "date_of_birth": "2007-09-05",
+    "test_date": "2024-12-06",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.5,
+    "listening": 7.0,
+    "reading": 6.0,
+    "writing": 5.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

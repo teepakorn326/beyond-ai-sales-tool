@@ -3,35 +3,45 @@
   "flags": {
     "name_differs": false,
     "buddhist_era": true,
-    "no_grad_day": false,
-    "faint_gpa": false
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-04-22",
+    "course_end_date": "2028-11-18"
   },
   "passport": {
-    "given_name_latin": "THANAWAT",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2007-03-10",
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2003-07-01",
     "nationality": "THA",
-    "passport_expiry": "2033-10-14",
+    "passport_expiry": "2030-10-22",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "THANAWAT WICHAIKUL",
-    "date_of_birth": "2007-03-10",
-    "institution_name": "Chulalongkorn University",
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2003-07-01",
+    "institution_name": "Satri Witthaya School",
     "qualification": "Mathayom 6",
-    "gpa": 3.57,
+    "gpa": 3.77,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-06-21",
+    "date_graduated": "2024-12-17",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "THANAWAT WICHAIKUL",
-    "date_of_birth": "2007-03-10",
-    "test_date": "2025-08-29",
-    "overall": 5.5,
-    "writing": 5.0,
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2003-07-01",
+    "test_date": "2024-04-23",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.0,
+    "listening": 5.0,
+    "reading": 5.0,
+    "writing": 6.0,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

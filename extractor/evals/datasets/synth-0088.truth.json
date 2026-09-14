@@ -1,37 +1,47 @@
 {
   "id": "synth-0088",
   "flags": {
-    "name_differs": false,
-    "buddhist_era": true,
+    "name_differs": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-01-20",
+    "course_end_date": "2029-11-10"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2005-06-06",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2001-07-26",
     "nationality": "THA",
-    "passport_expiry": "2030-03-29",
+    "passport_expiry": "2034-06-12",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2005-06-06",
-    "institution_name": "Bangkok Christian College",
-    "qualification": "Bachelor of Science",
-    "gpa": 2.6,
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2001-07-26",
+    "institution_name": "Kasetsart University",
+    "qualification": "Mathayom 6",
+    "gpa": 2.46,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-07-15",
-    "date_source_calendar": "BE"
+    "date_graduated": "2024-09-10",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2005-06-06",
-    "test_date": "2024-09-09",
-    "overall": 6.5,
-    "writing": 6.0,
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2001-07-26",
+    "test_date": "2026-03-24",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.0,
+    "listening": 7.5,
+    "reading": 5.0,
+    "writing": 5.5,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

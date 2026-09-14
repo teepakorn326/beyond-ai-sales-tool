@@ -3,35 +3,45 @@
   "flags": {
     "name_differs": false,
     "buddhist_era": false,
-    "no_grad_day": true,
-    "faint_gpa": true
+    "no_grad_day": false,
+    "faint_gpa": false,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-12-08",
+    "course_end_date": "2028-04-01"
   },
   "passport": {
-    "given_name_latin": "SUWANNA",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2006-05-30",
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2005-04-01",
     "nationality": "THA",
-    "passport_expiry": "2028-02-28",
+    "passport_expiry": "2027-11-05",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SUWANNA PONGSAKORN",
-    "date_of_birth": "2006-05-30",
-    "institution_name": "Chulalongkorn University",
-    "qualification": "Mathayom 6",
-    "gpa": 2.96,
+    "name_latin_as_printed": "KANYARAT WICHAIKUL",
+    "date_of_birth": "2005-04-01",
+    "institution_name": "Kasetsart University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.98,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-10-29",
+    "date_graduated": "2024-10-06",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SUWANNA PONGSAKORN",
-    "date_of_birth": "2006-05-30",
-    "test_date": "2024-07-11",
-    "overall": 6.0,
-    "writing": 5.0,
+    "name_latin_as_printed": "KANYARAT WICHAIKUL",
+    "date_of_birth": "2005-04-01",
+    "test_date": "2025-05-06",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.5,
+    "listening": 7.5,
+    "reading": 5.5,
+    "writing": 5.5,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

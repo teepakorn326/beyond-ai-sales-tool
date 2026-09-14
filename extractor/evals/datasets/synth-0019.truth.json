@@ -1,37 +1,47 @@
 {
   "id": "synth-0019",
   "flags": {
-    "name_differs": false,
-    "buddhist_era": false,
+    "name_differs": true,
+    "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-04-24",
+    "course_end_date": "2030-04-17"
   },
   "passport": {
     "given_name_latin": "NATTAPONG",
-    "surname_latin": "SRISAWAT",
-    "date_of_birth": "2002-05-25",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2004-11-10",
     "nationality": "THA",
-    "passport_expiry": "2030-03-08",
+    "passport_expiry": "2033-12-04",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2002-05-25",
-    "institution_name": "Chiang Mai University",
+    "name_latin_as_printed": "NATTAPONG JAROENSUK",
+    "date_of_birth": "2004-11-10",
+    "institution_name": "Kasetsart University",
     "qualification": "Bachelor of Science",
-    "gpa": 2.18,
+    "gpa": 2.64,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-06-07",
-    "date_source_calendar": "AD"
+    "date_graduated": "2025-01-05",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "NATTAPONG SRISAWAT",
-    "date_of_birth": "2002-05-25",
-    "test_date": "2025-04-29",
+    "name_latin_as_printed": "NATTAPONG JAROENSUK",
+    "date_of_birth": "2004-11-10",
+    "test_date": "2026-08-16",
+    "test_centre": "IDP Khon Kaen",
     "overall": 6.0,
-    "writing": 6.0,
+    "listening": 5.0,
+    "reading": 6.0,
+    "writing": 6.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

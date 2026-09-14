@@ -1,37 +1,47 @@
 {
   "id": "synth-0065",
   "flags": {
-    "name_differs": true,
-    "buddhist_era": true,
+    "name_differs": false,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2026-10-08",
+    "course_end_date": "2027-11-23"
   },
   "passport": {
-    "given_name_latin": "BOONMEE",
-    "surname_latin": "PONGSAKORN",
-    "date_of_birth": "2002-02-25",
+    "given_name_latin": "SIREE",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2002-06-11",
     "nationality": "THA",
-    "passport_expiry": "2033-12-06",
+    "passport_expiry": "2035-01-23",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "BUNMEE PONGSAKORN",
-    "date_of_birth": "2002-02-25",
-    "institution_name": "Bangkok Christian College",
+    "name_latin_as_printed": "SIREE JAROENSUK",
+    "date_of_birth": "2002-06-11",
+    "institution_name": "Kasetsart University",
     "qualification": "Bachelor of Science",
-    "gpa": 2.29,
+    "gpa": 3.89,
     "gpa_scale": 4.0,
-    "date_graduated": "2024-08-19",
-    "date_source_calendar": "BE"
+    "date_graduated": "2025-08-15",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "BOONMEE PONGSAKORN",
-    "date_of_birth": "2002-02-25",
-    "test_date": "2024-05-20",
+    "name_latin_as_printed": "SIREE JAROENSUK",
+    "date_of_birth": "2002-06-11",
+    "test_date": "2026-09-06",
+    "test_centre": "IDP Khon Kaen",
     "overall": 6.0,
+    "listening": 6.0,
+    "reading": 6.5,
     "writing": 5.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

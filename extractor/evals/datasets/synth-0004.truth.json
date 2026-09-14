@@ -1,37 +1,47 @@
 {
   "id": "synth-0004",
   "flags": {
-    "name_differs": false,
+    "name_differs": true,
     "buddhist_era": true,
-    "no_grad_day": false,
-    "faint_gpa": true
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-05-18",
+    "course_end_date": "2030-01-30"
   },
   "passport": {
-    "given_name_latin": "SIREE",
+    "given_name_latin": "THANAWAT",
     "surname_latin": "SRISAWAT",
-    "date_of_birth": "2006-07-22",
+    "date_of_birth": "2003-05-07",
     "nationality": "THA",
-    "passport_expiry": "2032-07-14",
+    "passport_expiry": "2034-06-12",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE SRISAWAT",
-    "date_of_birth": "2006-07-22",
+    "name_latin_as_printed": "THANAVAT SRISAWAT",
+    "date_of_birth": "2003-05-07",
     "institution_name": "Satri Witthaya School",
     "qualification": "Mathayom 6",
-    "gpa": 3.64,
+    "gpa": 3.39,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-03-14",
+    "date_graduated": "2026-05-11",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE SRISAWAT",
-    "date_of_birth": "2006-07-22",
+    "name_latin_as_printed": "THANAWAT SRISAWAT",
+    "date_of_birth": "2003-05-07",
     "test_date": "2026-07-08",
+    "test_centre": "British Council Bangkok",
     "overall": 6.0,
+    "listening": 5.5,
+    "reading": 5.0,
     "writing": 5.5,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

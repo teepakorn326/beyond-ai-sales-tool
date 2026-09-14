@@ -100,12 +100,12 @@ func pending(id, label, why string) Check {
 
 // R1 — Latin name matches across every document that carries one.
 func ruleR1(c Case) Check {
-	const id, label = "R1", "ชื่อภาษาอังกฤษตรงกันทุกเอกสาร"
+	const id, label = "R1", "Latin name matches on every document"
 	if c.PassportName == "" {
-		return pending(id, label, "ยังไม่มีพาสปอร์ต")
+		return pending(id, label, "passport not yet received")
 	}
 
-	worst, detail := Pass, "ตรงกันทุกฉบับ"
+	worst, detail := Pass, "matches on every document"
 	compare := func(docName, other string) {
 		if other == "" {
 			return
@@ -113,17 +113,17 @@ func ruleR1(c Case) Check {
 		switch CompareNames(c.PassportName, other) {
 		case Block:
 			worst = Block
-			detail = fmt.Sprintf("%s สะกดต่างจากพาสปอร์ตจนเทียบไม่ได้", docName)
+			detail = fmt.Sprintf("%s spelling differs from the passport beyond what transliteration explains", docName)
 		case Warn:
 			if worst != Block {
 				worst = Warn
-				detail = fmt.Sprintf("%s สะกดต่างจากพาสปอร์ตแบบที่พบในการถอดเสียงไทย ต้องให้คนยืนยัน", docName)
+				detail = fmt.Sprintf("%s spelling differs from the passport in a way seen in Thai romanisation; a person must confirm", docName)
 			}
 		}
 	}
 	compare("transcript", c.TranscriptName)
 	if c.EnglishTestName != nil {
-		compare("ใบคะแนนภาษา", *c.EnglishTestName)
+		compare("english_test", *c.EnglishTestName)
 	}
 
 	return Check{id, label, worst, statusOf(worst), detail}
@@ -133,14 +133,14 @@ func ruleR1(c Case) Check {
 // conversion bug in extraction, not a data conflict, and is reported as such
 // so nobody chases the student for a corrected document.
 func ruleR2(c Case) Check {
-	const id, label = "R2", "วันเกิดตรงกันทุกเอกสาร"
+	const id, label = "R2", "Date of birth matches on every document"
 	if c.PassportDOB == nil {
-		return pending(id, label, "ยังไม่มีพาสปอร์ต")
+		return pending(id, label, "passport not yet received")
 	}
 
 	others := map[string]*Date{
-		"transcript":  c.TranscriptDOB,
-		"ใบคะแนนภาษา": c.EnglishTestDOB,
+		"transcript":   c.TranscriptDOB,
+		"english_test": c.EnglishTestDOB,
 	}
 	for name, d := range others {
 		if d == nil {
@@ -151,12 +151,12 @@ func ruleR2(c Case) Check {
 		}
 		if yearsApart(*c.PassportDOB, *d) == 543 {
 			return Check{id, label, Block, "failed",
-				fmt.Sprintf("%s ต่างกันพอดี 543 ปี เป็นปัญหาการแปลง พ.ศ. ในขั้นสกัด ให้สกัดใหม่ ไม่ต้องขอเอกสารใหม่", name)}
+				fmt.Sprintf("%s differs by exactly 543 years: a Buddhist-era conversion issue at extraction. Re-extract; do not request a new document", name)}
 		}
 		return Check{id, label, Block, "failed",
-			fmt.Sprintf("วันเกิดใน %s ไม่ตรงกับพาสปอร์ต", name)}
+			fmt.Sprintf("date of birth on %s does not match the passport", name)}
 	}
-	return Check{id, label, Pass, "ok", "ตรงกันทุกฉบับ"}
+	return Check{id, label, Pass, "ok", "matches on every document"}
 }
 
 // R3 — graduation date on the transcript versus the degree certificate. The
@@ -164,21 +164,21 @@ func ruleR2(c Case) Check {
 // conferral date are routinely months apart; a stricter rule would flag almost
 // every case and teach staff to ignore the flag.
 func ruleR3(c Case, cfg Config) Check {
-	const id, label = "R3", "วันจบตรงกันระหว่าง transcript กับใบปริญญา"
+	const id, label = "R3", "Graduation date agrees between transcript and certificate"
 	if c.TranscriptGradDate == nil || c.CertificateGradDate == nil {
-		return pending(id, label, "ยังไม่ได้รับเอกสารครบทั้งสองฉบับ")
+		return pending(id, label, "both documents not yet received")
 	}
 
 	diff := c.CertificateGradDate.Sub(*c.TranscriptGradDate)
 	switch {
 	case diff < 0:
-		return Check{id, label, Block, "failed", "ใบปริญญาลงวันที่ก่อน transcript"}
+		return Check{id, label, Block, "failed", "certificate is dated before the transcript"}
 	case diff <= cfg.GradDatePassDays:
-		return Check{id, label, Pass, "ok", fmt.Sprintf("ห่างกัน %d วัน อยู่ในเกณฑ์ปกติ", diff)}
+		return Check{id, label, Pass, "ok", fmt.Sprintf("%d days apart, within the normal range", diff)}
 	case diff <= cfg.GradDateWarnDays:
-		return Check{id, label, Warn, "ok", fmt.Sprintf("ห่างกัน %d วัน ควรตรวจสอบ", diff)}
+		return Check{id, label, Warn, "ok", fmt.Sprintf("%d days apart, should be checked", diff)}
 	default:
-		return Check{id, label, Block, "failed", fmt.Sprintf("ห่างกัน %d วัน เกินหนึ่งปี", diff)}
+		return Check{id, label, Block, "failed", fmt.Sprintf("%d days apart, more than a year", diff)}
 	}
 }
 
@@ -186,29 +186,29 @@ func ruleR3(c Case, cfg Config) Check {
 // not the visa stage: renewing a passport takes weeks, and finding out late
 // costs an intake.
 func ruleR4(c Case, cfg Config) Check {
-	const id, label = "R4", "พาสปอร์ตครอบคลุมถึงจบหลักสูตร"
+	const id, label = "R4", "Passport covers the end of the course"
 	if c.PassportExpiry == nil || c.CourseEndDate == nil {
-		return pending(id, label, "ยังไม่มีพาสปอร์ตหรือยังไม่ได้เลือกหลักสูตร")
+		return pending(id, label, "passport not received or course not yet chosen")
 	}
 
 	need := c.CourseEndDate.AddMonths(cfg.PassportBufferMonths)
 	switch {
 	case c.PassportExpiry.Before(*c.CourseEndDate):
-		return Check{id, label, Block, "failed", "พาสปอร์ตหมดอายุก่อนจบหลักสูตร"}
+		return Check{id, label, Block, "failed", "passport expires before the course ends"}
 	case c.PassportExpiry.Before(need):
 		return Check{id, label, Warn, "ok",
-			fmt.Sprintf("เหลือระยะเผื่อไม่ถึง %d เดือนหลังจบหลักสูตร", cfg.PassportBufferMonths)}
+			fmt.Sprintf("less than %d months of buffer after the course ends", cfg.PassportBufferMonths)}
 	default:
-		return Check{id, label, Pass, "ok", "ครอบคลุมพร้อมระยะเผื่อ"}
+		return Check{id, label, Pass, "ok", "covers the course with buffer"}
 	}
 }
 
 // R5 — the English test must still be valid on the day of submission, not on
 // the day we happen to run this check.
 func ruleR5(c Case, cfg Config, now time.Time) Check {
-	const id, label = "R5", "ผลสอบภาษายังไม่หมดอายุ ณ วันยื่น"
+	const id, label = "R5", "English test still valid on the submission date"
 	if c.EnglishTestDate == nil {
-		return pending(id, label, "ยังไม่มีผลสอบภาษา")
+		return pending(id, label, "English test result not yet received")
 	}
 
 	expires := c.EnglishTestDate.AddYears(cfg.EnglishValidYears)
@@ -220,12 +220,12 @@ func ruleR5(c Case, cfg Config, now time.Time) Check {
 	switch {
 	case !expires.After(target):
 		return Check{id, label, Block, "failed",
-			fmt.Sprintf("หมดอายุ %s ก่อนวันยื่นเป้าหมาย %s", expires, target)}
+			fmt.Sprintf("expires %s, before the target submission date %s", expires, target)}
 	case expires.Sub(target) <= cfg.EnglishWarnDays:
 		return Check{id, label, Warn, "ok",
-			fmt.Sprintf("เหลืออีก %d วันก่อนหมดอายุ", expires.Sub(target))}
+			fmt.Sprintf("%d days left before expiry", expires.Sub(target))}
 	default:
-		return Check{id, label, Pass, "ok", fmt.Sprintf("ใช้ได้ถึง %s", expires)}
+		return Check{id, label, Pass, "ok", fmt.Sprintf("valid until %s", expires)}
 	}
 }
 

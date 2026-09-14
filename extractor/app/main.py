@@ -1,12 +1,11 @@
-import base64
-
 import httpx
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from .client import extract
+from .client import classify, extract
 from .config import settings
 from .guards import BudgetExceeded, DemoModeViolation, assert_demo_safe, budget
+from .images import UnsupportedFile, to_pages
 from .logging import emit, timed
 from .schemas import SCHEMA_FOR
 
@@ -18,6 +17,22 @@ app = FastAPI(title="visa-doc-checker extractor")
 async def guard_handler(_, exc: Exception):
     emit("guard_rejected", kind=type(exc).__name__)
     return JSONResponse({"error": str(exc)}, status_code=429)
+
+
+@app.exception_handler(UnsupportedFile)
+async def unsupported_handler(_, exc: Exception):
+    emit("unsupported_file")
+    return JSONResponse({"error": str(exc)}, status_code=415)
+
+
+async def read_pages(files: list[UploadFile]) -> list[list[tuple[str, str]]]:
+    """Guards, then normalise every upload to JPEG pages. One list per file."""
+    out = []
+    for f in files:
+        raw = await f.read()
+        assert_demo_safe(f.filename or "", len(raw))
+        out.append(to_pages(raw, f.content_type or "application/octet-stream"))
+    return out
 
 
 @app.get("/healthz")
@@ -53,11 +68,8 @@ async def extract_endpoint(doc_type: str, files: list[UploadFile]):
 
     budget.check()
 
-    images = []
-    for f in files:
-        raw = await f.read()
-        assert_demo_safe(f.filename or "", len(raw))
-        images.append((f.content_type or "image/png", base64.b64encode(raw).decode()))
+    # All pages of all files, in order: a two-photo transcript is one document.
+    images = [page for pages in await read_pages(files) for page in pages]
 
     with timed("extract", doc_type=doc_type, pages=len(images)) as log:
         result, usage = extract(doc_type, images)
@@ -70,6 +82,34 @@ async def extract_endpoint(doc_type: str, files: list[UploadFile]):
 
     budget.record(usage.input_tokens + usage.output_tokens)
     return result.model_dump(mode="json")
+
+
+@app.post("/classify")
+async def classify_endpoint(files: list[UploadFile]):
+    """What is each page? One Classification per page, per file, in order.
+
+    This is the step that lets a batch of phone photos be sorted without a
+    person naming each file. It only says what a page is; extraction is a
+    separate, per-document call once the type is known.
+    """
+    budget.check()
+    per_file = await read_pages(files)
+
+    results = []
+    spent = 0
+    with timed("classify", files=len(per_file), pages=sum(len(p) for p in per_file)) as log:
+        for index, (f, pages) in enumerate(zip(files, per_file)):
+            page_results = []
+            for page in pages:
+                c, usage = classify(page)
+                spent += usage.input_tokens + usage.output_tokens
+                page_results.append(c.model_dump(mode="json"))
+            results.append({"index": index, "filename": f.filename, "pages": page_results})
+        log["tokens"] = spent
+        log["other"] = sum(1 for r in results for p in r["pages"] if p["doc_type"] == "other")
+
+    budget.record(spent)
+    return {"files": results}
 
 
 @app.post("/check")

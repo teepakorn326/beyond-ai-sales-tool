@@ -2,36 +2,46 @@
   "id": "synth-0084",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2026-10-19",
+    "course_end_date": "2028-03-05"
   },
   "passport": {
     "given_name_latin": "SIREE",
-    "surname_latin": "JAROENSUK",
-    "date_of_birth": "2004-05-01",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2007-08-14",
     "nationality": "THA",
-    "passport_expiry": "2028-05-01",
+    "passport_expiry": "2031-04-15",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE JAROENSUK",
-    "date_of_birth": "2004-05-01",
-    "institution_name": "Bangkok Christian College",
-    "qualification": "Mathayom 6",
-    "gpa": 2.75,
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2007-08-14",
+    "institution_name": "Kasetsart University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.27,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-05-31",
-    "date_source_calendar": "BE"
+    "date_graduated": "2026-04-14",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE JAROENSUK",
-    "date_of_birth": "2004-05-01",
-    "test_date": "2025-04-06",
-    "overall": 6.5,
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2007-08-14",
+    "test_date": "2024-06-13",
+    "test_centre": "IDP Chiang Mai",
+    "overall": 6.0,
+    "listening": 5.5,
+    "reading": 7.5,
     "writing": 6.0,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }

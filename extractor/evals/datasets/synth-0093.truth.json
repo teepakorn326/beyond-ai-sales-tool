@@ -4,34 +4,44 @@
     "name_differs": false,
     "buddhist_era": true,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2027-05-25",
+    "course_end_date": "2029-07-20"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2003-05-21",
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2002-08-06",
     "nationality": "THA",
-    "passport_expiry": "2028-04-29",
+    "passport_expiry": "2028-07-31",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIREE RATTANAKUL",
-    "date_of_birth": "2003-05-21",
-    "institution_name": "Kasetsart University",
-    "qualification": "Bachelor of Science",
-    "gpa": 2.3,
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2002-08-06",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Mathayom 6",
+    "gpa": 2.55,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-08-19",
+    "date_graduated": "2026-05-15",
     "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE RATTANAKUL",
-    "date_of_birth": "2003-05-21",
-    "test_date": "2026-01-10",
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2002-08-06",
+    "test_date": "2025-04-16",
+    "test_centre": "IDP Chiang Mai",
     "overall": 6.5,
+    "listening": 7.0,
+    "reading": 7.0,
     "writing": 5.0,
+    "speaking": 6.5,
     "report_number_present": true
   }
 }

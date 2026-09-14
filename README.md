@@ -121,11 +121,21 @@ accuracy is measurable without hand-labelling anything.
 real intake, at roughly the rates they appear:
 
 ```
-name_differs      32/100   transcript romanised differently from passport
-buddhist_era      41/100   BE years printed on a Thai transcript
-no_grad_day       14/100   month and year only, no day
-faint_gpa         10/100   low-contrast cumulative GPA
+name_differs             24/100   transcript romanised differently from passport
+buddhist_era             34/100   BE years printed on a Thai transcript
+no_grad_day               9/100   month and year only, no day
+faint_gpa                21/100   low-contrast cumulative GPA
+passport_expiring_soon   12/100   passport expires within two years of lodging (R4)
+english_test_lapsed      35/100   IELTS older than two years on the target date (R5)
 ```
+
+Each record renders three documents from one ground-truth file — transcript,
+passport bio-data page with a machine-readable zone, and an IELTS Test Report
+Form — so cross-document consistency is known before extraction runs. The
+passport and IELTS imperfections are defined relative to the record's
+`case.submission_target`, the same date R4 and R5 are judged against.
+Identifier fields on the rendered pages are placeholders (`XXXXXXXXX`), never
+numbers in the real format: the schema records only `*_present`.
 
 Accuracy is reported per field, never as one number. An aggregate figure hides
 the thing that matters — a run that reads every GPA correctly and every date of
@@ -177,13 +187,91 @@ three seconds.
 
 ## Running it
 
+The short version, none of which needs an API key:
+
+```bash
+./run.sh test                 # every offline suite
+./run.sh dev                  # rules engine + fake extractor + review UI on :3000
+./run.sh render 0             # synthetic record 0 as PNGs in out/, ready to upload
+./run.sh ask "case 0413 why is it blocked?"   # the agent, deterministic nodes only
+./run.sh eval                 # agent eval report
+```
+
+The pieces:
+
 ```bash
 cp .env.example .env          # add ANTHROPIC_API_KEY
 make synth                    # generate 100 synthetic records
 make rules-test               # Go test suite, no API key needed
 make eval                     # extraction accuracy vs thresholds
+make web-typecheck            # review UI against the hand-mirrored types
+make agent-test               # agent unit tests + both eval suites, no key
+make agent-eval               # agent eval report: trajectory (3 numbers), guardrail 30/30
 make up                       # full stack on :3000
 ```
+
+### The agent layer
+
+`agent/` answers a sales user's question about a case, asked in Thai or English
+("เคส 0413 ทำไมยังยื่นไม่ได้" / "why is case 0413 blocked?"), in English, with a
+LangGraph state machine. Tools are
+grouped by risk and the grouping is enforced by code: read-only tools run
+freely, reversible internal writes run freely but are always audit-logged,
+and anything that reaches the student refuses to run without an approval
+bound to that exact call, which only a human `interrupt()` can produce. The
+guardrail node runs first and is deterministic. Details in
+[agent/README.md](agent/README.md).
+
+### Batch intake
+
+Students send photos, in any order, sometimes two per document. The upload
+form takes all of them at once. The extractor's `/classify` endpoint says
+what each page is (passport, transcript, degree certificate, English test,
+or other) with a confidence and whether the page continues the previous
+one. That is a model's job and gets its own eval: `python -m evals.run
+--classify` scores every rendered page against the type encoded in its
+filename, per true type, with floors in `evals/thresholds.yaml`. The
+synthetic corpus includes a fee receipt per record so the "other" branch has
+ground truth: a receipt must never be extracted as a transcript.
+
+Code then groups pages into documents (`web/app/lib/sorting.ts`): a
+continuation page joins the group before it, a passport is always one page,
+and anything "other" or low-confidence is held for a person to assign a
+type. Each confident group is extracted and lands in the review flow below
+with the classifier's verdict shown on the review screen. If the reviewer
+says the type is wrong, the same pages are extracted again under the new
+type as a new document; the old record is marked superseded, never edited.
+
+Every upload is normalised before it reaches a model (`extractor/app/images.py`):
+PDFs are rendered page by page, photos are rotated per EXIF and downscaled to
+1600px JPEG. HEIC needs the optional `pillow-heif` extra.
+
+### The review screen
+
+`web/` is the field-confirmation UI. Upload a document image under a case
+id, the server sends it to the extractor, and the result is stored as
+`extracted_json`. The reviewer then sees the image beside the fields:
+
+- high-confidence fields are confirmed as one batch, as extracted;
+- medium- and low-confidence fields are visually distinct and confirmed one
+  at a time, with the value editable for genuine misreads;
+- unreadable fields take a typed value, or record a "new photo" or "new
+  document" request — different asks from the student's side, so kept apart;
+- month-only dates show what the page printed next to the filled-in value,
+  and Buddhist-era documents show the BE date as printed beside the converted
+  Gregorian one, so the conversion is checked rather than trusted.
+
+There is no "confirm all". Confirmations accumulate in `confirmations`, and
+`confirmed_json` appears only once every required field is signed off; the
+store refuses any write that touches `extracted_json`. The `/case` page
+assembles the rules-engine payload from `confirmed_json` alone, so a document
+that is uploaded but not fully reviewed contributes nothing and the rule that
+needed it reports pending.
+
+To exercise the UI without an API key, `node web/dev/fake-extractor.mjs`
+stands in for the extractor with fixtures covering every review path, and
+forwards `/check` to the Go service. Records live under `web/.data/` until the
+Postgres wiring lands.
 
 ## Deployed
 

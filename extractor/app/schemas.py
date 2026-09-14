@@ -80,6 +80,24 @@ class EnglishTest(ExtractionMeta):
     # engine, not to a language model.
 
 
+ClassifiedType = Literal[
+    "passport", "transcript", "degree_certificate", "english_test", "other"
+]
+
+
+class Classification(BaseModel):
+    """What one page is. Runs before extraction so a batch of phone photos can
+    be sorted without a person naming each file first. Deliberately tiny: a
+    type, how sure, and a few words why. No field values, no identifiers."""
+
+    doc_type: ClassifiedType
+    confidence: Confidence
+    reason: str = Field("", max_length=200)
+    # A page that clearly continues the previous one (no heading, "page 2 of
+    # 3", running totals). Code uses this to group pages into one document.
+    is_continuation: bool = False
+
+
 SCHEMA_FOR: dict[str, type[ExtractionMeta]] = {
     "passport": Passport,
     "transcript": Transcript,

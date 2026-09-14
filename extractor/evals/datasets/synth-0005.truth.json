@@ -1,37 +1,47 @@
 {
   "id": "synth-0005",
   "flags": {
-    "name_differs": true,
+    "name_differs": false,
     "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": true,
+    "passport_expiring_soon": true,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-03-11",
+    "course_end_date": "2029-06-01"
   },
   "passport": {
-    "given_name_latin": "SIREE",
-    "surname_latin": "WICHAIKUL",
-    "date_of_birth": "2000-02-17",
+    "given_name_latin": "PHANIT",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2003-06-30",
     "nationality": "THA",
-    "passport_expiry": "2032-02-02",
+    "passport_expiry": "2028-12-02",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SIRI WICHAIKUL",
-    "date_of_birth": "2000-02-17",
+    "name_latin_as_printed": "PHANIT SRISAWAT",
+    "date_of_birth": "2003-06-30",
     "institution_name": "Satri Witthaya School",
-    "qualification": "Bachelor of Science",
-    "gpa": 3.85,
+    "qualification": "Mathayom 6",
+    "gpa": 2.13,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-11-27",
+    "date_graduated": "2025-02-12",
     "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SIREE WICHAIKUL",
-    "date_of_birth": "2000-02-17",
-    "test_date": "2026-01-08",
-    "overall": 6.0,
-    "writing": 5.0,
+    "name_latin_as_printed": "PHANIT SRISAWAT",
+    "date_of_birth": "2003-06-30",
+    "test_date": "2026-07-29",
+    "test_centre": "British Council Bangkok",
+    "overall": 6.5,
+    "listening": 5.0,
+    "reading": 5.0,
+    "writing": 7.5,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

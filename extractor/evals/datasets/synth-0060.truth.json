@@ -2,36 +2,46 @@
   "id": "synth-0060",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
-    "no_grad_day": true,
-    "faint_gpa": false
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": true
+  },
+  "case": {
+    "submission_target": "2026-10-11",
+    "course_end_date": "2028-09-29"
   },
   "passport": {
-    "given_name_latin": "PHANIT",
+    "given_name_latin": "KANYARAT",
     "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2003-12-09",
+    "date_of_birth": "2000-06-21",
     "nationality": "THA",
-    "passport_expiry": "2028-12-11",
+    "passport_expiry": "2032-10-27",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "PHANIT RATTANAKUL",
-    "date_of_birth": "2003-12-09",
-    "institution_name": "Chiang Mai University",
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2000-06-21",
+    "institution_name": "Bangkok Christian College",
     "qualification": "Mathayom 6",
-    "gpa": 3.44,
+    "gpa": 2.1,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-01-14",
-    "date_source_calendar": "BE"
+    "date_graduated": "2024-10-21",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "PHANIT RATTANAKUL",
-    "date_of_birth": "2003-12-09",
-    "test_date": "2026-04-18",
-    "overall": 5.5,
-    "writing": 5.5,
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2000-06-21",
+    "test_date": "2024-08-01",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.5,
+    "listening": 5.0,
+    "reading": 7.0,
+    "writing": 7.5,
+    "speaking": 7.0,
     "report_number_present": true
   }
 }

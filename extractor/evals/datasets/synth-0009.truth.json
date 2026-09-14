@@ -2,36 +2,46 @@
   "id": "synth-0009",
   "flags": {
     "name_differs": true,
-    "buddhist_era": false,
-    "no_grad_day": false,
-    "faint_gpa": true
+    "buddhist_era": true,
+    "no_grad_day": true,
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-05-18",
+    "course_end_date": "2029-02-12"
   },
   "passport": {
-    "given_name_latin": "SUWANNA",
-    "surname_latin": "SRISAWAT",
-    "date_of_birth": "2007-04-30",
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2006-01-11",
     "nationality": "THA",
-    "passport_expiry": "2029-01-21",
+    "passport_expiry": "2031-07-16",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "SUVANNA SRISAWAT",
-    "date_of_birth": "2007-04-30",
-    "institution_name": "Chulalongkorn University",
-    "qualification": "Bachelor of Science",
-    "gpa": 2.47,
+    "name_latin_as_printed": "THANAVAT JAROENSUK",
+    "date_of_birth": "2006-01-11",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Mathayom 6",
+    "gpa": 2.52,
     "gpa_scale": 4.0,
-    "date_graduated": "2025-10-23",
-    "date_source_calendar": "AD"
+    "date_graduated": "2024-08-06",
+    "date_source_calendar": "BE"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "SUWANNA SRISAWAT",
-    "date_of_birth": "2007-04-30",
-    "test_date": "2024-04-10",
-    "overall": 5.5,
-    "writing": 6.5,
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2006-01-11",
+    "test_date": "2027-01-01",
+    "test_centre": "IDP Bangkok",
+    "overall": 6.0,
+    "listening": 6.0,
+    "reading": 5.0,
+    "writing": 5.0,
+    "speaking": 7.5,
     "report_number_present": true
   }
 }

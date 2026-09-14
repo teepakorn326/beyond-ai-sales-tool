@@ -2,36 +2,46 @@
   "id": "synth-0013",
   "flags": {
     "name_differs": false,
-    "buddhist_era": true,
+    "buddhist_era": false,
     "no_grad_day": false,
-    "faint_gpa": false
+    "faint_gpa": false,
+    "passport_expiring_soon": false,
+    "english_test_lapsed": false
+  },
+  "case": {
+    "submission_target": "2027-06-19",
+    "course_end_date": "2029-04-22"
   },
   "passport": {
-    "given_name_latin": "KANYARAT",
-    "surname_latin": "RATTANAKUL",
-    "date_of_birth": "2001-04-17",
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2001-12-13",
     "nationality": "THA",
-    "passport_expiry": "2030-11-05",
+    "passport_expiry": "2034-01-28",
     "issuing_country": "THA",
     "passport_number_present": true
   },
   "transcript": {
-    "name_latin_as_printed": "KANYARAT RATTANAKUL",
-    "date_of_birth": "2001-04-17",
-    "institution_name": "Bangkok Christian College",
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2001-12-13",
+    "institution_name": "Chiang Mai University",
     "qualification": "Bachelor of Science",
-    "gpa": 2.96,
+    "gpa": 3.51,
     "gpa_scale": 4.0,
-    "date_graduated": "2026-06-30",
-    "date_source_calendar": "BE"
+    "date_graduated": "2025-09-22",
+    "date_source_calendar": "AD"
   },
   "english_test": {
     "test_type": "IELTS",
-    "name_latin_as_printed": "KANYARAT RATTANAKUL",
-    "date_of_birth": "2001-04-17",
-    "test_date": "2024-04-19",
+    "name_latin_as_printed": "CHAIYA SRISAWAT",
+    "date_of_birth": "2001-12-13",
+    "test_date": "2026-02-28",
+    "test_centre": "IDP Bangkok",
     "overall": 6.5,
-    "writing": 5.0,
+    "listening": 6.5,
+    "reading": 6.5,
+    "writing": 7.5,
+    "speaking": 5.5,
     "report_number_present": true
   }
 }
