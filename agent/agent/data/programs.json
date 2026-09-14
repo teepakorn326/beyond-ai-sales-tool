@@ -5,10 +5,18 @@
     "country": "AU",
     "level": "bachelor",
     "field": "Information Technology",
-    "intakes": ["February", "July"],
+    "intakes": [
+      "February",
+      "July"
+    ],
     "duration_months": 36,
     "english_overall_min": 6.0,
-    "english_band_min": 5.5
+    "english_band_min": 5.5,
+    "city": "Sydney",
+    "tuition_aud_per_year": 28000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school (Mathayom 6 or equivalent) with GPA 2.5/4.0",
+    "description": "Three-year IT degree with software, networks and cloud streams; first year is common core."
   },
   {
     "id": "PRG-AU-002",
@@ -16,10 +24,20 @@
     "country": "AU",
     "level": "diploma",
     "field": "Business",
-    "intakes": ["January", "April", "July", "October"],
+    "intakes": [
+      "January",
+      "April",
+      "July",
+      "October"
+    ],
     "duration_months": 18,
     "english_overall_min": 5.5,
-    "english_band_min": 5.0
+    "english_band_min": 5.0,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 15000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor",
+    "description": "Eighteen-month business diploma with a packaged pathway into the college's bachelor programmes."
   },
   {
     "id": "PRG-AU-003",
@@ -27,10 +45,284 @@
     "country": "AU",
     "level": "master",
     "field": "Data Science",
-    "intakes": ["February", "July"],
+    "intakes": [
+      "February",
+      "July"
+    ],
     "duration_months": 24,
     "english_overall_min": 6.5,
-    "english_band_min": 6.0
+    "english_band_min": 6.0,
+    "city": "Sydney",
+    "tuition_aud_per_year": 36000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in a quantitative or computing field; GPA 2.75/4.0",
+    "description": "Two-year coursework master with an industry capstone; statistics background expected."
+  },
+  {
+    "id": "PRG-AU-004",
+    "institution": "Harbour Institute of Technology (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Business Administration",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 24,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Sydney",
+    "tuition_aud_per_year": 38000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.75/4.0",
+    "description": "General MBA-style programme for early-career graduates; no work experience required."
+  },
+  {
+    "id": "PRG-AU-005",
+    "institution": "Southern Cross Business College (fictional)",
+    "country": "AU",
+    "level": "bachelor",
+    "field": "Business Administration",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 36,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 26000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school with GPA 2.5/4.0",
+    "description": "Three-year business degree with majors in management, marketing and accounting."
+  },
+  {
+    "id": "PRG-AU-006",
+    "institution": "Kingsford Metropolitan University (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Accounting",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 24,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 36000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.75/4.0",
+    "description": "Professional accounting master aligned to accreditation bodies; conversion entry for non-accounting graduates."
+  },
+  {
+    "id": "PRG-AU-007",
+    "institution": "Kingsford Metropolitan University (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "International Business",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 35000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.5/4.0",
+    "description": "Eighteen-month master focused on trade, supply chains and cross-border management."
+  },
+  {
+    "id": "PRG-AU-008",
+    "institution": "Kingsford Metropolitan University (fictional)",
+    "country": "AU",
+    "level": "bachelor",
+    "field": "Commerce",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 36,
+    "english_overall_min": 6.0,
+    "english_band_min": 6.0,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 30000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school with GPA 2.5/4.0 including mathematics",
+    "description": "Commerce degree with economics, finance and analytics majors."
+  },
+  {
+    "id": "PRG-AU-009",
+    "institution": "Brisbane River College (fictional)",
+    "country": "AU",
+    "level": "diploma",
+    "field": "Information Technology",
+    "intakes": [
+      "February",
+      "July",
+      "October"
+    ],
+    "duration_months": 12,
+    "english_overall_min": 5.5,
+    "english_band_min": 5.0,
+    "city": "Brisbane",
+    "tuition_aud_per_year": 16000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor",
+    "description": "One-year IT diploma with credit into the second year of partner bachelor degrees."
+  },
+  {
+    "id": "PRG-AU-010",
+    "institution": "Brisbane River College (fictional)",
+    "country": "AU",
+    "level": "diploma",
+    "field": "Hospitality Management",
+    "intakes": [
+      "February",
+      "July",
+      "October"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 5.5,
+    "english_band_min": 5.0,
+    "city": "Brisbane",
+    "tuition_aud_per_year": 15000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor",
+    "description": "Hospitality diploma with a supervised industry placement in the second year."
+  },
+  {
+    "id": "PRG-AU-011",
+    "institution": "Swan Coast University (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Civil Engineering",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 24,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Perth",
+    "tuition_aud_per_year": 39000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in engineering or a related science; GPA 2.75/4.0",
+    "description": "Accredited engineering master with structural and transport specialisations."
+  },
+  {
+    "id": "PRG-AU-012",
+    "institution": "Swan Coast University (fictional)",
+    "country": "AU",
+    "level": "bachelor",
+    "field": "Nursing",
+    "intakes": [
+      "February"
+    ],
+    "duration_months": 36,
+    "english_overall_min": 7.0,
+    "english_band_min": 7.0,
+    "city": "Perth",
+    "tuition_aud_per_year": 33000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school with GPA 2.5/4.0; English 7.0 in every band for registration",
+    "description": "Registered-nurse pathway degree with clinical placements from the first year."
+  },
+  {
+    "id": "PRG-AU-013",
+    "institution": "Torrens Valley Institute (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Marketing",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Adelaide",
+    "tuition_aud_per_year": 32000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.5/4.0",
+    "description": "Eighteen-month marketing master with digital and brand analytics streams."
+  },
+  {
+    "id": "PRG-AU-014",
+    "institution": "Torrens Valley Institute (fictional)",
+    "country": "AU",
+    "level": "diploma",
+    "field": "Early Childhood Education",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5,
+    "city": "Adelaide",
+    "tuition_aud_per_year": 14000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor; working-with-children clearance",
+    "description": "Early childhood diploma with placement hours toward local registration."
+  },
+  {
+    "id": "PRG-AU-015",
+    "institution": "Harbour Institute of Technology (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Cyber Security",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 24,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Sydney",
+    "tuition_aud_per_year": 37000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in computing or engineering; GPA 2.75/4.0",
+    "description": "Two-year cyber security master with a security operations lab and industry projects."
+  },
+  {
+    "id": "PRG-AU-016",
+    "institution": "Gold Coast Pacific College (fictional)",
+    "country": "AU",
+    "level": "bachelor",
+    "field": "Hospitality Management",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 36,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5,
+    "city": "Gold Coast",
+    "tuition_aud_per_year": 24000,
+    "min_gpa": 2.0,
+    "entry_requirement": "Completed secondary school with GPA 2.0/4.0",
+    "description": "Hospitality degree with paid placement blocks in resort and events operations."
+  },
+  {
+    "id": "PRG-AU-017",
+    "institution": "Kingsford Metropolitan University (fictional)",
+    "country": "AU",
+    "level": "master",
+    "field": "Business Administration (Advanced)",
+    "intakes": [
+      "February"
+    ],
+    "duration_months": 24,
+    "english_overall_min": 7.0,
+    "english_band_min": 6.5,
+    "city": "Melbourne",
+    "tuition_aud_per_year": 42000,
+    "min_gpa": 3.0,
+    "entry_requirement": "Bachelor degree with GPA 3.0/4.0; English 7.0 overall",
+    "description": "Selective two-year MBA with a consulting practicum; higher English and GPA bar than the standard programme."
   },
   {
     "id": "PRG-NZ-001",
@@ -38,10 +330,17 @@
     "country": "NZ",
     "level": "bachelor",
     "field": "Nursing",
-    "intakes": ["February"],
+    "intakes": [
+      "February"
+    ],
     "duration_months": 36,
     "english_overall_min": 6.5,
-    "english_band_min": 6.5
+    "english_band_min": 6.5,
+    "city": "Auckland",
+    "tuition_aud_per_year": 30000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school with GPA 2.5/4.0; English 6.5 in every band",
+    "description": "Nursing degree leading to registration; placements across Auckland hospitals."
   },
   {
     "id": "PRG-NZ-002",
@@ -49,9 +348,130 @@
     "country": "NZ",
     "level": "diploma",
     "field": "Hospitality",
-    "intakes": ["February", "July"],
+    "intakes": [
+      "February",
+      "July"
+    ],
     "duration_months": 12,
     "english_overall_min": 5.5,
-    "english_band_min": 5.0
+    "english_band_min": 5.0,
+    "city": "Auckland",
+    "tuition_aud_per_year": 14000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor",
+    "description": "One-year hospitality diploma with kitchen and front-of-house practice."
+  },
+  {
+    "id": "PRG-NZ-003",
+    "institution": "Southern Alps University (fictional)",
+    "country": "NZ",
+    "level": "master",
+    "field": "Business Administration",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Christchurch",
+    "tuition_aud_per_year": 34000,
+    "min_gpa": 2.75,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.75/4.0",
+    "description": "Eighteen-month MBA-style programme with a small cohort and applied projects."
+  },
+  {
+    "id": "PRG-NZ-004",
+    "institution": "Southern Alps University (fictional)",
+    "country": "NZ",
+    "level": "bachelor",
+    "field": "Engineering",
+    "intakes": [
+      "February"
+    ],
+    "duration_months": 48,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5,
+    "city": "Christchurch",
+    "tuition_aud_per_year": 30000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Completed secondary school with GPA 2.5/4.0 including physics and mathematics",
+    "description": "Four-year engineering degree with civil, mechanical and software majors."
+  },
+  {
+    "id": "PRG-NZ-005",
+    "institution": "Wellington Harbour Institute (fictional)",
+    "country": "NZ",
+    "level": "master",
+    "field": "Information Technology",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Wellington",
+    "tuition_aud_per_year": 33000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Bachelor degree in any discipline; GPA 2.5/4.0",
+    "description": "Conversion master in IT for graduates from non-computing backgrounds."
+  },
+  {
+    "id": "PRG-NZ-006",
+    "institution": "Wellington Harbour Institute (fictional)",
+    "country": "NZ",
+    "level": "diploma",
+    "field": "Business",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 12,
+    "english_overall_min": 5.5,
+    "english_band_min": 5.0,
+    "city": "Wellington",
+    "tuition_aud_per_year": 15000,
+    "min_gpa": null,
+    "entry_requirement": "Completed secondary school; no GPA floor",
+    "description": "One-year business diploma with credit into the institute's bachelor of business."
+  },
+  {
+    "id": "PRG-NZ-007",
+    "institution": "Aotearoa Polytechnic (fictional)",
+    "country": "NZ",
+    "level": "master",
+    "field": "Applied Management",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 18,
+    "english_overall_min": 6.5,
+    "english_band_min": 6.0,
+    "city": "Auckland",
+    "tuition_aud_per_year": 31000,
+    "min_gpa": 2.5,
+    "entry_requirement": "Bachelor degree in any discipline or a diploma plus three years of work; GPA 2.5/4.0",
+    "description": "Applied management master built around a workplace project."
+  },
+  {
+    "id": "PRG-NZ-008",
+    "institution": "Southern Alps University (fictional)",
+    "country": "NZ",
+    "level": "bachelor",
+    "field": "Tourism Management",
+    "intakes": [
+      "February",
+      "July"
+    ],
+    "duration_months": 36,
+    "english_overall_min": 6.0,
+    "english_band_min": 5.5,
+    "city": "Christchurch",
+    "tuition_aud_per_year": 27000,
+    "min_gpa": 2.0,
+    "entry_requirement": "Completed secondary school with GPA 2.0/4.0",
+    "description": "Tourism and events degree with a semester in industry."
   }
 ]

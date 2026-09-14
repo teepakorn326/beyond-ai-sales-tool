@@ -16,12 +16,18 @@ export const IMMUTABLE_SQLSTATE = "VDC01";
 
 const g = globalThis as unknown as { __vdcPool?: Pool };
 
+/**
+ * pg lets `sslmode=` in the URL override an explicit `ssl` option, so the
+ * mode is taken out of the URL and TLS is configured here: with
+ * PG_CA_CERT_PATH (the RDS CA bundle) the server certificate is verified;
+ * without it the connection is encrypted but the certificate is not checked.
+ */
 export function poolConfig(url: string): PoolConfig {
-  const cfg: PoolConfig = { connectionString: url, max: 5 };
-  // RDS requires TLS. With a CA bundle path the server certificate is
-  // verified; without one the connection is still encrypted but the
-  // certificate is not checked (acceptable for the demo, not for production).
-  if (/sslmode=require/.test(url)) {
+  const u = new URL(url);
+  const mode = u.searchParams.get("sslmode");
+  u.searchParams.delete("sslmode");
+  const cfg: PoolConfig = { connectionString: u.toString(), max: 5 };
+  if (mode && mode !== "disable") {
     const ca = process.env.PG_CA_CERT_PATH;
     cfg.ssl = ca ? { ca: readFileSync(ca, "utf8"), rejectUnauthorized: true } : { rejectUnauthorized: false };
   }

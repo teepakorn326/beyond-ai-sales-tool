@@ -4,7 +4,7 @@
 
 import "server-only";
 
-import { classifyFiles, extractDocument, ExtractorError, type FilePart } from "./extractor";
+import { classifyFiles, extractDocument, ExtractorError, renderFiles, type FilePart } from "./extractor";
 import { groupPages } from "./sorting";
 import { createDocument, createUpload, updateUpload, type PageBytes } from "./store";
 import { DOC_TYPES, type Classification, type DocType, type ReviewDocument, type UploadRecord } from "../types";
@@ -49,7 +49,7 @@ export async function extractUpload(
   const doc = await createDocument({
     case_id: up.case_id,
     doc_type: docType,
-    filename: pages.map((p) => p.filename).join(" + "),
+    filename: [...new Set(pages.map((p) => p.filename))].join(" + "),
     content_type: pages[0].content_type,
     extracted_json,
     upload_id: up.id,
@@ -61,18 +61,21 @@ export async function extractUpload(
 }
 
 /**
- * Sort a batch of files into documents. Files are classified one by one,
- * grouped by code, and each group that the sorter is confident about is
- * extracted. Anything else is held with a reason for a person to sort.
+ * Sort a batch of files into documents. Every file is first rendered to
+ * JPEG pages (a PDF or HEIC cannot be shown in the browser as sent), the
+ * first page of each file is classified, files are grouped by code, and
+ * each group that the sorter is confident about is extracted from those same
+ * pages. Anything else is held with a reason for a person to sort.
  */
 export async function intakeBatch(caseId: string, files: FilePart[]): Promise<IntakeResult> {
-  const classifications = await classifyFiles(files);
+  const rendered = await renderFiles(files);
+  const classifications = await classifyFiles(rendered.map((pages) => pages[0]));
   const groups = groupPages(classifications);
 
   const uploads: UploadRecord[] = [];
   const documents: ReviewDocument[] = [];
   for (const g of groups) {
-    const pages = g.pages.map((i) => ({ ...files[i], classification: classifications[i] }));
+    const pages = g.pages.flatMap((i) => rendered[i].map((p) => ({ ...p, classification: classifications[i] })));
     const up = await createUpload({
       case_id: caseId,
       pages,

@@ -71,6 +71,33 @@ export async function extractDocument(docType: DocType, files: readonly FilePart
   return parseExtraction(await res.json(), docType);
 }
 
+const PAGE_TYPES: ReadonlySet<string> = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+/**
+ * Every file rendered to browser-displayable pages, one list per file, in
+ * order. A PDF becomes one JPEG per page; a photo becomes one page. These
+ * are the pages that get stored, shown on the review screen and extracted,
+ * so what the reviewer sees is exactly what the model read.
+ */
+export async function renderFiles(files: readonly FilePart[]): Promise<FilePart[][]> {
+  const res = await call("/render", { method: "POST", body: multipart(files) });
+  const raw: unknown = await res.json();
+  if (!isRecord(raw) || !Array.isArray(raw.files) || raw.files.length !== files.length) {
+    throw new ExtractorError(502, "render returned the wrong number of files");
+  }
+  return (raw.files as unknown[]).map((f, i) => {
+    if (!isRecord(f) || !Array.isArray(f.pages) || f.pages.length === 0) {
+      throw new ExtractorError(502, "render returned malformed pages");
+    }
+    return (f.pages as unknown[]).map((p): FilePart => {
+      if (!isRecord(p) || typeof p.media_type !== "string" || !PAGE_TYPES.has(p.media_type) || typeof p.data !== "string") {
+        throw new ExtractorError(502, "render returned a page that is not an image");
+      }
+      return { filename: files[i].filename, content_type: p.media_type, bytes: new Uint8Array(Buffer.from(p.data, "base64")) };
+    });
+  });
+}
+
 /** One Classification per file (its first page decides). */
 export async function classifyFiles(files: readonly FilePart[]): Promise<Classification[]> {
   const res = await call("/classify", { method: "POST", body: multipart(files) });

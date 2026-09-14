@@ -285,6 +285,19 @@ database trigger refuses any update to `extracted_json`, on top of the check
 in `web/app/lib/store.ts`. `./run.sh dev` starts a local pgvector Postgres and
 MinIO in Docker so none of this needs an AWS account offline.
 
+### Mock verified students and the programme conversation
+
+`make seed-demo` inserts five students (cases 0501–0505) whose four documents
+are already confirmed and consistent, so each case is Ready; their page
+images are rendered from small templates and stored in S3 like any upload.
+Names come from the synthetic corpus, and qualification, field, GPA and
+IELTS bands are set per persona so the assistant has something to reason
+about. On a Ready case the assistant's suggestion chips lead with "Which
+programmes fit this student?"; the answer draws only on the fictional
+catalogue of 25 programmes, states each programme's English minimum against
+the student's band and its GPA floor, and says plainly where the student
+falls short. Visa, work-rights and residency questions still escalate.
+
 ### Similar cases and duplicate students
 
 When a document becomes fully confirmed, the web tier rebuilds a PII-free

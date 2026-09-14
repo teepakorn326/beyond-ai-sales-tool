@@ -78,6 +78,38 @@ def seeded_case(*, suspicious: str | None = None, injected_field: str | None = N
     )
 
 
+def ready_case() -> CaseRecord:
+    """Every document confirmed and consistent: the case the programme
+    conversation is built for."""
+    name = {"name_latin_as_printed": "THANAWAT JAROENSUK", "date_of_birth": "2003-01-31"}
+    return CaseRecord(
+        case_id="STU-2026-0413",
+        country="AU",
+        course_end_date="2029-06-30",
+        submission_target="2026-10-31",
+        documents=[
+            DocumentRecord("doc-pp", "passport", "p.png",
+                           confirmed("passport", {"given_name_latin": "THANAWAT", "surname_latin": "JAROENSUK",
+                                                  "date_of_birth": "2003-01-31", "passport_expiry": "2032-06-06"})),
+            DocumentRecord("doc-tr", "transcript", "t.png",
+                           confirmed("transcript", {**name, "institution_name": "Kasetsart University",
+                                                    "qualification": "Bachelor of Business Administration",
+                                                    "major": "Business Administration", "gpa": 3.1, "gpa_scale": 4.0,
+                                                    "date_graduated": "2026-02-28"})),
+            DocumentRecord("doc-ce", "degree_certificate", "c.png",
+                           confirmed("degree_certificate", {"name_latin_as_printed": "THANAWAT JAROENSUK",
+                                                            "qualification": "Bachelor of Business Administration",
+                                                            "institution_name": "Kasetsart University",
+                                                            "field_of_study": "Business Administration",
+                                                            "date_conferred": "2026-05-15"})),
+            DocumentRecord("doc-en", "english_test", "e.png",
+                           confirmed("english_test", {**name, "test_type": "IELTS", "test_date": "2026-01-10",
+                                                      "overall": 6.5, "listening": 6.5, "reading": 6.5,
+                                                      "writing": 6.0, "speaking": 6.5})),
+        ],
+    )
+
+
 def make_services(rules: dict[str, Any] = RULES_BLOCKED, case: CaseRecord | None = None) -> Services:
     return Services(
         cases=MemoryCaseStore([case or seeded_case()]),

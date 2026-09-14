@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import sys
 import time
 from dataclasses import asdict, dataclass, field
@@ -294,6 +295,17 @@ class Program:
     english_overall_min: float
     english_band_min: float
     synthetic: bool = True
+    city: str = ""
+    tuition_aud_per_year: int | None = None  # indicative; NZ rows hold an AUD equivalent
+    min_gpa: float | None = None  # on a 4.0 scale; None = no published floor
+    entry_requirement: str = ""
+    description: str = ""
+
+
+def _levels(v: Any) -> set[str] | None:
+    if not v:
+        return None
+    return {str(x).lower() for x in (v if isinstance(v, (list, tuple)) else [v])}
 
 
 class ProgramIndex(Protocol):
@@ -310,18 +322,135 @@ class ProgramCatalogue:
         return cls([Program(**{**p, "intakes": tuple(p["intakes"])}) for p in raw])
 
     def search(self, filters: dict[str, Any]) -> list[dict[str, Any]]:
+        """Filters only; `query` is accepted and ignored here (no embeddings in
+        the file store). Country and level are case-insensitive; level may be
+        a list. A programme with no published GPA floor always passes `gpa`."""
+        country = (filters.get("country") or "").upper() or None
+        levels = _levels(filters.get("level"))
+        field = (filters.get("field") or "").lower() or None
+        city = (filters.get("city") or "").lower() or None
+        mx = filters.get("max_english_overall")
+        max_tuition = filters.get("max_tuition_aud")
+        gpa = filters.get("gpa")
         out = []
         for p in self.programs:
-            if filters.get("country") and p.country != filters["country"]:
+            if country and p.country.upper() != country:
                 continue
-            if filters.get("level") and p.level != filters["level"]:
+            if levels and p.level.lower() not in levels:
                 continue
-            if filters.get("field") and filters["field"].lower() not in p.field.lower():
+            if field and field not in p.field.lower():
                 continue
-            if (mx := filters.get("max_english_overall")) is not None and p.english_overall_min > mx:
+            if city and city not in p.city.lower():
+                continue
+            if mx is not None and p.english_overall_min > mx:
+                continue
+            if max_tuition is not None and (p.tuition_aud_per_year is None or p.tuition_aud_per_year > max_tuition):
+                continue
+            if gpa is not None and p.min_gpa is not None and p.min_gpa > gpa:
                 continue
             out.append(asdict(p))
         return out
+
+
+# ---------------------------------------------------------------------------
+# Study profile: what the catalogue needs to know about a student, and
+# nothing else. Built from confirmed documents only; no names, no dates of
+# birth, no document numbers.
+# ---------------------------------------------------------------------------
+
+_SECONDARY = re.compile(
+    r"mathayom|matthayom|\bม\.?\s*6\b|high school|secondary|year 12|grade 12|\bgce\b|a[- ]levels?|ib diploma",
+    re.IGNORECASE,
+)
+_BACHELOR = re.compile(r"\bbachelor|\bb\.?\s?(?:a|sc|eng|com|ed|n|b\.?a)\b|ปริญญาตรี|undergraduate", re.IGNORECASE)
+_MASTER = re.compile(r"\bmaster|\bm\.?\s?(?:a|sc|eng|b\.?a)\b|ปริญญาโท|postgraduate", re.IGNORECASE)
+_DIPLOMA = re.compile(r"\bdiploma|\bcertificate (?:iii|iv)\b|ปวช|ปวส|อนุปริญญา", re.IGNORECASE)
+
+
+def suggested_levels(qualification: str | None) -> list[str]:
+    """Study level(s) the catalogue can offer after a completed qualification.
+    The first entry is the natural progression."""
+    if not qualification:
+        return []
+    q = qualification.strip()
+    if _MASTER.search(q):
+        return []  # nothing above master in the catalogue
+    if _BACHELOR.search(q):
+        return ["master"]
+    if _DIPLOMA.search(q):
+        return ["bachelor"]
+    if _SECONDARY.search(q):
+        return ["bachelor", "diploma"]
+    return []
+
+
+def _num(doc: DocumentRecord | None, name: str) -> float | None:
+    if doc is None or doc.confirmed_json is None:
+        return None
+    v = doc.confirmed_json.get("fields", {}).get(name)
+    return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+
+
+def _gpa_on_4(gpa: float | None, scale: float | None) -> float | None:
+    if gpa is None:
+        return None
+    if scale in (None, 4.0):
+        return round(gpa, 2)
+    return round(gpa / scale * 4.0, 2) if scale > 0 else None
+
+
+def build_study_profile(case: CaseRecord) -> dict[str, Any]:
+    def latest(t: str) -> DocumentRecord | None:
+        hits = [d for d in case.documents if d.doc_type == t and d.confirmed_json]
+        return hits[-1] if hits else None
+
+    t, c, e = latest("transcript"), latest("degree_certificate"), latest("english_test")
+    qualification = _field(c, "qualification") or _field(t, "qualification")
+    gpa, scale = _num(t, "gpa"), _num(t, "gpa_scale")
+    bands = [b for b in (_num(e, k) for k in ("listening", "reading", "writing", "speaking")) if b is not None]
+    return {
+        "case_id": case.case_id,
+        "country": case.country,
+        "program_id": case.program_id,
+        "qualification": qualification,
+        "field": _field(c, "field_of_study") or _field(t, "major"),
+        "institution": _field(c, "institution_name") or _field(t, "institution_name"),
+        "gpa": gpa,
+        "gpa_scale": scale,
+        "gpa_on_4": _gpa_on_4(gpa, scale),
+        "english": None
+        if e is None
+        else {
+            "test_type": _field(e, "test_type"),
+            "overall": _num(e, "overall"),
+            "lowest_band": min(bands) if bands else None,
+            "test_date": _field(e, "test_date"),
+        },
+        "suggested_levels": suggested_levels(qualification),
+        "sources": {"transcript": t is not None, "degree_certificate": c is not None, "english_test": e is not None},
+    }
+
+
+def annotate_fit(programs: list[dict[str, Any]], profile: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """Deterministic fit per candidate. The model explains; it does not decide."""
+    eng = (profile or {}).get("english") or {}
+    overall, lowest, gpa = eng.get("overall"), eng.get("lowest_band"), (profile or {}).get("gpa_on_4")
+    out = []
+    for p in programs:
+        if overall is None:
+            english = "unknown"
+        elif overall < p["english_overall_min"] or (lowest is not None and lowest < p["english_band_min"]):
+            english = "short"
+        else:
+            english = "ok"
+        if p.get("min_gpa") is None:
+            g = "not_required"
+        elif gpa is None:
+            g = "unknown"
+        else:
+            g = "ok" if gpa >= p["min_gpa"] else "short"
+        out.append({**p, "fit": {"english": english, "gpa": g}})
+    return out
 
 
 # ---------------------------------------------------------------------------

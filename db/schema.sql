@@ -132,8 +132,19 @@ CREATE TABLE IF NOT EXISTS programs (
   english_overall_min numeric(3,1) NOT NULL,
   english_band_min    numeric(3,1) NOT NULL,
   synthetic           boolean NOT NULL DEFAULT true,
+  city                text NOT NULL DEFAULT '',
+  tuition_aud_per_year int,
+  min_gpa             numeric(3,2),
+  entry_requirement   text NOT NULL DEFAULT '',
+  description         text NOT NULL DEFAULT '',
   embedding           vector(1024),
   embedding_model     text,
   content_hash        text
 );
+-- Columns added after the first release; no-ops on a fresh database.
+ALTER TABLE programs ADD COLUMN IF NOT EXISTS city                 text NOT NULL DEFAULT '';
+ALTER TABLE programs ADD COLUMN IF NOT EXISTS tuition_aud_per_year int;
+ALTER TABLE programs ADD COLUMN IF NOT EXISTS min_gpa              numeric(3,2);
+ALTER TABLE programs ADD COLUMN IF NOT EXISTS entry_requirement    text NOT NULL DEFAULT '';
+ALTER TABLE programs ADD COLUMN IF NOT EXISTS description          text NOT NULL DEFAULT '';
 CREATE INDEX IF NOT EXISTS programs_embedding_idx ON programs USING hnsw (embedding vector_cosine_ops);

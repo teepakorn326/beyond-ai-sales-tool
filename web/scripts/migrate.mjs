@@ -13,12 +13,17 @@ if (!url) {
   console.error("DATABASE_URL is not set");
   process.exit(1);
 }
-const ssl = /sslmode=require/.test(url)
-  ? process.env.PG_CA_CERT_PATH
-    ? { ca: readFileSync(process.env.PG_CA_CERT_PATH, "utf8"), rejectUnauthorized: true }
-    : { rejectUnauthorized: false }
-  : undefined;
-const client = new pg.Client({ connectionString: url, ssl });
+// pg lets sslmode= in the URL override an explicit ssl option: strip it and configure TLS here.
+const u = new URL(url);
+const sslmode = u.searchParams.get("sslmode");
+u.searchParams.delete("sslmode");
+const ssl =
+  sslmode && sslmode !== "disable"
+    ? process.env.PG_CA_CERT_PATH
+      ? { ca: readFileSync(process.env.PG_CA_CERT_PATH, "utf8"), rejectUnauthorized: true }
+      : { rejectUnauthorized: false }
+    : undefined;
+const client = new pg.Client({ connectionString: u.toString(), ssl });
 await client.connect();
 try {
   await client.query(readFileSync(file, "utf8"));

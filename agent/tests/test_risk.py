@@ -61,6 +61,7 @@ def test_every_tool_has_the_documented_risk():
     reg = build_registry(make_services())
     assert set(reg.names(Risk.READ)) == {
         "get_case", "list_documents", "get_extraction", "run_rules", "search_policy", "search_programs",
+        "get_study_profile",
     }
     assert set(reg.names(Risk.REVERSIBLE)) == {"escalate_to_visa_team", "flag_document"}
     assert set(reg.names(Risk.EXTERNAL)) == {"request_document", "draft_student_message"}

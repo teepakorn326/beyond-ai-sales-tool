@@ -92,8 +92,12 @@ keep that test when adding a field.
 
 ## Product guardrails
 
-The system answers exactly one question: **are the documents complete and
-internally consistent?**
+The system answers two questions: **are the documents complete and
+internally consistent?** and, for a verified student, **which programmes in
+the catalogue fit them?** Programme answers come only from
+`agent/agent/data/programs.json` (the `programs` table once seeded), a
+catalogue of fictional institutions; the model may never name a programme
+that is not in a `search_programs` result.
 
 It must never:
 

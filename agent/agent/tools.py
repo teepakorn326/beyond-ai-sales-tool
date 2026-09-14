@@ -7,7 +7,7 @@ from dataclasses import asdict
 from typing import Any
 
 from .risk import Risk, Tool, ToolRegistry
-from .services import Services, build_rules_payload
+from .services import Services, build_rules_payload, build_study_profile
 
 
 def _obj(props: dict[str, Any], required: list[str]) -> dict[str, Any]:
@@ -89,6 +89,14 @@ def build_tools(svc: Services) -> list[Tool]:
     def search_programs(filters: dict[str, Any]) -> dict[str, Any]:
         return {"programs": svc.programs.search(filters)}
 
+    def get_study_profile(case_id: str) -> dict[str, Any]:
+        """What the catalogue needs to know about the student and nothing else:
+        qualification, field, GPA, English band. No names, no dates of birth."""
+        c = svc.cases.get_case(case_id)
+        if c is None:
+            return {"error": f"Case {case_id} not found"}
+        return build_study_profile(c)
+
     # ---- reversible, internal ------------------------------------------
 
     def escalate_to_visa_team(case_id: str, reason: str) -> dict[str, Any]:
@@ -152,17 +160,22 @@ def build_tools(svc: Services) -> list[Tool]:
         ),
         Tool(
             "search_programs",
-            "Search the programme catalogue. Filters: country, level, field, max_english_overall; "
-            "optional query for a free-text description of what the student wants to study.",
+            "Search the programme catalogue (fictional institutions; the only source of programme "
+            "recommendations). Filters: country, level (string or list), field, city, "
+            "max_english_overall, max_tuition_aud, gpa (keeps programmes whose min_gpa is null or "
+            "<= gpa); optional query for free text. Never name a programme that is not in the result.",
             _obj(
                 {
                     "filters": {
                         "type": "object",
                         "properties": {
                             "country": {"type": "string"},
-                            "level": {"type": "string"},
+                            "level": {"anyOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
                             "field": {"type": "string"},
+                            "city": {"type": "string"},
                             "max_english_overall": {"type": "number"},
+                            "max_tuition_aud": {"type": "integer"},
+                            "gpa": {"type": "number"},
                             "query": {"type": "string"},
                         },
                         "additionalProperties": False,
@@ -172,6 +185,15 @@ def build_tools(svc: Services) -> list[Tool]:
             ),
             Risk.READ,
             search_programs,
+        ),
+        Tool(
+            "get_study_profile",
+            "PII-free study profile from the case's confirmed documents: qualification, field, GPA, "
+            "English test band, and the study level(s) the catalogue can offer next. Use it before "
+            "search_programs when asked which programmes fit a student.",
+            _obj({"case_id": {"type": "string"}}, ["case_id"]),
+            Risk.READ,
+            get_study_profile,
         ),
         Tool(
             "escalate_to_visa_team",

@@ -13,3 +13,6 @@ out/
 web/next-env.d.ts
 web/tsconfig.tsbuildinfo
 web/.env.local
+.env.bootstrap
+.env.offline
+.env.runtime

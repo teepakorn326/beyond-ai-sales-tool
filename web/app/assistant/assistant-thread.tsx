@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Icon } from "../components/icons";
+import { Markdown } from "../components/markdown";
 import { ConfirmationDialog, errorOf, useToast } from "../components/ui";
 import type { AssistantReply, Decision, Proposal } from "../lib/assistant-types";
 import type { CaseStatus } from "../lib/case-status";
@@ -17,7 +18,13 @@ export interface CaseOption {
 
 type Msg = { role: "user"; text: string } | { role: "ai"; text: string; outsideScope: boolean } | { role: "proposal"; question: string; proposal: Proposal; threadId: string | null; done: "approved" | "rejected" | null } | { role: "unavailable"; text: string };
 
-const SUGGESTIONS = ["Why is this case blocked?", "Which documents still need review?", "Does the student's name match?", "What needs to happen before submission?"];
+const LODGEMENT_SUGGESTIONS = ["Why is this case blocked?", "Which documents still need review?", "Does the student's name match?", "What needs to happen before submission?"];
+const PROGRAMME_SUGGESTIONS = ["Which programmes fit this student?", "หลักสูตรไหนเหมาะกับน้องคนนี้"];
+
+/** A verified case is past lodgement questions; lead with the programme ones. */
+function suggestionsFor(status: CaseStatus | undefined): string[] {
+  return status === "ready" ? [...PROGRAMME_SUGGESTIONS, ...LODGEMENT_SUGGESTIONS] : [...LODGEMENT_SUGGESTIONS, ...PROGRAMME_SUGGESTIONS];
+}
 
 const TOOL_LABEL: Record<string, string> = {
   draft_student_message: "Draft a message to the student",
@@ -79,6 +86,7 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
   }
 
   const pending = approving !== null ? msgs[approving] : null;
+  const current = options.find((o) => o.id === caseId);
 
   return (
     <div className="card" style={{ maxWidth: 820, display: "flex", flexDirection: "column", gap: 14, minHeight: 560 }}>
@@ -100,7 +108,7 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
 
       {msgs.length === 0 && (
         <div className="row wrap" style={{ gap: 8 }}>
-          {SUGGESTIONS.map((s) => (
+          {suggestionsFor(current?.status).map((s) => (
             <button key={s} type="button" className="btn secondary sm" onClick={() => ask(s)} disabled={busy || !caseId}>
               {s}
             </button>
@@ -123,7 +131,7 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
                   <div className="overline" style={{ marginBottom: 6 }}>
                     {m.outsideScope ? "Assistant · outside scope" : "Assistant · reads case record only"}
                   </div>
-                  {m.text}
+                  <Markdown text={m.text} />
                 </div>
               );
             case "proposal":

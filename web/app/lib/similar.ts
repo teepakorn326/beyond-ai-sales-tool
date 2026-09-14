@@ -17,7 +17,7 @@ export interface SimilarCase {
   profile: string;
 }
 
-const MIN_SIMILARITY = Number(process.env.SIMILAR_MIN_SIMILARITY ?? "0.80");
+const MIN_SIMILARITY = Number(process.env.SIMILAR_MIN_SIMILARITY ?? "0.70");
 
 function log(event: string, fields: Record<string, unknown>): void {
   // Shapes and counts only, like the extractor's logging.

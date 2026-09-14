@@ -40,7 +40,11 @@ _CATEGORIES: list[tuple[str, list[str]]] = [
         r"\bPR\b",
         r"permanent residen",
         r"ถิ่นที่อยู่ถาวร", r"อยู่ถาวร", r"ย้ายถิ่น", r"พีอาร์",
-        r"\bmigrat", r"\bpathway", r"\bsettle\b",
+        r"\bmigrat",
+        # "pathway" and "settle" only in a visa/residency sense: "course pathway"
+        # and "settle on a programme" are ordinary sales questions.
+        r"\bpathway\b(?=.{0,40}(?:visa|residen|\bPR\b|migrat|work))",
+        r"\bsettl(?:e|ing) (?:in|permanently|down)\b",
         r"เส้นทาง.{0,15}(?:PR|ถาวร|อยู่ต่อ|ทำงาน|ย้าย)",
         r"(?:อยู่ต่อ|ทำงานต่อ).{0,20}(?:หลังเรียน|หลังจบ|เรียนจบ)",
         r"(?:หลังเรียนจบ|หลังจบ|เรียนจบแล้ว).{0,20}(?:อยู่ต่อ|ทำงาน|ขอวีซ่า|ต่อวีซ่า)",
@@ -67,7 +71,12 @@ _CATEGORIES: list[tuple[str, list[str]]] = [
         r"\byou are now\b",
         r"\bnew instructions?:",
         r"(?:ไม่ต้องสนใจ|ละเว้น|ข้าม|ลืม).{0,15}(?:คำสั่ง|กฎ|ข้อกำหนด).{0,15}(?:ก่อนหน้า|ทั้งหมด|เดิม)",
-        r"(?:applicant|student|case|application).{0,30}meets? all (?:the )?requirements",
+        # A statement, not a question: "does the student meet all requirements
+        # for this course?" is something a sales user legitimately asks.
+        (
+            r"(?<!does )(?<!do )(?<!whether )(?<!if )(?<!does the )(?<!do the )(?<!does this )(?<!whether the )(?<!if the )"
+            r"(?:applicant|student|case|application).{0,30}meets? all (?:the )?requirements"
+        ),
         r"\bapprove (?:this|the) (?:case|application|student)\b",
         r"\bmark(?:ed)? (?:this |the |it )?(?:as )?(?:approved|complete|verified)\b",
         r"ผ่านทุกเกณฑ์", r"ครบทุกเกณฑ์แล้ว", r"อนุมัติได้เลย", r"ถือว่า(?:ผ่าน|ครบ|อนุมัติ)",

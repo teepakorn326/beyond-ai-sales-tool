@@ -15,12 +15,17 @@ if (!url || !bucket) {
   console.error("DATABASE_URL and S3_BUCKET are required");
   process.exit(1);
 }
-const ssl = /sslmode=require/.test(url)
-  ? process.env.PG_CA_CERT_PATH
-    ? { ca: readFileSync(process.env.PG_CA_CERT_PATH, "utf8"), rejectUnauthorized: true }
-    : { rejectUnauthorized: false }
-  : undefined;
-const db = new pg.Client({ connectionString: url, ssl });
+// pg lets sslmode= in the URL override an explicit ssl option: strip it and configure TLS here.
+const u = new URL(url);
+const sslmode = u.searchParams.get("sslmode");
+u.searchParams.delete("sslmode");
+const ssl =
+  sslmode && sslmode !== "disable"
+    ? process.env.PG_CA_CERT_PATH
+      ? { ca: readFileSync(process.env.PG_CA_CERT_PATH, "utf8"), rejectUnauthorized: true }
+      : { rejectUnauthorized: false }
+    : undefined;
+const db = new pg.Client({ connectionString: u.toString(), ssl });
 const endpoint = process.env.S3_ENDPOINT || undefined;
 const s3 = new S3Client({ region: process.env.AWS_REGION ?? "ap-southeast-2", endpoint, forcePathStyle: Boolean(endpoint) || process.env.S3_FORCE_PATH_STYLE === "true" });
 const sse = process.env.S3_KMS_KEY_ID ? { ServerSideEncryption: "aws:kms", SSEKMSKeyId: process.env.S3_KMS_KEY_ID } : endpoint ? {} : { ServerSideEncryption: "AES256" };

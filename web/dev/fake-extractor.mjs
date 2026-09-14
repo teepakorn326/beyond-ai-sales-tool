@@ -168,11 +168,50 @@ function filenamesIn(body) {
   return [...text.matchAll(/name="files"; filename="([^"]*)"/g)].map((m) => m[1]);
 }
 
+/** The "files" parts of a multipart body: {filename, contentType, bytes}. */
+function partsIn(req, body) {
+  const m = /boundary=("?)([^";]+)\1/.exec(req.headers["content-type"] ?? "");
+  if (!m) return [];
+  const delim = Buffer.from(`--${m[2]}`);
+  const parts = [];
+  let at = body.indexOf(delim);
+  while (at !== -1) {
+    const start = at + delim.length;
+    if (body.slice(start, start + 2).toString() === "--") break;
+    const next = body.indexOf(delim, start);
+    if (next === -1) break;
+    const part = body.slice(start + 2, next - 2); // strip CRLF after the delimiter and before the next
+    const sep = part.indexOf("\r\n\r\n");
+    const head = part.slice(0, sep).toString("latin1");
+    const filename = /filename="([^"]*)"/.exec(head)?.[1];
+    if (/name="files"/.test(head) && filename !== undefined) {
+      const contentType = /content-type:\s*([^\r\n]+)/i.exec(head)?.[1]?.trim() ?? "application/octet-stream";
+      parts.push({ filename, contentType, bytes: part.slice(sep + 4) });
+    }
+    at = next;
+  }
+  return parts;
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
 
   if (req.method === "GET" && url.pathname === "/healthz") {
     return send(res, 200, { status: "ok", prompt_version: "fake" });
+  }
+
+  if (req.method === "POST" && url.pathname === "/render") {
+    // The real extractor rasterises PDFs and HEIC to JPEG pages. The fake
+    // has no renderer, so each file comes back as one page of its own bytes;
+    // PDFs therefore still do not preview offline, which is fine for fixtures.
+    const parts = partsIn(req, await readBody(req));
+    const files = parts.map((p, index) => ({
+      index,
+      filename: p.filename,
+      pages: [{ media_type: p.contentType, data: p.bytes.toString("base64") }],
+    }));
+    console.log(`render ${files.length} file(s) -> passthrough`);
+    return send(res, 200, { files });
   }
 
   if (req.method === "POST" && url.pathname === "/classify") {

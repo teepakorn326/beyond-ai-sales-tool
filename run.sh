@@ -112,6 +112,8 @@ cmd_demo() {
     bold "== importing web/.data (one-shot, never overwrites)"
     (cd web && node scripts/import-data.mjs .data) && curl -fsS -X POST "http://localhost:$WEB_PORT/api/profiles/reindex" && echo
   fi
+  bold "== mock verified students (0501-0505)"
+  (cd web && WEB_URL="http://localhost:$WEB_PORT" node scripts/seed-demo.mjs)
   echo
   bold "demo ready: http://localhost:$WEB_PORT   (extractor :$EXTRACTOR_PORT, agent :8090, rules :$RULES_PORT)"
   echo "Logs: docker compose logs -f web agent extractor   ·   Stop: docker compose down"

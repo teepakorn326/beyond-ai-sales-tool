@@ -116,6 +116,24 @@ async def extract_endpoint(doc_type: str, files: list[UploadFile]):
     return result.model_dump(mode="json")
 
 
+@app.post("/render")
+async def render_endpoint(files: list[UploadFile]):
+    """Normalise uploads to JPEG pages, one list per file, in order. No
+    model call and no budget: this is the same conversion the model sees,
+    exposed so the web tier can store and display exactly those pages. A
+    PDF or HEIC arrives here as a file the browser cannot show; it leaves as
+    pages it can."""
+    per_file = await read_pages(files)
+    with timed("render", files=len(per_file), pages=sum(len(p) for p in per_file)):
+        pass
+    return {
+        "files": [
+            {"index": i, "filename": f.filename, "pages": [{"media_type": mt, "data": b64} for mt, b64 in pages]}
+            for i, (f, pages) in enumerate(zip(files, per_file))
+        ]
+    }
+
+
 @app.post("/classify")
 async def classify_endpoint(files: list[UploadFile]):
     """What is each page? One Classification per page, per file, in order.

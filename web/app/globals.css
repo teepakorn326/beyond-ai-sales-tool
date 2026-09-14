@@ -1224,3 +1224,97 @@ details.disclosure > summary::-webkit-details-marker {
   margin-top: 8px;
   font-size: 13px;
 }
+
+/* ---------------------------------------------------------------- markdown (assistant answers) */
+.md {
+  font-size: 14px;
+  line-height: 20px;
+}
+.md > * + * {
+  margin-top: 8px;
+}
+.md h3 {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  margin: 14px 0 4px;
+}
+.md h4 {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  margin: 12px 0 2px;
+  color: var(--text-2);
+}
+.md p {
+  margin: 0;
+}
+.md ul,
+.md ol {
+  margin: 0;
+  padding-left: 20px;
+}
+.md li {
+  margin: 2px 0;
+}
+.md hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 10px 0;
+}
+.md code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.md pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+  overflow-x: auto;
+  white-space: pre;
+}
+.md blockquote {
+  margin: 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--border-strong);
+  color: var(--text-2);
+}
+.md-table {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.md-table table {
+  width: 100%;
+  font-size: 13px;
+}
+.md-table th {
+  height: 32px;
+  padding: 0 10px;
+}
+.md-table td {
+  height: auto;
+  padding: 6px 10px;
+  line-height: 18px;
+  vertical-align: top;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.md-table th,
+.md-table td:first-child {
+  white-space: nowrap;
+}
+.md-table td:first-child {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+}
+.md-table tbody tr:hover td {
+  background: transparent;
+}

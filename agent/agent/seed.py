@@ -25,7 +25,7 @@ def _policy_text(p: dict) -> str:
 
 
 def _program_text(p: dict) -> str:
-    return f"{p['institution']} {p['level']} {p['field']} {p['country']} intakes {', '.join(p['intakes'])}"
+    return f"{p['institution']} {p['level']} {p['field']} {p.get('city', '')} {p['country']} {p.get('description', '')}"
 
 
 def _hash(text: str) -> str:
@@ -89,16 +89,20 @@ def main(argv: list[str] | None = None) -> int:
             programs,
             _program_text,
             """INSERT INTO programs (id, institution, country, level, field, intakes, duration_months,
-                                     english_overall_min, english_band_min, synthetic, embedding, embedding_model, content_hash)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s::vector, %s, %s)
+                                     english_overall_min, english_band_min, synthetic, city, tuition_aud_per_year, min_gpa,
+                                     entry_requirement, description, embedding, embedding_model, content_hash)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s::vector, %s, %s)
                ON CONFLICT (id) DO UPDATE SET institution = EXCLUDED.institution, country = EXCLUDED.country, level = EXCLUDED.level,
                  field = EXCLUDED.field, intakes = EXCLUDED.intakes, duration_months = EXCLUDED.duration_months,
                  english_overall_min = EXCLUDED.english_overall_min, english_band_min = EXCLUDED.english_band_min,
-                 synthetic = EXCLUDED.synthetic, embedding = COALESCE(EXCLUDED.embedding, programs.embedding),
+                 synthetic = EXCLUDED.synthetic, city = EXCLUDED.city, tuition_aud_per_year = EXCLUDED.tuition_aud_per_year,
+                 min_gpa = EXCLUDED.min_gpa, entry_requirement = EXCLUDED.entry_requirement, description = EXCLUDED.description,
+                 embedding = COALESCE(EXCLUDED.embedding, programs.embedding),
                  embedding_model = COALESCE(EXCLUDED.embedding_model, programs.embedding_model), content_hash = EXCLUDED.content_hash""",
             lambda p, t, v: (
                 p["id"], p["institution"], p["country"], p["level"], p["field"], list(p["intakes"]), int(p["duration_months"]),
                 float(p["english_overall_min"]), float(p["english_band_min"]), bool(p.get("synthetic", True)),
+                p.get("city", ""), p.get("tuition_aud_per_year"), p.get("min_gpa"), p.get("entry_requirement", ""), p.get("description", ""),
                 _vec(v), settings.embedding_model if v else None, _hash(t),
             ),
         )

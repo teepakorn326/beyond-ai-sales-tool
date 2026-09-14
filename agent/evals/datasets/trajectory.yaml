@@ -203,6 +203,7 @@
   approve: false
   expected:
     required: [get_case, list_documents, run_rules, search_policy, search_programs, "request_document:rejected"]
+    optional: [get_study_profile]
     order: [[run_rules, search_programs]]
 
 - id: traj-20
@@ -322,3 +323,24 @@
   expected:
     required: [get_case, list_documents, run_rules, search_policy, get_extraction, "request_document:rejected"]
     order: [[get_case, run_rules], [get_extraction, request_document]]
+
+# Programme-fit questions on a verified case: profile + catalogue search are
+# deterministic, nothing is proposed, the answer cites catalogue ids.
+- id: traj-31
+  question: "เคส 0413 หลักสูตรไหนเหมาะกับน้องคนนี้"
+  seed: ready
+  script:
+    - text: "PRG-AU-004 and PRG-AU-007 fit (English 6.5 met, GPA 3.1 above floor); PRG-AU-017 needs 7.0 overall"
+  expected:
+    required: [get_case, list_documents, run_rules, get_study_profile, search_programs]
+    order: [[get_case, list_documents], [run_rules, get_study_profile], [get_study_profile, search_programs]]
+
+- id: traj-32
+  question: "Case 0413: which programmes fit this student?"
+  seed: ready
+  script:
+    - tools: [[search_programs, {filters: {country: AU, level: master, field: Business}}]]
+    - text: "PRG-AU-004 fits; PRG-AU-017 falls short on English"
+  expected:
+    required: [get_case, list_documents, run_rules, get_study_profile, search_programs]
+    order: [[get_study_profile, search_programs]]

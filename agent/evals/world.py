@@ -66,6 +66,9 @@ def docs(
     transcript_suspicious: str | None = None,
     test_date: str = "2024-08-26",
     passport_expiry: str = "2032-06-06",
+    transcript_extra: dict[str, Any] | None = None,
+    certificate_extra: dict[str, Any] | None = None,
+    english_extra: dict[str, Any] | None = None,
 ) -> list[DocumentRecord]:
     out = [
         DocumentRecord(
@@ -80,6 +83,7 @@ def docs(
             confirmed("transcript", {
                 "name_latin_as_printed": transcript_name, "date_of_birth": "2003-01-31",
                 "institution_name": transcript_institution, "date_graduated": "2026-02-28",
+                **(transcript_extra or {}),
             }) if transcript else None,
             suspicious_content=transcript_suspicious,
         ),
@@ -87,7 +91,7 @@ def docs(
             "doc-en", "english_test", "synth-0000.english_test.png",
             confirmed("english_test", {
                 "name_latin_as_printed": "THANAWAT JAROENSUK", "date_of_birth": "2003-01-31",
-                "test_date": test_date,
+                "test_date": test_date, **(english_extra or {}),
             }) if english else None,
         ),
     ]
@@ -96,6 +100,7 @@ def docs(
             "doc-ce", "degree_certificate", "cert.png",
             confirmed("degree_certificate", {
                 "name_latin_as_printed": "THANAWAT JAROENSUK", "date_conferred": "2026-05-15",
+                **(certificate_extra or {}),
             }) if certificate else None,
         ))
     return out
@@ -109,7 +114,19 @@ R1_WARN = check("R1", "warn", "ok", "transcript spelling differs from the passpo
 R3_PENDING = check("R3", "warn", "pending", "both documents not yet received")
 R5_FAILED = check("R5", "block", "failed", "expires 2026-08-26, before the target submission date 2026-10-31")
 
+# A verified student with a usable study profile: the seed for programme questions.
+READY_TRANSCRIPT = {"institution_name": "Kasetsart University", "qualification": "Bachelor of Business Administration",
+                    "major": "Business Administration", "gpa": 3.1, "gpa_scale": 4.0}
+READY_CERTIFICATE = {"qualification": "Bachelor of Business Administration", "institution_name": "Kasetsart University",
+                     "field_of_study": "Business Administration"}
+READY_ENGLISH = {"test_type": "IELTS", "overall": 6.5, "listening": 6.5, "reading": 6.5, "writing": 6.0, "speaking": 6.5}
+
 SEEDS: dict[str, tuple[CaseRecord, dict[str, Any]]] = {
+    "ready": (
+        case(certificate=True, transcript_name="THANAWAT JAROENSUK", test_date="2026-01-10",
+             transcript_extra=READY_TRANSCRIPT, certificate_extra=READY_CERTIFICATE, english_extra=READY_ENGLISH),
+        rules(),
+    ),
     # The task 2 case: name variant, certificate uploaded but unconfirmed, IELTS lapsed.
     "blocked": (case(), rules(R1_WARN, R3_PENDING, R5_FAILED)),
     # Same case, lodged in March: the earlier English policy version applies.

@@ -120,40 +120,58 @@ class PostgresPolicyStore:
 
 
 class PostgresProgramCatalogue:
+    COLS = (
+        "id, institution, country, level, field, intakes, duration_months, english_overall_min, "
+        "english_band_min, synthetic, city, tuition_aud_per_year, min_gpa, entry_requirement, description"
+    )
+
     def __init__(self, conns: PgConnections, embedder: Embedder | None):
         self.conns = conns
         self.embedder = embedder
 
-    def search(self, filters: dict[str, Any]) -> list[dict[str, Any]]:
-        where = ["true"]
+    @staticmethod
+    def build_query(filters: dict[str, Any], qvec: str | None) -> tuple[str, dict[str, Any]]:
+        """Same filters as ProgramCatalogue.search, in SQL. Pure, so it is
+        testable without a database."""
+        where: list[str] = ["true"]
         params: dict[str, Any] = {}
         if filters.get("country"):
-            where.append("country = %(country)s")
+            where.append("upper(country) = upper(%(country)s)")
             params["country"] = filters["country"]
-        if filters.get("level"):
-            where.append("level = %(level)s")
-            params["level"] = filters["level"]
+        lv = filters.get("level")
+        if lv:
+            params["levels"] = [str(x).lower() for x in (lv if isinstance(lv, (list, tuple)) else [lv])]
+            where.append("lower(level) = ANY(%(levels)s)")
         if filters.get("field"):
             where.append("field ILIKE %(field)s")
             params["field"] = f"%{filters['field']}%"
+        if filters.get("city"):
+            where.append("city ILIKE %(city)s")
+            params["city"] = f"%{filters['city']}%"
         if (mx := filters.get("max_english_overall")) is not None:
             where.append("english_overall_min <= %(mx)s")
             params["mx"] = mx
+        if (mt := filters.get("max_tuition_aud")) is not None:
+            where.append("tuition_aud_per_year IS NOT NULL AND tuition_aud_per_year <= %(max_tuition)s")
+            params["max_tuition"] = mt
+        if (g := filters.get("gpa")) is not None:
+            where.append("(min_gpa IS NULL OR min_gpa <= %(gpa)s)")
+            params["gpa"] = g
         order = "id"
+        if qvec is not None:
+            params["q"] = qvec
+            order = "embedding <=> %(q)s::vector NULLS LAST, id"
+        sql = f"SELECT {PostgresProgramCatalogue.COLS} FROM programs WHERE {' AND '.join(where)} ORDER BY {order} LIMIT 20"
+        return sql, params
+
+    def search(self, filters: dict[str, Any]) -> list[dict[str, Any]]:
         qvec = None
         if filters.get("query") and self.embedder is not None:
             try:
                 qvec = _vec(self.embedder.embed([str(filters["query"])], "query")[0])
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001 - filter search must keep working without embeddings
                 qvec = None
-        if qvec is not None:
-            params["q"] = qvec
-            order = "embedding <=> %(q)s::vector NULLS LAST, id"
-        sql = f"""
-            SELECT id, institution, country, level, field, intakes, duration_months,
-                   english_overall_min, english_band_min, synthetic
-            FROM programs WHERE {' AND '.join(where)} ORDER BY {order} LIMIT 20
-        """
+        sql, params = self.build_query(filters, qvec)
         with self.conns.connection() as conn:
             rows = conn.execute(sql, params).fetchall()
         return [
@@ -168,6 +186,11 @@ class PostgresProgramCatalogue:
                 "english_overall_min": float(r[7]),
                 "english_band_min": float(r[8]),
                 "synthetic": bool(r[9]),
+                "city": r[10] or "",
+                "tuition_aud_per_year": int(r[11]) if r[11] is not None else None,
+                "min_gpa": float(r[12]) if r[12] is not None else None,
+                "entry_requirement": r[13] or "",
+                "description": r[14] or "",
             }
             for r in rows
         ]

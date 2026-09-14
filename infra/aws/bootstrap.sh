@@ -88,16 +88,22 @@ echo "schema applied"
 
 # ---------------------------------------------------------------- Bedrock
 bold "== Bedrock model access in $REGION"
-pick_profile() {  # newest APAC inference profile whose id contains $1
-  aws bedrock list-inference-profiles --region "$REGION" --query "inferenceProfileSummaries[?contains(inferenceProfileId, '$1')].inferenceProfileId" --output text 2>/dev/null | tr '\t' '\n' | sort | tail -1
+pick_profile() {  # first inference profile that answers a one-token probe, preferring Australia-only (au.) over APAC
+  local family="$1"
+  for prefix in au. apac.; do
+    for id in $(aws bedrock list-inference-profiles --region "$REGION" --query "inferenceProfileSummaries[?starts_with(inferenceProfileId, '${prefix}anthropic.claude-${family}')].inferenceProfileId" --output text 2>/dev/null | tr '\t' '\n' | sort -r); do
+      if probe_claude "$id"; then echo "$id"; return 0; fi
+    done
+  done
+  return 1
 }
-SONNET="${ANTHROPIC_MODEL:-$(pick_profile apac.anthropic.claude-sonnet)}"
-HAIKU="${ANTHROPIC_CLASSIFY_MODEL:-$(pick_profile apac.anthropic.claude-haiku)}"
 probe_claude() {
   aws bedrock-runtime invoke-model --region "$REGION" --model-id "$1" --content-type application/json \
     --body "$(printf '{"anthropic_version":"bedrock-2023-05-31","max_tokens":1,"messages":[{"role":"user","content":"hi"}]}' | base64)" \
     /dev/null >/dev/null 2>&1
 }
+SONNET="${ANTHROPIC_MODEL:-$(pick_profile sonnet || true)}"
+HAIKU="${ANTHROPIC_CLASSIFY_MODEL:-$(pick_profile haiku || true)}"
 probe_cohere() {
   aws bedrock-runtime invoke-model --region "$REGION" --model-id "$EMBED_MODEL" --content-type application/json \
     --body "$(printf '{"texts":["hi"],"input_type":"search_query"}' | base64)" /dev/null >/dev/null 2>&1
@@ -105,12 +111,12 @@ probe_cohere() {
 status=0
 for pair in "Claude Sonnet|$SONNET|probe_claude $SONNET" "Claude Haiku|$HAIKU|probe_claude $HAIKU" "Cohere embed|$EMBED_MODEL|probe_cohere"; do
   label="${pair%%|*}"; rest="${pair#*|}"; id="${rest%%|*}"; cmd="${rest#*|}"
-  if [ -z "$id" ]; then echo "  $label: no APAC inference profile found in $REGION"; status=1
+  if [ -z "$id" ]; then echo "  $label: no au./apac. inference profile answered in $REGION (newest models can be gated per account; Sonnet 4.6 or 4.5 usually works)"; status=1
   elif $cmd; then echo "  $label: enabled ($id)"
   else echo "  $label: NOT enabled or not accessible ($id)"; status=1; fi
 done
 if [ $status -ne 0 ]; then
-  echo "Request model access at https://${REGION}.console.aws.amazon.com/bedrock/home?region=${REGION}#/modelaccess and re-run."
+  echo "Models enable on first invoke. If Claude is gated, open Bedrock > Playground, pick the model and send one message to trigger the use-case form, then re-run."
 fi
 
 # ---------------------------------------------------------------- output

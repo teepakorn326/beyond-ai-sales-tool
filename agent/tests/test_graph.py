@@ -2,7 +2,7 @@
 
 from agent.llm import Turn, tool_turn
 
-from .conftest import RULES_CLEAR, make_agent, make_services, seeded_case
+from .conftest import RULES_CLEAR, make_agent, make_services, ready_case, seeded_case
 
 QUESTION = "เคส 0413 ทำไมยังยื่นไม่ได้ แล้วต้องทำอะไรบ้าง"
 
@@ -118,3 +118,67 @@ def test_investigate_loop_is_bounded():
     assert r.answer
     # 3 investigate turns + 1 final summary turn
     assert len(model.calls) == 4
+
+
+# ---------------------------------------------------------------------------
+# Programme-fit questions on a verified case
+# ---------------------------------------------------------------------------
+
+PROGRAMME_Q = "Case STU-2026-0413: which programmes fit this student?"
+
+
+def ready_agent(script, **kw):
+    return make_agent(script, services=make_services(rules=RULES_CLEAR, case=ready_case()), **kw)
+
+
+def test_programme_question_on_ready_case_gathers_profile_and_candidates_without_proposing():
+    agent, svc, _ = ready_agent([Turn(text="PRG-AU-004 fits; PRG-AU-017 needs 7.0")])
+    r = agent.ask(PROGRAMME_Q)
+    assert r.pending is None and svc.ledger.requests == []
+    assert tools_called(r, "gather_case") == ["get_case", "list_documents", "run_rules", "get_study_profile", "search_programs"]
+    assert r.state["programme_question"] is True
+    assert r.state["study_profile"]["suggested_levels"] == ["master"]
+    ids = {p["id"] for p in r.state["programs"]}
+    assert "PRG-AU-004" in ids
+    assert all(p["level"] == "master" and p["country"] == "AU" for p in r.state["programs"])
+    assert "Programmes considered (catalogue): " in r.answer and "PRG-AU-004" in r.answer
+    assert "no relevant policy found" not in r.answer
+
+
+def test_programme_context_carries_no_pii():
+    agent, _, _ = ready_agent([Turn(text="x")])
+    r = agent.ask(PROGRAMME_Q)
+    ctx = r.state["messages"][0]["content"]
+    for leak in ("THANAWAT", "JAROENSUK", "2003-01-31"):
+        assert leak not in ctx, leak
+    assert "programme_candidates" in ctx and "study_profile" in ctx
+
+
+def test_fit_annotation_marks_english_shortfall():
+    agent, _, _ = ready_agent([Turn(text="x")])
+    r = agent.ask(PROGRAMME_Q)
+    by_id = {p["id"]: p for p in r.state["programs"]}
+    assert by_id["PRG-AU-004"]["fit"]["english"] == "ok"
+    assert by_id["PRG-AU-017"]["fit"]["english"] == "short"
+
+
+def test_silent_model_still_lists_catalogue_programmes():
+    agent, _, _ = ready_agent([Turn(text="")])
+    r = agent.ask(PROGRAMME_Q)
+    assert "Catalogue programmes for case" in r.answer and "PRG-AU-004" in r.answer
+
+
+def test_lodgement_question_never_searches_the_catalogue():
+    agent, _, _ = make_agent([Turn(text="")])
+    r = agent.ask(QUESTION)
+    r = agent.resume(r.thread_id, approved=False)
+    assert "get_study_profile" not in tools_called(r) and "search_programs" not in tools_called(r)
+    assert "Programmes considered" not in r.answer
+
+
+def test_programme_question_without_a_case_is_nudged_then_bounded():
+    agent, _, model = make_agent([Turn(text="x")] * 5, max_iterations=3)
+    r = agent.ask("Which programmes accept IELTS 6.0?")
+    assert r.answer
+    assert len(model.calls) == 4  # three investigate turns, then the summary
+    assert "none matched the catalogue" in r.answer

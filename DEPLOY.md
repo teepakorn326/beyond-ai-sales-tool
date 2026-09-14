@@ -56,8 +56,13 @@ Claude Sonnet, Claude Haiku and Cohere Embed Multilingual v3 in the region
 before running the demo. Use the APAC inference profile ids the script
 prints, not the Global profile (see "Why Sydney"). The IAM user for the
 containers gets `infra/aws/iam-policy.json` only: the bucket, the three
-models, nothing else; RDS uses password auth over TLS (`sslmode=require`,
-set `PG_CA_CERT_PATH` to the RDS CA bundle to verify the certificate).
+models, nothing else. RDS uses password auth over TLS: `infra/aws/rds-global-bundle.pem`
+is the public RDS CA bundle, `PG_CA_CERT_PATH` points the web tier at it so the
+server certificate is verified (node-postgres treats `sslmode=require` as
+verify-full, so the mode is stripped from the URL and TLS configured explicitly
+in `web/app/lib/db.ts`), and the agent container gets it as `PGSSLROOTCERT`.
+The `au.` inference profiles route between Sydney and Melbourne, which is why
+the IAM policy allows the Anthropic foundation models in every region.
 
 Standing cost while the demo exists is the `db.t4g.micro` instance and the
 bucket; Bedrock and S3 requests are per use. `teardown.sh` removes the

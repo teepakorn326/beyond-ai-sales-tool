@@ -8,6 +8,17 @@ imports LangChain (a test enforces it).
 guardrail → gather_case → investigate ⇄ sufficiency → propose_action → human_interrupt → respond_and_record
 ```
 
+Two question kinds. A lodgement question ("why can't case 0413 be lodged")
+gathers the case, the rules result and the policies in force. A programme
+question ("หลักสูตรไหนเหมาะกับน้องคนนี้", detected deterministically in
+`intent.py`) additionally gathers a PII-free study profile
+(`get_study_profile`: qualification, field, GPA, English band, next study
+level) and one catalogue search, each candidate annotated with a fit flag
+(English ok/short, GPA ok/short/not required). The model explains; it does
+not decide, and it may only name programmes from the search result. The
+catalogue (`data/programs.json`, 25 fictional programmes with city, tuition,
+GPA floor and entry requirement) is the whole universe.
+
 Five of the seven nodes are deterministic. Only `investigate` and the final
 summary call a model, and both go through `llm.Model`, so tests and evals run
 the whole graph against a script.
@@ -16,7 +27,7 @@ the whole graph against a script.
 
 | risk | tools | rule |
 |---|---|---|
-| read | `get_case` `list_documents` `get_extraction` `run_rules` `search_policy` `search_programs` | called freely |
+| read | `get_case` `list_documents` `get_extraction` `run_rules` `search_policy` `search_programs` `get_study_profile` | called freely |
 | reversible | `escalate_to_visa_team` `flag_document` | called freely, always audit-logged |
 | external | `request_document` `draft_student_message` | refused unless an `Approval` bound to that tool and those arguments is presented |
 
@@ -75,7 +86,7 @@ whose turns are part of each fixture, so a pull request costs nothing to
 check. `python -m evals.run --live` swaps in the real model for the same
 fixtures.
 
-**Trajectory, 30 cases** (`datasets/trajectory.yaml`). Each fixture holds a
+**Trajectory, 32 cases** (`datasets/trajectory.yaml`), including two programme-fit questions on a verified case. Each fixture holds a
 Thai question, a seeded case state from `world.py`, the scripted model turns,
 the human decision at the interrupt, and the expected tool sequence. Three
 numbers are reported separately, never blended:

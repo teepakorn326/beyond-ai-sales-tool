@@ -3,10 +3,10 @@
 from .run import load_fixtures, load_thresholds, run_trajectory, trajectory_report
 
 
-def test_there_are_thirty_trajectory_cases():
+def test_there_are_thirty_two_trajectory_cases():
     fixtures = load_fixtures("trajectory")
-    assert len(fixtures) == 30
-    assert len({f["id"] for f in fixtures}) == 30
+    assert len(fixtures) == 32
+    assert len({f["id"] for f in fixtures}) == 32
 
 
 def test_trajectory_meets_thresholds():

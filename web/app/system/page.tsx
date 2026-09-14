@@ -18,6 +18,16 @@ async function probe(url: string): Promise<{ ok: boolean; detail: string }> {
   }
 }
 
+/** The extractor's readiness report carries the model and embedding provider in use. */
+async function readyReport(url: string): Promise<{ provider?: string; model?: string; embedding_model?: string; region?: string | null } | null> {
+  try {
+    const res = await fetch(`${url}/readyz`, { cache: "no-store", signal: AbortSignal.timeout(2500) });
+    return res.ok ? ((await res.json()) as { provider?: string; model?: string; embedding_model?: string; region?: string | null }) : null;
+  } catch {
+    return null;
+  }
+}
+
 async function probeDb(): Promise<{ ok: boolean; detail: string }> {
   try {
     const { rows } = await pool().query<{ v: string; vec: string | null }>(
@@ -33,12 +43,13 @@ export default async function SystemPage() {
   const extractor = process.env.EXTRACTOR_URL ?? "http://localhost:8000";
   const rules = process.env.RULES_SERVICE_URL ?? "http://localhost:8081";
   const agent = process.env.AGENT_URL ?? null;
-  const [ex, ru, db, ag, summaries] = await Promise.all([
+  const [ex, ru, db, ag, summaries, ready] = await Promise.all([
     probe(`${extractor}/healthz`),
     probe(`${rules}/healthz`),
     probeDb(),
     agent ? probe(`${agent}/healthz`) : Promise.resolve({ ok: false, detail: "AGENT_URL not set; assistant runs as a CLI" }),
     loadAllSummaries().catch(() => []),
+    readyReport(extractor),
   ]);
   const lastCheck = summaries.map((s) => s.checks).filter((c): c is NonNullable<typeof c> => c !== null).sort((a, b) => b.checked_at_ms - a.checked_at_ms)[0] ?? null;
   const docs = summaries.reduce((n, s) => n + s.slots.filter((x) => x.doc).length, 0);
@@ -90,9 +101,11 @@ export default async function SystemPage() {
             </div>
           </div>
           <div className="card compact">
-            <div className="label">Model</div>
-            <div className="value" style={{ fontSize: 15, marginTop: 2 }}>{process.env.ANTHROPIC_API_KEY ? (process.env.ANTHROPIC_MODEL ?? "configured") : "Not configured here"}</div>
-            <div className="muted small" style={{ marginTop: 4 }}>The extractor holds the key; the assistant runs deterministic nodes only without one.</div>
+            <div className="label">Models</div>
+            <div className="value" style={{ fontSize: 15, marginTop: 2, overflowWrap: "anywhere" }}>{ready?.model ?? "Extractor not reachable"}</div>
+            <div className="muted small" style={{ marginTop: 4 }}>
+              {ready ? `${ready.provider === "bedrock" ? `Bedrock · ${ready.region ?? ""}` : "Anthropic API"} · embeddings ${ready.embedding_model ?? "—"}` : "Provider and model come from the extractor's readiness report."}
+            </div>
           </div>
         </div>
         <div className="card compact">

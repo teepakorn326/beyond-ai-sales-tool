@@ -1,4 +1,4 @@
-.PHONY: help synth eval rules-test agent-test agent-eval web-typecheck web-test up demo db-migrate db-shell seed fmt
+.PHONY: help synth eval rules-test agent-test agent-eval web-typecheck web-test up demo db-migrate db-shell seed seed-demo fmt
 
 help:
 	@grep -E '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "};{printf "  %-14s %s\n",$$1,$$2}'
@@ -38,6 +38,12 @@ db-shell:     ## psql against DATABASE_URL (via docker, no local psql needed)
 
 seed:         ## embed and upsert the policy and programme index
 	docker compose exec -T agent python -m agent.seed
+
+rerender-pages:  ## re-render stored PDF/HEIC upload pages to JPEG via the extractor
+	cd web && node scripts/rerender-pages.mjs
+
+seed-demo:    ## five mock students with every document confirmed (Ready), for the programme chat
+	cd web && node scripts/seed-demo.mjs
 
 fmt:
 	cd extractor && ruff format . && ruff check --fix .

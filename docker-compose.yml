@@ -32,9 +32,10 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AGENT_MODEL: ${AGENT_MODEL:-}
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
-      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:-}
+      PGSSLROOTCERT: /certs/rds-global-bundle.pem
       RULES_SERVICE_URL: http://rules:8081
       EXTRACTOR_URL: http://extractor:8000
+    volumes: ["./infra/aws/rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/healthz')"]
       interval: 5s
@@ -48,7 +49,7 @@ services:
     build: ./web
     environment: # no model credentials reach the web container
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
-      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:-}
+      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:+/certs/rds-global-bundle.pem}
       EXTRACTOR_URL: http://extractor:8000
       RULES_SERVICE_URL: http://rules:8081
       AGENT_URL: http://agent:8090
@@ -60,7 +61,8 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       IDENTITY_HASH_SALT: ${IDENTITY_HASH_SALT:-}
-      SIMILAR_MIN_SIMILARITY: ${SIMILAR_MIN_SIMILARITY:-0.80}
+      SIMILAR_MIN_SIMILARITY: ${SIMILAR_MIN_SIMILARITY:-0.70}
+    volumes: ["./infra/aws/rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro"]
     depends_on:
       extractor: { condition: service_healthy }
       agent: { condition: service_healthy }
