@@ -308,3 +308,4 @@ Postgres · Docker Compose · GitHub Actions
 Deliberately not used: no agent framework, no vector database, no fine-tuning.
 The task is "structured input in, typed JSON out", which the SDK does directly.
 An abstraction layer here would add debugging surface without adding capability.
+# beyond-ai-sales-tool
