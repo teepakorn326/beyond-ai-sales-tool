@@ -1,0 +1,37 @@
+{
+  "id": "synth-0021",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2005-12-15",
+    "nationality": "THA",
+    "passport_expiry": "2032-08-29",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "NATTAPONG SRISAWAT",
+    "date_of_birth": "2005-12-15",
+    "institution_name": "Kasetsart University",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.7,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-07-26",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "NATTAPONG SRISAWAT",
+    "date_of_birth": "2005-12-15",
+    "test_date": "2025-09-01",
+    "overall": 7.0,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "synth-0032",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2005-07-03",
+    "nationality": "THA",
+    "passport_expiry": "2031-06-30",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "KANYARAT SRISAWAT",
+    "date_of_birth": "2005-07-03",
+    "institution_name": "Kasetsart University",
+    "qualification": "Mathayom 6",
+    "gpa": 3.1,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-04-15",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "KANYARAT SRISAWAT",
+    "date_of_birth": "2005-07-03",
+    "test_date": "2026-06-12",
+    "overall": 5.5,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

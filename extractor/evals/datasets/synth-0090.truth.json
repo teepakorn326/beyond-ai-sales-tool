@@ -1,0 +1,37 @@
+{
+  "id": "synth-0090",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2006-03-04",
+    "nationality": "THA",
+    "passport_expiry": "2030-03-22",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "KANYARAT JAROENSUK",
+    "date_of_birth": "2006-03-04",
+    "institution_name": "Chulalongkorn University",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.23,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-06-10",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "KANYARAT JAROENSUK",
+    "date_of_birth": "2006-03-04",
+    "test_date": "2025-02-20",
+    "overall": 5.5,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

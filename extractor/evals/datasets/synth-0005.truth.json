@@ -1,0 +1,37 @@
+{
+  "id": "synth-0005",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "SIREE",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2000-02-17",
+    "nationality": "THA",
+    "passport_expiry": "2032-02-02",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SIRI WICHAIKUL",
+    "date_of_birth": "2000-02-17",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.85,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-11-27",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2000-02-17",
+    "test_date": "2026-01-08",
+    "overall": 6.0,
+    "writing": 5.0,
+    "report_number_present": true
+  }
+}

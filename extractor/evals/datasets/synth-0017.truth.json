@@ -1,0 +1,37 @@
+{
+  "id": "synth-0017",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2002-01-01",
+    "nationality": "THA",
+    "passport_expiry": "2029-11-09",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "TANAWAT RATTANAKUL",
+    "date_of_birth": "2002-01-01",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.0,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-08-17",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "THANAWAT RATTANAKUL",
+    "date_of_birth": "2002-01-01",
+    "test_date": "2024-09-28",
+    "overall": 6.0,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

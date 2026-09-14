@@ -1,0 +1,37 @@
+{
+  "id": "synth-0059",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": true
+  },
+  "passport": {
+    "given_name_latin": "BOONMEE",
+    "surname_latin": "SOMBAT",
+    "date_of_birth": "2006-12-06",
+    "nationality": "THA",
+    "passport_expiry": "2031-11-20",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "BOONMEE SOMBAT",
+    "date_of_birth": "2006-12-06",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.0,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-04-16",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "BOONMEE SOMBAT",
+    "date_of_birth": "2006-12-06",
+    "test_date": "2026-05-01",
+    "overall": 7.0,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

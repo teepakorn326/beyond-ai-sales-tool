@@ -1,0 +1,37 @@
+{
+  "id": "synth-0083",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2003-02-26",
+    "nationality": "THA",
+    "passport_expiry": "2028-03-16",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2003-02-26",
+    "institution_name": "Kasetsart University",
+    "qualification": "Mathayom 6",
+    "gpa": 3.68,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-05-21",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2003-02-26",
+    "test_date": "2025-09-03",
+    "overall": 6.5,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

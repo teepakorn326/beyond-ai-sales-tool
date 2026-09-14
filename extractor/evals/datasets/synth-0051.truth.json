@@ -1,0 +1,37 @@
+{
+  "id": "synth-0051",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": true
+  },
+  "passport": {
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2001-04-10",
+    "nationality": "THA",
+    "passport_expiry": "2032-08-25",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2001-04-10",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Mathayom 6",
+    "gpa": 3.38,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-02-02",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2001-04-10",
+    "test_date": "2024-03-06",
+    "overall": 6.5,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

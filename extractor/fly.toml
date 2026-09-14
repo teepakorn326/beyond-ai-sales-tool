@@ -1,0 +1,34 @@
+app = "vdc-extractor"
+primary_region = "syd"
+
+[build]
+
+[env]
+  # Sydney, chosen deliberately: the business has Australian entities and Thai
+  # student data, so keeping inference in-region is the answer that survives a
+  # question from a parent or a compliance review.
+  RULES_SERVICE_URL = "http://vdc-rules.internal:8081"
+  DEMO_MODE = "true"
+  DAILY_TOKEN_BUDGET = "400000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/readyz"
+  timeout = "5s"
+
+[mounts]
+  source = "vdc_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

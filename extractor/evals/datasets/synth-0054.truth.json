@@ -1,0 +1,37 @@
+{
+  "id": "synth-0054",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2007-06-18",
+    "nationality": "THA",
+    "passport_expiry": "2030-12-11",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2007-06-18",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Mathayom 6",
+    "gpa": 2.29,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-02-07",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "CHAIYA RATTANAKUL",
+    "date_of_birth": "2007-06-18",
+    "test_date": "2025-03-09",
+    "overall": 7.0,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

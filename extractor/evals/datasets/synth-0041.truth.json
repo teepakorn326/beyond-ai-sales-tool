@@ -1,0 +1,37 @@
+{
+  "id": "synth-0041",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "PONGSAKORN",
+    "date_of_birth": "2001-02-12",
+    "nationality": "THA",
+    "passport_expiry": "2028-09-24",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "THANAWAT PONGSAKORN",
+    "date_of_birth": "2001-02-12",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.48,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-06-22",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "THANAWAT PONGSAKORN",
+    "date_of_birth": "2001-02-12",
+    "test_date": "2026-07-21",
+    "overall": 6.5,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

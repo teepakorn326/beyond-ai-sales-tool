@@ -1,0 +1,42 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  rules:
+    name: go rules engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.23" }
+      - run: go vet ./...
+        working-directory: rules
+      - run: go test ./... -v -cover
+        working-directory: rules
+
+  extractor:
+    name: python extractor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e ".[dev]"
+        working-directory: extractor
+      - run: python -m synth.generate --count 100 --out evals/datasets
+        working-directory: extractor
+
+      # Predictions are cached rather than regenerated: a pull request should
+      # not have to spend money to be reviewed. The cache key is the prompt
+      # file, so changing the prompt forces a fresh run.
+      - uses: actions/cache@v4
+        with:
+          path: extractor/evals/predictions.json
+          key: preds-${{ hashFiles('extractor/app/prompts.py') }}
+
+      - run: pytest evals -v
+        working-directory: extractor
+
+      - run: ruff check .
+        working-directory: extractor

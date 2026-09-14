@@ -1,0 +1,37 @@
+{
+  "id": "synth-0010",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": true,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "PHANIT",
+    "surname_latin": "SOMBAT",
+    "date_of_birth": "2004-07-22",
+    "nationality": "THA",
+    "passport_expiry": "2033-03-26",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "PANIT SOMBAT",
+    "date_of_birth": "2004-07-22",
+    "institution_name": "Kasetsart University",
+    "qualification": "Mathayom 6",
+    "gpa": 2.36,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-05-12",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "PHANIT SOMBAT",
+    "date_of_birth": "2004-07-22",
+    "test_date": "2025-05-07",
+    "overall": 6.0,
+    "writing": 5.0,
+    "report_number_present": true
+  }
+}

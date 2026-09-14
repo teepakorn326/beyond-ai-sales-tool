@@ -1,0 +1,37 @@
+{
+  "id": "synth-0019",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2002-05-25",
+    "nationality": "THA",
+    "passport_expiry": "2030-03-08",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "NATTAPONG SRISAWAT",
+    "date_of_birth": "2002-05-25",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.18,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-06-07",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "NATTAPONG SRISAWAT",
+    "date_of_birth": "2002-05-25",
+    "test_date": "2025-04-29",
+    "overall": 6.0,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

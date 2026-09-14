@@ -1,0 +1,37 @@
+{
+  "id": "synth-0000",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2003-01-31",
+    "nationality": "THA",
+    "passport_expiry": "2029-06-14",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "TANAWAT JAROENSUK",
+    "date_of_birth": "2003-01-31",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Mathayom 6",
+    "gpa": 3.07,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-09-07",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2003-01-31",
+    "test_date": "2024-08-16",
+    "overall": 7.0,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

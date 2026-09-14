@@ -1,0 +1,37 @@
+{
+  "id": "synth-0048",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "THANAWAT",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2002-08-19",
+    "nationality": "THA",
+    "passport_expiry": "2032-06-27",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "TANAWAT JAROENSUK",
+    "date_of_birth": "2002-08-19",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.78,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-06-27",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "THANAWAT JAROENSUK",
+    "date_of_birth": "2002-08-19",
+    "test_date": "2025-07-04",
+    "overall": 6.5,
+    "writing": 5.0,
+    "report_number_present": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "synth-0088",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "SIREE",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2005-06-06",
+    "nationality": "THA",
+    "passport_expiry": "2030-03-29",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2005-06-06",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.6,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-07-15",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SIREE WICHAIKUL",
+    "date_of_birth": "2005-06-06",
+    "test_date": "2024-09-09",
+    "overall": 6.5,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

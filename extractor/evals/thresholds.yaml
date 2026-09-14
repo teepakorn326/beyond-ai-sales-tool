@@ -1,0 +1,27 @@
+# Field-level accuracy floors. CI fails when a prompt change drops any of these.
+# Fields are weighted by consequence, not by how hard they are to read: a wrong
+# date_of_birth gets an application rejected, a wrong major does not.
+transcript:
+  name_latin_as_printed: 0.98
+  date_of_birth: 0.99
+  date_graduated: 0.95
+  gpa: 0.97
+  gpa_scale: 0.90
+  institution_name: 0.90
+
+passport:
+  given_name_latin: 0.99
+  surname_latin: 0.99
+  date_of_birth: 0.99
+  passport_expiry: 0.99
+
+english_test:
+  test_type: 0.99
+  test_date: 0.99
+  overall: 0.98
+  writing: 0.98
+
+# Buddhist-era conversion is tracked separately because it fails silently:
+# a wrong year still parses as a valid date.
+special:
+  buddhist_era_conversion: 0.99

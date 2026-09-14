@@ -1,0 +1,37 @@
+{
+  "id": "synth-0081",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "BOONMEE",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2003-07-31",
+    "nationality": "THA",
+    "passport_expiry": "2028-03-10",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "BOONMEE SRISAWAT",
+    "date_of_birth": "2003-07-31",
+    "institution_name": "Chulalongkorn University",
+    "qualification": "Mathayom 6",
+    "gpa": 2.89,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-01-21",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "BOONMEE SRISAWAT",
+    "date_of_birth": "2003-07-31",
+    "test_date": "2026-05-31",
+    "overall": 6.5,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

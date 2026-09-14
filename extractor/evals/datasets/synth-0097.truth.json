@@ -1,0 +1,37 @@
+{
+  "id": "synth-0097",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2001-06-05",
+    "nationality": "THA",
+    "passport_expiry": "2033-02-08",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2001-06-05",
+    "institution_name": "Kasetsart University",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.56,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-01-15",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "CHAIYA WICHAIKUL",
+    "date_of_birth": "2001-06-05",
+    "test_date": "2024-08-16",
+    "overall": 6.0,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

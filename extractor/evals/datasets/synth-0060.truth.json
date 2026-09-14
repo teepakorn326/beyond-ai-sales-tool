@@ -1,0 +1,37 @@
+{
+  "id": "synth-0060",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": true,
+    "no_grad_day": true,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "PHANIT",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2003-12-09",
+    "nationality": "THA",
+    "passport_expiry": "2028-12-11",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "PHANIT RATTANAKUL",
+    "date_of_birth": "2003-12-09",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Mathayom 6",
+    "gpa": 3.44,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-01-14",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "PHANIT RATTANAKUL",
+    "date_of_birth": "2003-12-09",
+    "test_date": "2026-04-18",
+    "overall": 5.5,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

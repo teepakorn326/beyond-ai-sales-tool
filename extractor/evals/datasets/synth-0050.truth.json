@@ -1,0 +1,37 @@
+{
+  "id": "synth-0050",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "PHANIT",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2002-06-03",
+    "nationality": "THA",
+    "passport_expiry": "2028-12-15",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "PANIT WICHAIKUL",
+    "date_of_birth": "2002-06-03",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Mathayom 6",
+    "gpa": 2.25,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-04-12",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "PHANIT WICHAIKUL",
+    "date_of_birth": "2002-06-03",
+    "test_date": "2026-06-09",
+    "overall": 6.5,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

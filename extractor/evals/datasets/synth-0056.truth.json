@@ -1,0 +1,37 @@
+{
+  "id": "synth-0056",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": true,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "JAROENSUK",
+    "date_of_birth": "2005-12-12",
+    "nationality": "THA",
+    "passport_expiry": "2033-05-13",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2005-12-12",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Mathayom 6",
+    "gpa": 3.68,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-08-08",
+    "date_source_calendar": "BE"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SUWANNA JAROENSUK",
+    "date_of_birth": "2005-12-12",
+    "test_date": "2025-01-20",
+    "overall": 6.0,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

@@ -1,0 +1,27 @@
+app = "vdc-web"
+primary_region = "syd"
+
+[build]
+
+[env]
+  EXTRACTOR_URL = "http://vdc-extractor.internal:8000"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # The only service kept warm: a recruiter clicking the demo link should not
+  # meet a cold start.
+  min_machines_running = 1
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/api/healthz"
+  timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

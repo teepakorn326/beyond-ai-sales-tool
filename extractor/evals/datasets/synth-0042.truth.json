@@ -1,0 +1,37 @@
+{
+  "id": "synth-0042",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "NATTAPONG",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2000-05-27",
+    "nationality": "THA",
+    "passport_expiry": "2031-12-23",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
+    "date_of_birth": "2000-05-27",
+    "institution_name": "Bangkok Christian College",
+    "qualification": "Bachelor of Science",
+    "gpa": 3.72,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-09-24",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "NATTAPONG WICHAIKUL",
+    "date_of_birth": "2000-05-27",
+    "test_date": "2024-03-11",
+    "overall": 5.5,
+    "writing": 6.0,
+    "report_number_present": true
+  }
+}

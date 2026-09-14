@@ -1,0 +1,37 @@
+{
+  "id": "synth-0086",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2003-09-18",
+    "nationality": "THA",
+    "passport_expiry": "2027-04-20",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SUWANNA RATTANAKUL",
+    "date_of_birth": "2003-09-18",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.5,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-11-20",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SUWANNA RATTANAKUL",
+    "date_of_birth": "2003-09-18",
+    "test_date": "2024-04-22",
+    "overall": 6.0,
+    "writing": 5.0,
+    "report_number_present": true
+  }
+}

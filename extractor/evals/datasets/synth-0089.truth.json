@@ -1,0 +1,37 @@
+{
+  "id": "synth-0089",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "RATTANAKUL",
+    "date_of_birth": "2000-06-21",
+    "nationality": "THA",
+    "passport_expiry": "2028-07-16",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2000-06-21",
+    "institution_name": "Satri Witthaya School",
+    "qualification": "Mathayom 6",
+    "gpa": 2.46,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-10-21",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "KANYARAT RATTANAKUL",
+    "date_of_birth": "2000-06-21",
+    "test_date": "2026-01-01",
+    "overall": 6.0,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

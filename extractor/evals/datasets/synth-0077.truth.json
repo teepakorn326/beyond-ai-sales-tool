@@ -1,0 +1,37 @@
+{
+  "id": "synth-0077",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "KANYARAT",
+    "surname_latin": "WICHAIKUL",
+    "date_of_birth": "2000-12-19",
+    "nationality": "THA",
+    "passport_expiry": "2031-08-05",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "KANYARAT WICHAIKUL",
+    "date_of_birth": "2000-12-19",
+    "institution_name": "Chiang Mai University",
+    "qualification": "Mathayom 6",
+    "gpa": 2.24,
+    "gpa_scale": 4.0,
+    "date_graduated": "2024-03-08",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "KANYARAT WICHAIKUL",
+    "date_of_birth": "2000-12-19",
+    "test_date": "2024-11-12",
+    "overall": 6.5,
+    "writing": 5.0,
+    "report_number_present": true
+  }
+}

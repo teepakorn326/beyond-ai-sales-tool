@@ -1,0 +1,37 @@
+{
+  "id": "synth-0091",
+  "flags": {
+    "name_differs": false,
+    "buddhist_era": false,
+    "no_grad_day": true,
+    "faint_gpa": false
+  },
+  "passport": {
+    "given_name_latin": "CHAIYA",
+    "surname_latin": "PONGSAKORN",
+    "date_of_birth": "2002-02-02",
+    "nationality": "THA",
+    "passport_expiry": "2028-03-15",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "CHAIYA PONGSAKORN",
+    "date_of_birth": "2002-02-02",
+    "institution_name": "Chulalongkorn University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.86,
+    "gpa_scale": 4.0,
+    "date_graduated": "2026-02-05",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "CHAIYA PONGSAKORN",
+    "date_of_birth": "2002-02-02",
+    "test_date": "2026-06-12",
+    "overall": 7.0,
+    "writing": 5.5,
+    "report_number_present": true
+  }
+}

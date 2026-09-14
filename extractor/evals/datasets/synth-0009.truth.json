@@ -1,0 +1,37 @@
+{
+  "id": "synth-0009",
+  "flags": {
+    "name_differs": true,
+    "buddhist_era": false,
+    "no_grad_day": false,
+    "faint_gpa": true
+  },
+  "passport": {
+    "given_name_latin": "SUWANNA",
+    "surname_latin": "SRISAWAT",
+    "date_of_birth": "2007-04-30",
+    "nationality": "THA",
+    "passport_expiry": "2029-01-21",
+    "issuing_country": "THA",
+    "passport_number_present": true
+  },
+  "transcript": {
+    "name_latin_as_printed": "SUVANNA SRISAWAT",
+    "date_of_birth": "2007-04-30",
+    "institution_name": "Chulalongkorn University",
+    "qualification": "Bachelor of Science",
+    "gpa": 2.47,
+    "gpa_scale": 4.0,
+    "date_graduated": "2025-10-23",
+    "date_source_calendar": "AD"
+  },
+  "english_test": {
+    "test_type": "IELTS",
+    "name_latin_as_printed": "SUWANNA SRISAWAT",
+    "date_of_birth": "2007-04-30",
+    "test_date": "2024-04-10",
+    "overall": 5.5,
+    "writing": 6.5,
+    "report_number_present": true
+  }
+}

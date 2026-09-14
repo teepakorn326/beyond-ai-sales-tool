@@ -1,0 +1,57 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  # Deployment waits on the same suite that guards a pull request. A prompt
+  # change that drops extraction accuracy below its floor never reaches Sydney.
+  gate:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      # Order matters. The rules engine comes up first because the extractor's
+      # readiness probe depends on it; the web tier comes up last.
+      - name: deploy rules engine
+        run: flyctl deploy --remote-only
+        working-directory: rules
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: deploy extractor
+        run: flyctl deploy --remote-only
+        working-directory: extractor
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: deploy web
+        run: flyctl deploy --remote-only
+        working-directory: web
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: smoke test
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 12); do
+            if curl -fsS https://vdc-web.fly.dev/api/healthz | tee /dev/stderr | grep -q '"upstream":"ok"'; then
+              echo "smoke test passed"
+              exit 0
+            fi
+            echo "attempt $i: not ready yet, waiting"
+            sleep 10
+          done
+          echo "smoke test failed — the deploy is live but unhealthy"
+          exit 1
