@@ -48,6 +48,7 @@ below); the data and the models live in `ap-southeast-2`:
 VDC_DB_PASSWORD='...' infra/aws/bootstrap.sh   # bucket, security group, RDS, schema, Bedrock access check
 # paste its output into .env, then:
 ./run.sh demo                                   # migrate, compose up, seed policies, import web/.data
+infra/aws/allow-my-ip.sh                        # on a new network: let this machine reach RDS again
 infra/aws/teardown.sh                           # delete everything (no snapshot)
 ```
 

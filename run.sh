@@ -100,6 +100,14 @@ cmd_demo() {
   [ -d web/node_modules ] || (cd web && npm install --no-audit --no-fund)
 
   bold "== schema"
+  # bootstrap.sh opened port 5432 only to the IP you had then; on another
+  # network the connection times out. Say so instead of hanging.
+  db_host=$(node -e 'console.log(new URL(process.env.DATABASE_URL).hostname)')
+  db_port=$(node -e 'console.log(new URL(process.env.DATABASE_URL).port || 5432)')
+  if ! node -e 'const s=require("net").connect(+process.argv[2],process.argv[1]);s.setTimeout(6000);s.on("connect",()=>{s.end();process.exit(0)});s.on("timeout",()=>process.exit(1));s.on("error",()=>process.exit(1))' "$db_host" "$db_port"; then
+    echo "cannot reach $db_host:$db_port — if you are on a new network run infra/aws/allow-my-ip.sh, then retry" >&2
+    exit 1
+  fi
   (cd web && node scripts/migrate.mjs)
   bold "== services"
   docker compose up --build -d
