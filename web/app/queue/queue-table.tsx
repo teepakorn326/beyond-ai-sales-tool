@@ -23,7 +23,7 @@ const KIND_ICON: Record<QueueKind, { icon: IconName; colour: string }> = {
   medium: { icon: "tri", colour: "var(--warning)" },
   unreadable: { icon: "block", colour: "var(--error)" },
   unclassified: { icon: "tri", colour: "var(--warning)" },
-  missing: { icon: "pending", colour: "var(--muted)" },
+  missing: { icon: "pending", colour: "var(--text-3)" },
   warn: { icon: "tri", colour: "var(--warning)" },
   block: { icon: "block", colour: "var(--error)" },
 };

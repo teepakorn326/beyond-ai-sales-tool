@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Geist } from "next/font/google";
 
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "./components/shell";
 import { ToastProvider } from "./components/ui";
+import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-sans", display: "swap" });
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
@@ -15,11 +17,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+    <html lang="en" className={cn(mono.variable, "font-sans", geist.variable)}>
       <body>
-        <ToastProvider>
-          <AppShell>{children}</AppShell>
-        </ToastProvider>
+        <TooltipProvider delay={200}>
+          <ToastProvider>
+            <AppShell>{children}</AppShell>
+          </ToastProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

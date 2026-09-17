@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { Ban, Check } from "lucide-react";
+
 import { Pill } from "../components/badges";
 import { PageHeader, TopBar } from "../components/shell";
 import { loadAllSummaries } from "../lib/checks";
@@ -60,11 +62,11 @@ export default async function SystemPage() {
       <div className="row" style={{ justifyContent: "space-between" }}>
         <span className="value">{name}</span>
         {r.ok ? (
-          <Pill tone="ok" icon="check">
+          <Pill tone="ok" icon={Check}>
             Reachable
           </Pill>
         ) : (
-          <Pill tone="err" icon="block">
+          <Pill tone="err" icon={Ban}>
             Down
           </Pill>
         )}

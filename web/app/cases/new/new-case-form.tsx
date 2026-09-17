@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 
+import { Ban, Check, CircleDashed } from "lucide-react";
+
 import { ConfidenceBadge, Pill } from "../../components/badges";
 import { Icon } from "../../components/icons";
 import { errorOf, useToast } from "../../components/ui";
@@ -210,19 +212,19 @@ export function NewCaseForm({ initialCaseId = "" }: { initialCaseId?: string }) 
                     </div>
                   </div>
                   {f.problem ? (
-                    <Pill tone="err" icon="block">
+                    <Pill tone="err" icon={Ban}>
                       {f.problem}
                     </Pill>
                   ) : busy ? (
-                    <Pill tone="info" icon="dotted">
+                    <Pill tone="info" icon={CircleDashed}>
                       Processing
                     </Pill>
                   ) : s ? (
-                    <Pill tone="ok" icon="check">
+                    <Pill tone="ok" icon={Check}>
                       Processed
                     </Pill>
                   ) : (
-                    <Pill tone="neutral" icon="dotted">
+                    <Pill tone="neutral" icon={CircleDashed}>
                       Ready to upload
                     </Pill>
                   )}

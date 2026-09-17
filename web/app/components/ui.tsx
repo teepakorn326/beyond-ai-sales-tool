@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Icon, type IconName } from "./icons";
 
 // ---------------------------------------------------------------- stepper
@@ -126,27 +128,24 @@ export function ConfirmationDialog({
   onCancel: () => void;
   children?: ReactNode;
 }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const d = ref.current;
-    if (!d) return;
-    if (open && !d.open) d.showModal();
-    if (!open && d.open) d.close();
-  }, [open]);
   return (
-    <dialog ref={ref} className="dialog" onClose={onCancel} onCancel={onCancel}>
-      <h3>{title}</h3>
-      <p>{body}</p>
-      {children}
-      <div className="foot">
-        <button type="button" className="btn secondary" onClick={onCancel} disabled={busy}>
-          Cancel
-        </button>
-        <button type="button" className={`btn ${tone}`} onClick={onConfirm} disabled={busy}>
-          {busy ? "Working…" : confirmLabel}
-        </button>
-      </div>
-    </dialog>
+    <Dialog open={open} onOpenChange={(next) => !next && onCancel()}>
+      <DialogContent showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{body}</DialogDescription>
+        </DialogHeader>
+        {children}
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel} disabled={busy}>
+            Cancel
+          </Button>
+          <Button variant={tone === "danger" ? "destructive" : "default"} onClick={onConfirm} disabled={busy}>
+            {busy ? "Working…" : confirmLabel}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -3,12 +3,21 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type ChangeEvent } from "react";
+import { Camera, Check, ChevronLeft, ChevronRight, FileText, Info, Mail, Pencil } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { ConfidenceBadge, Pill, ProvenanceChip } from "../../../../components/badges";
-import { Icon } from "../../../../components/icons";
+import { Hint } from "../../../../components/hint";
 import { TopBar } from "../../../../components/shell";
 import { ConfirmationDialog, errorOf, useToast } from "../../../../components/ui";
-import { caseLabel, fmtDate, fmtDateTime } from "../../../../lib/format";
+import { caseLabel, fmtDate } from "../../../../lib/format";
 import { asPrinted, DOC_TYPE_LABELS, fieldViews, NAME_FIELDS, parseInput, requiredFields, type FieldView } from "../../../../lib/review";
 import type { FieldValue, RequestKind, ReviewDocument, SourceCalendar } from "../../../../types";
 import { DocumentViewer } from "./document-viewer";
@@ -27,76 +36,74 @@ function show(v: FieldValue, kind: FieldView["kind"]): string {
   return String(v);
 }
 
+const STRIPE = {
+  err: "border-l-2 border-l-(--error)",
+  warn: "border-l-2 border-l-(--warning)",
+  info: "border-l-2 border-l-(--primary)",
+  ok: "border-l-2 border-l-(--success)",
+} as const;
+
 // Sub-components live at module level so an input keeps focus across renders.
 
+/** One line under a date: what the page printed, when that differs from the stored value. */
 function DateNote({ v, calendar }: { v: FieldView; calendar: SourceCalendar | null }) {
   if (v.kind !== "date" || typeof v.value !== "string") return null;
   const be = calendar === "BE";
   if (!be && !v.lowPrecision) return null;
   return (
-    <div className="note">
-      <div className="row" style={{ color: "var(--info-text)", fontWeight: 600, fontSize: 13 }}>
-        <Icon name="info" size={14} />
-        {be ? "Buddhist Era date detected" : "Date normalised by system"}
-      </div>
-      <div className="pair">
-        <div className="box">
-          <div className="label">Printed</div>
-          <div className="value mono">{asPrinted(v.value, calendar, v.lowPrecision)}</div>
-          {v.lowPrecision && <div className="muted small">no day given</div>}
-        </div>
-        <div className="box">
-          <div className="label">{be ? "Converted" : "Normalised"}</div>
-          <div className="value">
-            {fmtDate(v.value)} <span className="mono muted" style={{ fontWeight: 400 }}>{v.value}</span>
-          </div>
-          {v.lowPrecision && <div className="muted small">day filled by system</div>}
-        </div>
-      </div>
+    <div className="mt-1 flex flex-wrap items-center gap-1 text-xs text-(--info-text)">
+      <Info className="size-3.5" />
+      Printed as <span className="font-mono">{asPrinted(v.value, calendar, v.lowPrecision)}</span>
+      <Hint text={[be ? "Buddhist Era year, converted by the system." : null, v.lowPrecision ? "The page gives no day, so the system filled in the last day of the month." : null].filter(Boolean).join(" ")} />
     </div>
   );
 }
 
-function Editor({ v, draft, error, busy, submitLabel, onChange, onSubmit, onCancel }: { v: FieldView; draft: string; error: string | undefined; busy: boolean; submitLabel: string; onChange: (raw: string) => void; onSubmit: () => void; onCancel?: () => void }) {
-  const common = {
-    id: `input-${v.name}`,
-    value: draft,
-    disabled: busy,
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => onChange(e.target.value),
-    onKeyDown: (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") onSubmit();
-      if (e.key === "Escape" && onCancel) onCancel();
-    },
-    className: `input sm${error ? " error" : ""}`,
-    style: { fontWeight: 600 } as const,
+function Editor({ v, draft, error, busy, submitLabel, focus = false, onChange, onSubmit, onCancel }: { v: FieldView; draft: string; error: string | undefined; busy: boolean; submitLabel: string; focus?: boolean; onChange: (raw: string) => void; onSubmit: () => void; onCancel?: () => void }) {
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") onSubmit();
+    if (e.key === "Escape" && onCancel) onCancel();
   };
   return (
-    <div className="stack" style={{ gap: 6, marginTop: 8 }}>
+    <div className="mt-2 flex flex-col gap-2">
       {v.kind === "boolean" ? (
-        <select {...common}>
-          <option value="true">Present</option>
-          <option value="false">Not present</option>
-        </select>
+        <Select value={draft || "true"} items={{ true: "Present", false: "Not present" }} disabled={busy} onValueChange={(val) => onChange(String(val))}>
+          <SelectTrigger className="w-full font-semibold">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="true">Present</SelectItem>
+            <SelectItem value="false">Not present</SelectItem>
+          </SelectContent>
+        </Select>
       ) : (
-        <input {...common} type={v.kind === "date" ? "date" : v.kind === "number" ? "number" : "text"} step={v.kind === "number" ? "0.01" : undefined} placeholder={v.kind === "date" ? "YYYY-MM-DD (Gregorian)" : "Type the value as printed"} autoFocus />
+        <Input
+          id={`input-${v.name}`}
+          value={draft}
+          disabled={busy}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+          onKeyDown={onKeyDown}
+          aria-invalid={error ? true : undefined}
+          className="font-semibold"
+          type={v.kind === "date" ? "date" : v.kind === "number" ? "number" : "text"}
+          step={v.kind === "number" ? "0.01" : undefined}
+          placeholder={v.kind === "date" ? "Gregorian date" : "As printed"}
+          title="Enter saves, Esc cancels"
+          autoFocus={focus}
+        />
       )}
-      {error && <span className="small" style={{ color: "var(--error-text)" }}>{error}</span>}
-      <div className="row wrap">
-        <button type="button" className="btn primary sm" disabled={busy} onClick={onSubmit}>
+      {error && <span className="text-xs text-(--error-text)">{error}</span>}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button size="sm" disabled={busy} onClick={onSubmit}>
           {submitLabel}
-        </button>
+        </Button>
         {onCancel && (
-          <button type="button" className="btn ghost sm" disabled={busy} onClick={onCancel}>
+          <Button variant="ghost" size="sm" disabled={busy} onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         )}
-        <span className="muted small">Enter saves · Esc cancels</span>
       </div>
-      {NAME_FIELDS.has(v.name) && (
-        <span className="small" style={{ color: "var(--warning-text)" }}>
-          Edit only if the system misread the page. If the document really spells the name differently from the passport, do not edit it to match: the document has to be reissued.
-        </span>
-      )}
+      {NAME_FIELDS.has(v.name) && <span className="text-xs text-(--warning-text)">Fix misreads only. A genuinely different spelling means the document must be reissued.</span>}
     </div>
   );
 }
@@ -170,6 +177,7 @@ export function ReviewScreen({ initial, caseId, tabs }: { initial: ReviewDocumen
     setDrafts(({ [name]: _d, ...rest }) => rest);
     setFieldErrors(({ [name]: _f, ...rest }) => rest);
   }
+  const startEdit = (name: string) => setEditing((e) => ({ ...e, [name]: true }));
   async function confirmOne(v: FieldView, value?: FieldValue) {
     let val: FieldValue;
     if (value !== undefined) val = value;
@@ -198,58 +206,68 @@ export function ReviewScreen({ initial, caseId, tabs }: { initial: ReviewDocumen
 
   const pageLink = (v: FieldView) =>
     v.page !== null ? (
-      <button type="button" className="btn ghost sm" style={{ height: 22, padding: "0 6px", fontSize: 12 }} onClick={() => goPage(v.page)}>
+      <Button variant="ghost" size="xs" className="text-muted-foreground" onClick={() => goPage(v.page)}>
         p.{v.page}
-      </button>
+      </Button>
     ) : null;
 
   const band = (v: FieldView) => (v.status === "confirmed" ? (v.confidence ?? "low") : v.status === "unreadable" ? "unreadable" : v.status === "absent" ? "low" : v.status);
+
+  /** The two ways out when the image cannot be read. Hidden behind one button so the common path stays two buttons. */
+  const cantRead = (name: string) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="sm" disabled={busy} />}>Can&apos;t read it?</DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56">
+        <DropdownMenuItem onClick={() => request("new_photo", name)}>
+          <Camera />
+          Request a new photo
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setRequestDoc(name)}>
+          <FileText />
+          Request a new document
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  const requested = (name: string) =>
+    requestsFor(name).map((r) => (
+      <div key={r.created_at} className="mt-2 flex items-center gap-1.5 text-xs text-(--warning-text)">
+        <Mail className="size-3" />
+        {r.kind === "new_photo" ? "New photo" : "New document"} requested {fmtDate(r.created_at.slice(0, 10))}
+        <Hint text="Nothing is sent from here. A person contacts the student; the request stays on the case until a new copy arrives." />
+      </div>
+    ));
 
   const IndividualCard = ({ v, tone }: { v: FieldView; tone: "warn" | "err" | "info" }) => {
     const isEdit = !!editing[v.name];
     const wasConfirmed = v.status === "confirmed";
     return (
-      <div id={`field-${v.name}`} className={`field stripe ${tone}`}>
-        <div className="head">
-          <span className="label">{v.label}</span>
-          <ProvenanceChip kind={wasConfirmed ? (v.confirmedValue !== v.value ? "edited" : "confirmed") : "extracted"} />
+      <div id={`field-${v.name}`} className={cn("rounded-lg border bg-card px-3.5 py-3", STRIPE[tone])}>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-medium text-muted-foreground">{v.label}</span>
+          {wasConfirmed && <ProvenanceChip kind={v.confirmedValue !== v.value ? "edited" : "confirmed"} />}
         </div>
-        {!isEdit && <div className="value" style={{ fontSize: 15 }}>{show(v.value, v.kind)}</div>}
-        <div className="meta">
+        {!isEdit && <div className="text-[15px] font-semibold break-words">{show(v.value, v.kind)}</div>}
+        <div className="mt-1.5 flex flex-wrap items-center gap-2">
           <ConfidenceBadge band={band(v)} />
           {pageLink(v)}
         </div>
         {!isEdit && <DateNote v={v} calendar={calendar} />}
         {isEdit ? (
-          <Editor v={v} draft={draftOf(v)} error={fieldErrors[v.name]} busy={busy} submitLabel="Save and confirm" onChange={(raw) => setDrafts((d) => ({ ...d, [v.name]: raw }))} onSubmit={() => confirmOne(v)} onCancel={() => dropKey(v.name)} />
+          <Editor v={v} draft={draftOf(v)} error={fieldErrors[v.name]} busy={busy} submitLabel="Save" focus onChange={(raw) => setDrafts((d) => ({ ...d, [v.name]: raw }))} onSubmit={() => confirmOne(v)} onCancel={() => dropKey(v.name)} />
         ) : (
-          <div className="actions">
-            <button type="button" className="btn primary sm" disabled={busy} onClick={() => confirmOne(v, v.value)}>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <Button size="sm" disabled={busy} onClick={() => confirmOne(v, v.value)}>
               {v.kind === "date" && (calendar === "BE" || v.lowPrecision) ? "Confirm conversion" : "Confirm"}
-            </button>
-            <button type="button" className="btn secondary sm" disabled={busy} onClick={() => setEditing((e) => ({ ...e, [v.name]: true }))}>
+            </Button>
+            <Button variant="outline" size="sm" disabled={busy} onClick={() => startEdit(v.name)}>
               Edit
-            </button>
-            {v.status === "low" && (
-              <>
-                <button type="button" className="btn secondary sm" disabled={busy} onClick={() => request("new_photo", v.name)}>
-                  <Icon name="camera" size={14} />
-                  Request new photo
-                </button>
-                <button type="button" className="btn external sm" disabled={busy} onClick={() => setRequestDoc(v.name)}>
-                  <Icon name="doc" size={14} />
-                  Request new document
-                </button>
-              </>
-            )}
+            </Button>
+            {v.status === "low" && cantRead(v.name)}
           </div>
         )}
-        {requestsFor(v.name).map((r) => (
-          <div key={r.created_at} className="row small" style={{ marginTop: 8, color: "var(--warning-text)" }}>
-            <Icon name="mail" size={12} />
-            {r.kind === "new_photo" ? "New photo" : "New document"} requested {fmtDateTime(r.created_at)} · not yet sent to the student; a person relays it.
-          </div>
-        ))}
+        {requested(v.name)}
       </div>
     );
   };
@@ -261,97 +279,93 @@ export function ReviewScreen({ initial, caseId, tabs }: { initial: ReviewDocumen
         actions={
           <>
             {prev && (
-              <Link href={`${base}/review/${prev.docId}`} className="btn secondary">
-                <Icon name="chevl" size={14} />
+              <Link href={`${base}/review/${prev.docId}`} className={cn(buttonVariants({ variant: "outline" }))}>
+                <ChevronLeft />
                 {prev.label}
               </Link>
             )}
             {next && (
-              <Link href={`${base}/review/${next.docId}`} className="btn secondary">
+              <Link href={`${base}/review/${next.docId}`} className={cn(buttonVariants({ variant: "outline" }))}>
                 {next.label}
-                <Icon name="chev" size={14} />
+                <ChevronRight />
               </Link>
             )}
-            <Link href={base} className={`btn primary${allReviewed ? "" : " disabled"}`} aria-disabled={!allReviewed} title={allReviewed ? undefined : "Every field on every document must be confirmed first"}>
+            <Link href={base} className={cn(buttonVariants(), !allReviewed && "pointer-events-none opacity-50")} aria-disabled={!allReviewed} title={allReviewed ? undefined : "Every field on every document must be confirmed first"}>
               Finish review
             </Link>
           </>
         }
       />
       <main className="content" style={{ gap: 16 }}>
-        <div className="tabs" role="tablist">
-          {tabs.map((t) => {
-            const cur = t.docId === doc.id;
-            const reviewed = cur ? doc.confirmed_json !== null : t.reviewed;
-            const left = cur ? required.length - done : t.left;
-            return (
-              <Link key={t.docId} href={`${base}/review/${t.docId}`} className={`tab${cur ? " on" : ""}`} role="tab" aria-selected={cur}>
-                {reviewed && <Icon name="check" size={14} />}
-                {t.label}
-                {!reviewed && <span className="count">{left} left</span>}
-              </Link>
-            );
-          })}
-        </div>
+        <Tabs value={doc.id} onValueChange={(v) => router.push(`${base}/review/${String(v)}`)}>
+          <TabsList variant="line" className="h-10 border-b">
+            {tabs.map((t) => {
+              const cur = t.docId === doc.id;
+              const reviewed = cur ? doc.confirmed_json !== null : t.reviewed;
+              const left = cur ? required.length - done : t.left;
+              return (
+                <TabsTrigger key={t.docId} value={t.docId} className="px-3">
+                  {reviewed && <Check className="text-(--success)" />}
+                  {t.label}
+                  {!reviewed && (
+                    <Badge variant="secondary" className="ml-0.5">
+                      {left} left
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
 
         <div className="split-review">
           <DocumentViewer docId={doc.id} label={DOC_TYPE_LABELS[doc.doc_type]} pageCount={doc.page_count} page={page} onPage={setPage} flaggedPages={flagged} />
 
-          <div className="review-panel stack" style={{ gap: 8 }}>
-            <div>
-              <h2 className="h2">Review extracted information</h2>
-              <div className="row wrap" style={{ marginTop: 4, gap: 10 }}>
-                <span className="t2">Document: {DOC_TYPE_LABELS[doc.doc_type]}</span>
-                {doc.confirmed_json ? (
-                  <Pill tone="ok" icon="check">
-                    Reviewed
-                  </Pill>
-                ) : (
-                  <Pill tone="warn" icon="tri">
-                    Needs review
-                  </Pill>
-                )}
-                <span className="muted">
+          <div className="review-panel flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h2 className="text-base font-semibold">{DOC_TYPE_LABELS[doc.doc_type]}</h2>
+              {doc.confirmed_json ? (
+                <Pill tone="ok" icon={Check}>
+                  Confirmed
+                </Pill>
+              ) : (
+                <span className="text-muted-foreground">
                   {done} of {required.length} confirmed
                 </span>
-                <span className="spacer" />
-                <Link href={`${base}/classify`} className="btn ghost sm">
-                  Change type
-                </Link>
-              </div>
-              {doc.classification && (
-                <div className="muted small" style={{ marginTop: 4 }}>
-                  Type detected by the system ({doc.classification.confidence} confidence{doc.classification.reason ? `: ${doc.classification.reason}` : ""}).
-                </div>
               )}
+              {doc.classification && <Hint text={`Detected as ${DOC_TYPE_LABELS[doc.doc_type].toLowerCase()} with ${doc.classification.confidence} confidence${doc.classification.reason ? `: ${doc.classification.reason}` : ""}`} />}
+              <span className="flex-1" />
+              <Link href={`${base}/classify`} className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
+                Change type
+              </Link>
             </div>
 
-            {error && <div className="alert">{error}</div>}
+            {error && <div className="rounded-lg border border-(--error) bg-(--error-soft) px-3 py-2 text-(--error-text)">{error}</div>}
 
             {batch.length > 0 && (
-              <div className="group">
-                <div className="row" style={{ justifyContent: "space-between" }}>
-                  <span className="row">
+              <div className="rounded-lg border bg-muted px-4 py-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2">
                     <ConfidenceBadge band="high" />
-                    <span className="muted">
+                    <span className="text-muted-foreground">
                       {batch.length} field{batch.length === 1 ? "" : "s"}
                     </span>
                   </span>
                   {/* The only batch action in the product. Medium, low and unreadable fields never enter it. */}
-                  <button type="button" className="btn primary sm" disabled={busy} onClick={confirmBatch}>
+                  <Button size="sm" disabled={busy} onClick={confirmBatch}>
                     Confirm {batch.length} field{batch.length === 1 ? "" : "s"}
-                  </button>
+                  </Button>
                 </div>
-                <div className="fields">
+                <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {batch.map((v) => (
-                    <div key={v.name} id={`field-${v.name}`} className="field" style={{ padding: "8px 10px" }}>
-                      <div className="head">
-                        <span className="label">{v.label}</span>
-                        <button type="button" className="btn ghost sm" style={{ height: 22, padding: "0 6px", fontSize: 12 }} onClick={() => setEditing((e) => ({ ...e, [v.name]: true }))}>
-                          Edit
-                        </button>
+                    <div key={v.name} id={`field-${v.name}`} className="rounded-lg border bg-card px-2.5 py-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-medium text-muted-foreground">{v.label}</span>
+                        <Button variant="ghost" size="icon-xs" aria-label={`Edit ${v.label}`} onClick={() => startEdit(v.name)}>
+                          <Pencil />
+                        </Button>
                       </div>
-                      <div className="value" style={{ fontSize: 13 }}>{show(v.value, v.kind)}</div>
+                      <div className="text-[13px] font-semibold break-words">{show(v.value, v.kind)}</div>
                       <DateNote v={v} calendar={calendar} />
                       {pageLink(v)}
                     </div>
@@ -371,82 +385,58 @@ export function ReviewScreen({ initial, caseId, tabs }: { initial: ReviewDocumen
             ))}
 
             {unreadable.map((v) => (
-              <div key={v.name} id={`field-${v.name}`} className="field stripe err">
-                <div className="head">
-                  <span className="label">{v.label}</span>
-                  <ProvenanceChip kind="extracted" />
+              <div key={v.name} id={`field-${v.name}`} className={cn("rounded-lg border bg-card px-3.5 py-3", STRIPE.err)}>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">{v.label}</span>
+                  <Hint text="Type the value if you can read it from the image. Otherwise request a new photo, or a new document if the page itself is damaged." />
                 </div>
-                <div className="meta" style={{ marginTop: 2 }}>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
                   <ConfidenceBadge band="unreadable" />
                   {pageLink(v)}
                 </div>
-                <div className="muted small" style={{ marginTop: 6 }}>
-                  If you can read it from the image, type the value. If the photo is unclear, request a new photo. If the document itself is damaged or missing, request a new document.
-                </div>
                 <Editor v={v} draft={draftOf(v)} error={fieldErrors[v.name]} busy={busy} submitLabel="Save typed value" onChange={(raw) => setDrafts((d) => ({ ...d, [v.name]: raw }))} onSubmit={() => confirmOne(v)} />
-                <div className="actions">
-                  <button type="button" className="btn secondary sm" disabled={busy} onClick={() => request("new_photo", v.name)}>
-                    <Icon name="camera" size={14} />
-                    Request new photo
-                  </button>
-                  <button type="button" className="btn external sm" disabled={busy} onClick={() => setRequestDoc(v.name)}>
-                    <Icon name="doc" size={14} />
-                    Request new document
-                  </button>
-                </div>
-                {requestsFor(v.name).map((r) => (
-                  <div key={r.created_at} className="row small" style={{ marginTop: 8, color: "var(--warning-text)" }}>
-                    <Icon name="mail" size={12} />
-                    {r.kind === "new_photo" ? "New photo" : "New document"} requested {fmtDateTime(r.created_at)} · not yet sent to the student; a person relays it.
-                  </div>
-                ))}
+                <div className="mt-2">{cantRead(v.name)}</div>
+                {requested(v.name)}
               </div>
             ))}
 
             {confirmed.map((v) => {
               const edited = v.confirmedValue !== v.value;
               return (
-                <div key={v.name} id={`field-${v.name}`} className={`field collapsed stripe ${edited ? "info" : "ok"}`} style={{ flexWrap: "wrap" }}>
-                  <span className="label" style={{ width: 150 }}>
-                    {v.label}
-                  </span>
-                  <span className="value">{show(v.confirmedValue ?? null, v.kind)}</span>
-                  <span className="spacer" />
-                  <ProvenanceChip kind={edited ? "edited" : "confirmed"} />
-                  <button type="button" className="btn ghost sm" style={{ height: 22, padding: "0 6px", fontSize: 12 }} onClick={() => setEditing((e) => ({ ...e, [v.name]: true }))}>
-                    Edit
-                  </button>
-                  {edited && (
-                    <div className="muted small" style={{ width: "100%", paddingLeft: 160 }}>
-                      Extracted: {show(v.value, v.kind)}
-                    </div>
-                  )}
+                <div key={v.name} id={`field-${v.name}`} className={cn("flex flex-wrap items-center gap-2.5 rounded-lg border bg-card px-3.5 py-2", edited ? STRIPE.info : STRIPE.ok)}>
+                  <Check className="size-4 text-(--success)" />
+                  <span className="w-[140px] text-xs font-medium text-muted-foreground">{v.label}</span>
+                  <span className="font-semibold break-words">{show(v.confirmedValue ?? null, v.kind)}</span>
+                  <span className="flex-1" />
+                  {edited && <ProvenanceChip kind="edited" />}
+                  <Button variant="ghost" size="icon-xs" aria-label={`Edit ${v.label}`} onClick={() => startEdit(v.name)}>
+                    <Pencil />
+                  </Button>
+                  {edited && <div className="w-full pl-[166px] text-xs text-muted-foreground">Extracted: {show(v.value, v.kind)}</div>}
                 </div>
               );
             })}
 
-            {absent.length > 0 && <div className="muted small">Not on this document: {absent.map((v) => v.label).join(", ")}</div>}
+            {absent.length > 0 && <div className="text-xs text-muted-foreground">Not on this document: {absent.map((v) => v.label).join(", ")}</div>}
 
             {x.suspicious_content && (
-              <details className="disclosure">
-                <summary>
-                  <Icon name="chev" size={12} />
-                  Document contained instruction-like text (recorded, not acted on)
-                </summary>
-                <div className="card compact" style={{ marginTop: 6, whiteSpace: "pre-wrap" }}>
-                  <span className="mono">{x.suspicious_content}</span>
-                </div>
-              </details>
+              <Collapsible>
+                <CollapsibleTrigger className="group flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground">
+                  <ChevronRight className="size-3 transition-transform group-data-panel-open:rotate-90" />
+                  Instruction-like text found on the page (recorded, not acted on)
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <pre className="mt-1.5 rounded-lg border bg-card px-3 py-2 font-mono text-xs whitespace-pre-wrap">{x.suspicious_content}</pre>
+                </CollapsibleContent>
+              </Collapsible>
             )}
 
             {doc.confirmed_json && (
-              <div className="card compact stripe ok">
-                <div className="row wrap" style={{ justifyContent: "space-between" }}>
-                  <span>All fields confirmed {fmtDateTime(doc.confirmed_json.confirmed_at)}.</span>
-                  <Link href={next ? `${base}/review/${next.docId}` : base} className="btn primary sm">
-                    {next ? `Next: ${next.label}` : "Back to case"}
-                  </Link>
-                </div>
+              <div className={cn("flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-card px-3.5 py-2.5", STRIPE.ok)}>
+                <span>Confirmed {fmtDate(doc.confirmed_json.confirmed_at.slice(0, 10))}</span>
+                <Link href={next ? `${base}/review/${next.docId}` : base} className={cn(buttonVariants({ size: "sm" }))}>
+                  {next ? `Next: ${next.label}` : "Back to case"}
+                </Link>
               </div>
             )}
           </div>
@@ -456,7 +446,7 @@ export function ReviewScreen({ initial, caseId, tabs }: { initial: ReviewDocumen
       <ConfirmationDialog
         open={requestDoc !== null}
         title="Request a new document?"
-        body="This records that the student must supply a new copy of this document. Nothing is sent from here: a person contacts the student, and the request stays visible on the case until a new document arrives."
+        body="Nothing is sent from here. The request stays on the case until a person contacts the student and a new copy arrives."
         confirmLabel="Record request"
         busy={busy}
         onCancel={() => setRequestDoc(null)}

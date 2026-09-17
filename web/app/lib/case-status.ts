@@ -140,7 +140,13 @@ export function summarize(
   }
   for (const s of missing) openItems.push(`${s.label} not received`);
   const warns = checks?.checks.filter((c) => c.verdict === "warn" && c.status !== "pending" && !(c.rule_id in meta.acknowledged)) ?? [];
-  for (const w of warns) openItems.push(`${w.label} (${w.rule_id}) needs a person to confirm`);
+  const WARN_ITEM: Record<string, string> = {
+    R1: "Confirm the name variation",
+    R3: "Confirm the graduation date gap",
+    R4: "Confirm the passport buffer",
+    R5: "Confirm the English test expiry",
+  };
+  for (const w of warns) openItems.push(WARN_ITEM[w.rule_id] ?? `Confirm: ${w.label}`);
 
   const blocked = checks?.checks.some((c) => c.verdict === "block") ?? false;
   let status: CaseStatus;

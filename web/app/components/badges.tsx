@@ -1,27 +1,41 @@
 // Status is communicated three ways at once: a fixed glyph, a label and a
 // colour. The mappings below are the only place those three are bound, so a
 // state can never render green by accident.
+//
+// Vocabulary is deliberately small. A reviewer meets these words on every
+// screen, so each one is a verb or a state they already know.
 
+import { Ban, Check, Clock, Dot, Mail, Pencil, ScanLine, TriangleAlert, type LucideIcon } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { CheckStatus, Confidence, Verdict } from "../types";
 import type { CaseStatus, DocState } from "../lib/case-status";
-import { Icon, type IconName } from "./icons";
 
 type Tone = "ok" | "warn" | "err" | "info" | "neutral";
 
-export function Pill({ tone, icon, children }: { tone: Tone; icon: IconName; children: React.ReactNode }) {
+const TONE: Record<Tone, string> = {
+  ok: "bg-(--success-soft) text-(--success-text)",
+  warn: "bg-(--warning-soft) text-(--warning-text)",
+  err: "bg-(--error-soft) text-(--error-text)",
+  info: "bg-(--primary-soft) text-(--info-text)",
+  neutral: "bg-muted text-(--text-2) border-border",
+};
+
+export function Pill({ tone, icon: Icon, className, children }: { tone: Tone; icon: LucideIcon; className?: string; children: React.ReactNode }) {
   return (
-    <span className={`pill ${tone}`}>
-      <Icon name={icon} size={12} />
+    <Badge variant="outline" className={cn("h-[22px] gap-1.5 border-transparent px-2.5", TONE[tone], className)}>
+      <Icon aria-hidden="true" />
       {children}
-    </span>
+    </Badge>
   );
 }
 
-export const CASE_STATUS: Record<CaseStatus, { tone: Tone; icon: IconName; label: string }> = {
-  blocked: { tone: "err", icon: "block", label: "Blocked" },
-  pending_documents: { tone: "neutral", icon: "pending", label: "Pending documents" },
-  needs_review: { tone: "warn", icon: "tri", label: "Needs review" },
-  ready: { tone: "ok", icon: "check", label: "Ready" },
+export const CASE_STATUS: Record<CaseStatus, { tone: Tone; icon: LucideIcon; label: string }> = {
+  blocked: { tone: "err", icon: Ban, label: "Blocked" },
+  pending_documents: { tone: "neutral", icon: Clock, label: "Waiting for documents" },
+  needs_review: { tone: "warn", icon: TriangleAlert, label: "Needs review" },
+  ready: { tone: "ok", icon: Check, label: "Ready" },
 };
 
 export function CaseStatusBadge({ status }: { status: CaseStatus }) {
@@ -37,35 +51,35 @@ export function CaseStatusBadge({ status }: { status: CaseStatus }) {
 export function VerdictBadge({ verdict, status }: { verdict: Verdict; status: CheckStatus }) {
   if (status === "pending")
     return (
-      <Pill tone="neutral" icon="pending">
-        Pending
+      <Pill tone="neutral" icon={Clock}>
+        Waiting
       </Pill>
     );
   if (verdict === "block")
     return (
-      <Pill tone="err" icon="block">
+      <Pill tone="err" icon={Ban}>
         Blocked
       </Pill>
     );
   if (verdict === "warn")
     return (
-      <Pill tone="warn" icon="tri">
-        Warning
+      <Pill tone="warn" icon={TriangleAlert}>
+        Check
       </Pill>
     );
   return (
-    <Pill tone="ok" icon="check">
+    <Pill tone="ok" icon={Check}>
       Passed
     </Pill>
   );
 }
 
-export const DOC_STATE: Record<DocState, { tone: Tone; icon: IconName; label: string }> = {
-  reviewed: { tone: "ok", icon: "check", label: "Reviewed" },
-  needs_review: { tone: "warn", icon: "tri", label: "Needs review" },
-  unclassified: { tone: "warn", icon: "tri", label: "Type unconfirmed" },
-  requested: { tone: "neutral", icon: "mail", label: "Requested from student" },
-  missing: { tone: "neutral", icon: "pending", label: "Not received" },
+export const DOC_STATE: Record<DocState, { tone: Tone; icon: LucideIcon; label: string }> = {
+  reviewed: { tone: "ok", icon: Check, label: "Confirmed" },
+  needs_review: { tone: "warn", icon: TriangleAlert, label: "Needs review" },
+  unclassified: { tone: "warn", icon: TriangleAlert, label: "Type unconfirmed" },
+  requested: { tone: "neutral", icon: Mail, label: "Requested" },
+  missing: { tone: "neutral", icon: Clock, label: "Not received" },
 };
 
 export function DocStateBadge({ state }: { state: DocState }) {
@@ -82,26 +96,26 @@ export function ConfidenceBadge({ band, short = false }: { band: Confidence | "u
   switch (band) {
     case "high":
       return (
-        <Pill tone="ok" icon="dot">
+        <Pill tone="ok" icon={Dot}>
           {short ? "High" : "High confidence"}
         </Pill>
       );
     case "medium":
       return (
-        <Pill tone="warn" icon="tri">
-          {short ? "Medium" : "Review recommended"}
+        <Pill tone="warn" icon={TriangleAlert}>
+          {short ? "Medium" : "Check"}
         </Pill>
       );
     case "low":
       return (
-        <Pill tone="err" icon="tri-fill">
-          {short ? "Low" : "Needs confirmation"}
+        <Pill tone="err" icon={TriangleAlert}>
+          {short ? "Low" : "Check closely"}
         </Pill>
       );
     case "unreadable":
       return (
-        <Pill tone="err" icon="block">
-          {short ? "Unreadable" : "Unable to read"}
+        <Pill tone="err" icon={ScanLine}>
+          Unreadable
         </Pill>
       );
   }
@@ -112,35 +126,34 @@ export type Provenance = "extracted" | "confirmed" | "edited";
 export function ProvenanceChip({ kind }: { kind: Provenance }) {
   if (kind === "confirmed")
     return (
-      <span className="chip confirmed">
-        <Icon name="check" size={11} />
-        Reviewer confirmed
-      </span>
+      <Badge variant="outline" className="h-5 gap-1 border-(--success) text-(--success-text)">
+        <Check aria-hidden="true" />
+        Confirmed
+      </Badge>
     );
   if (kind === "edited")
     return (
-      <span className="chip edited">
-        <Icon name="pencil" size={11} />
-        Edited by reviewer
-      </span>
+      <Badge variant="outline" className="h-5 gap-1 border-(--primary) text-(--info-text)">
+        <Pencil aria-hidden="true" />
+        Edited
+      </Badge>
     );
   return (
-    <span className="chip">
-      <Icon name="dotted" size={11} />
+    <Badge variant="outline" className="h-5 gap-1 text-muted-foreground">
       Extracted
-    </span>
+    </Badge>
   );
 }
 
 export function ProgressSegments({ filled, total }: { filled: number; total: number }) {
   return (
-    <span className="row" style={{ gap: 8 }}>
-      <span className="seg" aria-hidden="true">
+    <span className="inline-flex items-center gap-2">
+      <span className="inline-flex gap-0.5" aria-hidden="true">
         {Array.from({ length: total }, (_, i) => (
-          <i key={i} className={i < filled ? "on" : ""} />
+          <i key={i} className={cn("block h-2 w-3.5 rounded-xs", i < filled ? "bg-primary" : "bg-(--border-strong)")} />
         ))}
       </span>
-      <span className="muted tnum">
+      <span className="text-muted-foreground tabular-nums">
         {filled}/{total}
       </span>
     </span>
