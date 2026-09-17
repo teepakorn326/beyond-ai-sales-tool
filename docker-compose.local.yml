@@ -1,0 +1,33 @@
+# Offline override: the whole stack in Docker with no AWS and no model.
+#   ./run.sh local        (or: docker compose --env-file infra/local.env
+#                          -f docker-compose.yml -f docker-compose.local.yml --profile local up --build -d)
+# The real extractor is replaced by web/dev/fake-extractor.mjs (fixtures, no
+# key), Postgres and MinIO come from the `local` profile, and the agent runs
+# its deterministic nodes only (the assistant page says "no model").
+services:
+  extractor:
+    build: !reset null
+    env_file: !reset []
+    image: node:22-alpine
+    working_dir: /app
+    command: ["node", "dev/fake-extractor.mjs"]
+    environment:
+      PORT: "8000"
+      RULES_URL: http://rules:8081
+      EMBEDDING_DIMS: "1024"
+    volumes: ["./web/dev:/app/dev:ro"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 3s
+      retries: 20
+
+  # The schema is applied before the app starts, against the local db.
+  migrate:
+    profiles: ["local"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  web:
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }

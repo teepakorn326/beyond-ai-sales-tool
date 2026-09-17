@@ -3,10 +3,12 @@
 #
 #   ./run.sh test              every offline suite: Go rules, extractor scoring,
 #                              web typecheck, agent unit tests + both eval suites
-#   ./run.sh dev               rules engine + fake extractor + review UI, no API key;
-#                              starts a local Postgres and MinIO in Docker; Ctrl-C stops all
-#   ./run.sh demo              the AWS demo: compose up, migrate RDS, seed the policy index,
-#                              import web/.data if present (needs .env from infra/aws/bootstrap.sh)
+#   ./run.sh local             the whole stack in Docker, nothing else installed: fake
+#                              extractor, local Postgres + MinIO, no key (teammates start here)
+#   ./run.sh dev               same, but rules/extractor/web run on the host for hot reload
+#                              (needs go + node); Ctrl-C stops all
+#   ./run.sh demo              the AWS demo (real Claude + Cohere via Bedrock, RDS, S3): Docker
+#                              only, needs the shared .env; migrates, seeds, mock students
 #   ./run.sh render [N]        render synthetic record N (default 0) to PNGs in out/
 #   ./run.sh ask "question"    ask the agent without a model (needs `dev` running)
 #   ./run.sh eval              agent eval report (trajectory 3 numbers, guardrail 30/30)
@@ -87,28 +89,52 @@ cmd_dev() {
   wait
 }
 
+LOCAL_COMPOSE=(docker compose --env-file infra/local.env -f docker-compose.yml -f docker-compose.local.yml --profile local)
+
+# Everything in Docker: no .env, no AWS, no toolchains. Idempotent; re-run after a pull.
+cmd_local() {
+  need docker; need curl
+  bold "== services (offline: fake extractor, local Postgres + MinIO, agent without a model)"
+  "${LOCAL_COMPOSE[@]}" up --build -d
+  wait_for "http://localhost:$EXTRACTOR_PORT/healthz" "fake extractor"
+  wait_for "http://localhost:8090/healthz" "agent"
+  wait_for "http://localhost:$WEB_PORT/api/healthz" "web"
+  bold "== policy and programme index (fake embeddings: plumbing only, ranking is not meaningful)"
+  "${LOCAL_COMPOSE[@]}" exec -T agent python -m agent.seed
+  bold "== mock verified students (0501-0505)"
+  "${LOCAL_COMPOSE[@]}" exec -T -e WEB_URL=http://localhost:3000 web node scripts/seed-demo.mjs
+  echo
+  bold "ready: http://localhost:$WEB_PORT   (fake extractor :$EXTRACTOR_PORT, agent :8090, rules :$RULES_PORT, MinIO console :9001)"
+  echo "Upload the PNGs in out/ under a new case; the fake extractor sorts them by filename."
+  echo "Stop: ./run.sh local-down   ·   Logs: ${LOCAL_COMPOSE[*]} logs -f web agent extractor"
+}
+
+cmd_local_down() {
+  need docker
+  "${LOCAL_COMPOSE[@]}" down
+}
+
 wait_for() {  # wait_for <url> <label>
   for _ in $(seq 1 60); do curl -fsS "$1" >/dev/null 2>&1 && { echo "$2 ready"; return 0; }; sleep 3; done
   echo "$2 did not become ready at $1" >&2; return 1
 }
 
 cmd_demo() {
-  need docker; need node; need curl
-  [ -f .env ] || { echo ".env missing — run infra/aws/bootstrap.sh and paste its output (see .env.example)" >&2; exit 1; }
+  need docker; need curl
+  [ -f .env ] || { echo ".env missing — the account owner assembles it (infra/aws/bootstrap.sh + assemble-env.sh) and shares it out of band; see DEPLOY.md" >&2; exit 1; }
   set -a; . ./.env; set +a
   [ -n "${DATABASE_URL:-}" ] && [ -n "${S3_BUCKET:-}" ] || { echo ".env needs DATABASE_URL and S3_BUCKET" >&2; exit 1; }
-  [ -d web/node_modules ] || (cd web && npm install --no-audit --no-fund)
 
   bold "== schema"
-  # bootstrap.sh opened port 5432 only to the IP you had then; on another
-  # network the connection times out. Say so instead of hanging.
-  db_host=$(node -e 'console.log(new URL(process.env.DATABASE_URL).hostname)')
-  db_port=$(node -e 'console.log(new URL(process.env.DATABASE_URL).port || 5432)')
-  if ! node -e 'const s=require("net").connect(+process.argv[2],process.argv[1]);s.setTimeout(6000);s.on("connect",()=>{s.end();process.exit(0)});s.on("timeout",()=>process.exit(1));s.on("error",()=>process.exit(1))' "$db_host" "$db_port"; then
-    echo "cannot reach $db_host:$db_port — if you are on a new network run infra/aws/allow-my-ip.sh, then retry" >&2
+  # RDS accepts 5432 only from allowed IPs; on a new network the connection
+  # would hang. Check first and say what to do.
+  db_hostport=${DATABASE_URL#*@}; db_hostport=${db_hostport%%/*}
+  db_host=${db_hostport%%:*}; db_port=${db_hostport#*:}; [ "$db_port" = "$db_host" ] && db_port=5432
+  if command -v nc >/dev/null 2>&1 && ! nc -z -w 6 "$db_host" "$db_port" >/dev/null 2>&1; then
+    echo "cannot reach $db_host:$db_port — run infra/aws/allow-my-ip.sh (uses the credentials in .env), wait 15s, then retry" >&2
     exit 1
   fi
-  (cd web && node scripts/migrate.mjs)
+  docker compose run --rm --build migrate
   bold "== services"
   docker compose up --build -d
   wait_for "http://localhost:$EXTRACTOR_PORT/readyz" "extractor"
@@ -116,12 +142,12 @@ cmd_demo() {
   wait_for "http://localhost:$WEB_PORT/api/healthz" "web"
   bold "== policy and programme index"
   docker compose exec -T agent python -m agent.seed
-  if [ -d web/.data ]; then
+  if [ -d web/.data ] && command -v node >/dev/null 2>&1; then
     bold "== importing web/.data (one-shot, never overwrites)"
     (cd web && node scripts/import-data.mjs .data) && curl -fsS -X POST "http://localhost:$WEB_PORT/api/profiles/reindex" && echo
   fi
   bold "== mock verified students (0501-0505)"
-  (cd web && WEB_URL="http://localhost:$WEB_PORT" node scripts/seed-demo.mjs)
+  docker compose exec -T -e WEB_URL=http://localhost:3000 web node scripts/seed-demo.mjs
   echo
   bold "demo ready: http://localhost:$WEB_PORT   (extractor :$EXTRACTOR_PORT, agent :8090, rules :$RULES_PORT)"
   echo "Logs: docker compose logs -f web agent extractor   ·   Stop: docker compose down"
@@ -179,6 +205,8 @@ cmd_up() {
 case "${1:-}" in
   test)   shift; cmd_test "$@" ;;
   dev)    shift; cmd_dev "$@" ;;
+  local)  shift; cmd_local "$@" ;;
+  local-down) shift; cmd_local_down "$@" ;;
   render) shift; cmd_render "$@" ;;
   ask)    shift; cmd_ask "$@" ;;
   eval)   shift; cmd_eval "$@" ;;

@@ -187,11 +187,43 @@ three seconds.
 
 ## Running it
 
-The short version, none of which needs an API key:
+### Fresh clone, nothing but Docker
 
 ```bash
-./run.sh test                 # every offline suite
-./run.sh dev                  # rules engine + fake extractor + review UI on :3000
+git clone <this repo> && cd visa-doc-checker
+./run.sh local                # builds and starts everything; first run takes a few minutes
+```
+
+Open http://localhost:3000. That is the whole review flow with a fake
+extractor (fixtures, no key), a local Postgres and MinIO, the policy and
+programme index, and five mock students already verified (cases 0501–0505)
+so the assistant's programme conversation works straight away. Upload the
+PNGs in `out/` under a new case to see intake, review and the checks; the
+fake sorts pages by filename. Nothing calls a model, so the assistant answers
+from its deterministic nodes only and PDFs do not preview (the fake cannot
+rasterise). Re-run `./run.sh local` after a pull; `./run.sh local-down` stops
+it and keeps the data.
+
+To run the shared AWS demo instead (real Claude and Cohere through Bedrock,
+RDS, S3), still with Docker alone:
+
+```bash
+# put the .env the account owner sent you in the repo root, then
+./run.sh demo                 # if it says the database is unreachable:
+infra/aws/allow-my-ip.sh      # allows your public IP, then run demo again
+```
+
+The `.env` holds credentials, so it travels out of band and is never
+committed. Everyone on the demo shares the same cases. Details and cost in
+[DEPLOY.md](DEPLOY.md).
+
+### Everything else
+
+None of this needs an API key either:
+
+```bash
+./run.sh test                 # every offline suite (needs go, node, python3)
+./run.sh dev                  # like local, but rules/extractor/web on the host for hot reload
 ./run.sh render 0             # synthetic record 0 as PNGs in out/, ready to upload
 ./run.sh ask "case 0413 why is it blocked?"   # the agent, deterministic nodes only
 ./run.sh eval                 # agent eval report

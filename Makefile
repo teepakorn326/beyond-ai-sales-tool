@@ -1,4 +1,4 @@
-.PHONY: help synth eval rules-test agent-test agent-eval web-typecheck web-test up demo db-migrate db-shell seed seed-demo fmt
+.PHONY: help local local-down synth eval rules-test agent-test agent-eval web-typecheck web-test up demo db-migrate db-shell seed seed-demo fmt
 
 help:
 	@grep -E '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "};{printf "  %-14s %s\n",$$1,$$2}'
@@ -23,6 +23,12 @@ web-typecheck: ## review UI: strict TypeScript against the hand-mirrored types
 
 web-test:     ## review UI: pure-function tests (profile builder, identity hash)
 	cd web && npm test
+
+local:        ## whole stack in Docker, no AWS, no key, no toolchains (start here)
+	./run.sh local
+
+local-down:   ## stop the offline stack (data volumes are kept)
+	./run.sh local-down
 
 up:           ## run the app services against the AWS data/AI in .env
 	docker compose up --build

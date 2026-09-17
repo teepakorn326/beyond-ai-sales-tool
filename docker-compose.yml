@@ -62,11 +62,29 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       IDENTITY_HASH_SALT: ${IDENTITY_HASH_SALT:-}
       SIMILAR_MIN_SIMILARITY: ${SIMILAR_MIN_SIMILARITY:-0.70}
-    volumes: ["./infra/aws/rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro"]
+    volumes:
+      - ./infra/aws/rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro
+      # seed-demo.mjs runs in here (`docker compose exec web node scripts/seed-demo.mjs`):
+      # it reads the synthetic ground truth and fallback PNGs; root resolves to /.
+      - ./out:/out
+      - ./extractor/evals/datasets:/extractor/evals/datasets:ro
     depends_on:
       extractor: { condition: service_healthy }
       agent: { condition: service_healthy }
     ports: ["3000:3000"]
+
+  # One-shot: apply db/schema.sql (idempotent). `docker compose run --rm migrate`
+  # so nobody needs Node on the host; the `ops` profile keeps it out of `up`.
+  migrate:
+    profiles: ["ops"]
+    build: ./web
+    command: ["node", "scripts/migrate.mjs", "/db/schema.sql"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
+      PG_CA_CERT_PATH: ${PG_CA_CERT_PATH:+/certs/rds-global-bundle.pem}
+    volumes:
+      - ./db:/db:ro
+      - ./infra/aws/rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro
 
   # ---- offline profile: Postgres + object store on this machine ----------
   db:

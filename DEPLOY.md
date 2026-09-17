@@ -47,17 +47,30 @@ below); the data and the models live in `ap-southeast-2`:
 ```bash
 VDC_DB_PASSWORD='...' infra/aws/bootstrap.sh   # bucket, security group, RDS, schema, Bedrock access check
 # paste its output into .env, then:
-./run.sh demo                                   # migrate, compose up, seed policies, import web/.data
-infra/aws/allow-my-ip.sh                        # on a new network: let this machine reach RDS again
+./run.sh demo                                   # Docker only: migrate, compose up, seed policies, mock students
+infra/aws/allow-my-ip.sh                        # on a new network: let this machine reach RDS (works with the .env key)
+./run.sh local                                  # no AWS at all: the whole stack offline in Docker (README "Fresh clone")
 infra/aws/teardown.sh                           # delete everything (no snapshot)
 ```
+
+**Teammates.** The demo is shared: one RDS, one bucket, one Bedrock account.
+A teammate needs the repo, Docker, and the `.env` file (sent out of band,
+never committed; it carries the runtime IAM key, so whoever has it can spend
+Bedrock tokens and read the document bucket). Then `./run.sh demo`. If it
+reports the database as unreachable, they run `infra/aws/allow-my-ip.sh`,
+which adds their public IP to the security group using that same key and
+needs no AWS CLI (it runs one in Docker when none is installed), and retry
+after a few seconds. Everyone sees the same cases; the mock students are
+skipped if already present.
 
 Bedrock model access is a console step the script cannot perform: enable
 Claude Sonnet, Claude Haiku and Cohere Embed Multilingual v3 in the region
 before running the demo. Use the APAC inference profile ids the script
 prints, not the Global profile (see "Why Sydney"). The IAM user for the
 containers gets `infra/aws/iam-policy.json` only: the bucket, the three
-models, nothing else. RDS uses password auth over TLS: `infra/aws/rds-global-bundle.pem`
+models, and one security-group change (adding an inbound rule on the
+database's group, so `allow-my-ip.sh` is self-service), nothing else.
+RDS uses password auth over TLS: `infra/aws/rds-global-bundle.pem`
 is the public RDS CA bundle, `PG_CA_CERT_PATH` points the web tier at it so the
 server certificate is verified (node-postgres treats `sslmode=require` as
 verify-full, so the mode is stripped from the URL and TLS configured explicitly

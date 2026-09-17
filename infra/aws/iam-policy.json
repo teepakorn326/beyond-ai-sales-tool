@@ -20,6 +20,21 @@
       "Resource": "arn:aws:s3:::BUCKET_NAME"
     },
     {
+      "Sid": "DescribeForAllowMyIp",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBInstances",
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowMyIpOnDbSecurityGroup",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:ec2:REGION:ACCOUNT_ID:security-group/DB_SECURITY_GROUP_ID"
+    },
+    {
       "Sid": "BedrockModels",
       "Effect": "Allow",
       "Action": [
