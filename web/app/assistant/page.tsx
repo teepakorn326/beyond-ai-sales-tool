@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { CaseStatusBadge } from "../components/badges";
 import { PageHeader, TopBar } from "../components/shell";
+import { agentHasModel } from "../lib/agent-status";
 import { loadAllSummaries } from "../lib/checks";
 import { caseLabel } from "../lib/format";
 import { AssistantThread, type CaseOption } from "./assistant-thread";
@@ -11,19 +12,6 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Case assistant" };
 
 type Search = Record<string, string | string[] | undefined>;
-
-/** With AGENT_URL the agent service says whether a model is connected; otherwise fall back to the env. */
-async function agentHasModel(): Promise<boolean> {
-  const url = process.env.AGENT_URL;
-  if (!url) return process.env.AI_PROVIDER === "bedrock" || Boolean(process.env.ANTHROPIC_API_KEY);
-  try {
-    const r = await fetch(`${url}/healthz`, { cache: "no-store", signal: AbortSignal.timeout(2500) });
-    const j = (await r.json()) as { model_connected?: unknown };
-    return j.model_connected === true;
-  } catch {
-    return false;
-  }
-}
 
 export default async function AssistantPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;

@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { Icon } from "../components/icons";
 import { Markdown } from "../components/markdown";
-import { ConfirmationDialog, errorOf, useToast } from "../components/ui";
-import type { AssistantReply, Decision, Proposal } from "../lib/assistant-types";
+import { ConfirmationDialog } from "../components/ui";
 import type { CaseStatus } from "../lib/case-status";
+import { suggestionsFor, TOOL_LABEL, useAssistant } from "../lib/use-assistant";
 
 export interface CaseOption {
   id: string;
@@ -16,74 +16,17 @@ export interface CaseOption {
   status: CaseStatus;
 }
 
-type Msg = { role: "user"; text: string } | { role: "ai"; text: string; outsideScope: boolean } | { role: "proposal"; question: string; proposal: Proposal; threadId: string | null; done: "approved" | "rejected" | null } | { role: "unavailable"; text: string };
-
-const LODGEMENT_SUGGESTIONS = ["Why is this case blocked?", "Which documents still need review?", "Does the student's name match?", "What needs to happen before submission?"];
-const PROGRAMME_SUGGESTIONS = ["Which programmes fit this student?", "หลักสูตรไหนเหมาะกับน้องคนนี้"];
-
-/** A verified case is past lodgement questions; lead with the programme ones. */
-function suggestionsFor(status: CaseStatus | undefined): string[] {
-  return status === "ready" ? [...PROGRAMME_SUGGESTIONS, ...LODGEMENT_SUGGESTIONS] : [...LODGEMENT_SUGGESTIONS, ...PROGRAMME_SUGGESTIONS];
-}
-
-const TOOL_LABEL: Record<string, string> = {
-  draft_student_message: "Draft a message to the student",
-  request_document: "Request a document from the student",
-  escalate_to_visa_team: "Escalate to the visa team",
-  flag_document: "Flag a document",
-};
-
 export function AssistantThread({ options, selected, hasModel }: { options: CaseOption[]; selected: string | null; hasModel: boolean }) {
   const router = useRouter();
-  const toast = useToast();
   const [caseId, setCaseId] = useState(selected ?? "");
-  const [msgs, setMsgs] = useState<Msg[]>([]);
+  const { msgs, busy, ask, drop, reset } = useAssistant(caseId);
   const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
   const [approving, setApproving] = useState<number | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "nearest" });
   }, [msgs]);
-
-  async function ask(question: string, decision: Decision | null = null, at: number | null = null, threadId: string | null = null) {
-    if (!question.trim() || !caseId) return;
-    setBusy(true);
-    if (!decision) setMsgs((m) => [...m, { role: "user", text: question }]);
-    setInput("");
-    try {
-      const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question, case_id: caseId, decision, thread_id: threadId }) });
-      const body: unknown = await res.json().catch(() => null);
-      if (!res.ok) {
-        setMsgs((m) => [...m, { role: "unavailable", text: errorOf(body, res.status, "The assistant did not respond") }]);
-        return;
-      }
-      const r = body as AssistantReply;
-      if (r.unavailable) {
-        setMsgs((m) => [...m, { role: "unavailable", text: r.unavailable! }]);
-        return;
-      }
-      setMsgs((m) => {
-        const next = [...m];
-        if (decision && at !== null) {
-          const p = next[at];
-          if (p && p.role === "proposal") next[at] = { ...p, done: decision === "approve" ? "approved" : "rejected" };
-        }
-        if (r.answer) next.push({ role: "ai", text: r.answer, outsideScope: r.outsideScope });
-        if (r.proposal) next.push({ role: "proposal", question, proposal: r.proposal, threadId: r.thread_id, done: null });
-        return next;
-      });
-      if (decision === "approve") {
-        toast("ok", "Action approved and recorded");
-        router.refresh();
-      } else if (decision === "reject") toast("info", "Proposal rejected and recorded");
-    } catch {
-      setMsgs((m) => [...m, { role: "unavailable", text: "Could not reach the server" }]);
-    } finally {
-      setBusy(false);
-    }
-  }
 
   const pending = approving !== null ? msgs[approving] : null;
   const current = options.find((o) => o.id === caseId);
@@ -93,7 +36,7 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
       <div className="row wrap" style={{ justifyContent: "space-between" }}>
         <label className="row" style={{ gap: 8 }}>
           <span className="label">Case</span>
-          <select className="select" value={caseId} onChange={(e) => (setCaseId(e.target.value), setMsgs([]), router.replace(`/assistant?case=${encodeURIComponent(e.target.value)}`))} disabled={busy}>
+          <select className="select" value={caseId} onChange={(e) => (setCaseId(e.target.value), reset(), router.replace(`/assistant?case=${encodeURIComponent(e.target.value)}`))} disabled={busy}>
             {options.length === 0 && <option value="">No cases yet</option>}
             {options.map((o) => (
               <option key={o.id} value={o.id}>
@@ -158,7 +101,7 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
                         type="button"
                         className="btn ghost sm"
                         disabled={busy}
-                        onClick={() => (m.threadId ? ask(m.question, "reject", i, m.threadId) : setMsgs((xs) => xs.filter((_, j) => j !== i)))}
+                        onClick={() => (m.threadId ? ask(m.question, "reject", i, m.threadId) : drop(i))}
                       >
                         Discard
                       </button>
@@ -190,7 +133,9 @@ export function AssistantThread({ options, selected, hasModel }: { options: Case
         className="composer"
         onSubmit={(e) => {
           e.preventDefault();
-          ask(input);
+          const q = input;
+          setInput("");
+          ask(q);
         }}
       >
         <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about this case, in Thai or English" aria-label="Question" disabled={busy || !caseId} />

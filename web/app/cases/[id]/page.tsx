@@ -18,7 +18,9 @@ import { findDuplicateStudents, findSimilarCases } from "../../lib/similar";
 import { caseLabel, fmtDate, fmtMonth, timeAgo } from "../../lib/format";
 import { buildCase } from "../../lib/review";
 import type { Case, Check as RuleCheck, DocType } from "../../types";
+import { agentHasModel } from "../../lib/agent-status";
 import { CaseDetailsCard, CheckActions } from "./case-actions";
+import { CaseChat } from "./case-chat";
 
 export const dynamic = "force-dynamic";
 
@@ -139,7 +141,7 @@ export default async function CaseOverviewPage({ params }: { params: Promise<{ i
   const { id } = await params;
   const s = await loadCaseSummary(id);
   if (!s) notFound();
-  const [similar, duplicates] = await Promise.all([findSimilarCases(id).catch(() => []), findDuplicateStudents(id).catch(() => [])]);
+  const [similar, duplicates, hasModel] = await Promise.all([findSimilarCases(id).catch(() => []), findDuplicateStudents(id).catch(() => []), agentHasModel()]);
 
   const base = `/cases/${encodeURIComponent(id)}`;
   const docs = s.slots.filter((x) => x.doc).map((x) => x.doc!);
@@ -407,6 +409,8 @@ export default async function CaseOverviewPage({ params }: { params: Promise<{ i
                 )}
               </CardContent>
             </Card>
+
+            <CaseChat caseId={id} status={s.status} hasModel={hasModel} />
 
             <CaseDetailsCard meta={s.meta} />
 
